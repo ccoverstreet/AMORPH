@@ -108,9 +108,22 @@ double MyModel::log_likelihood() const
 {
     double logL = 0.0;
 
-    // References to the data vectors
-    const auto& data_x = data.get_x();
+    // References to the data vector
     const auto& data_y = data.get_y();
+
+    // Normalising constant of the t distribution
+    double C = lgamma(0.5*(nu + 1.0)) - log(0.5*nu) - 0.5*log(M_PI*nu);
+
+    // T likelihood
+    double resid, var;
+    for(size_t i=0; i<data_y.size(); ++i)
+    {
+        resid = data_y[i] - model_curve[i];
+        var = sigma0*sigma0 + sigma1*model_curve[i];
+
+        logL += C - 0.5*log(var)
+                  - 0.5*(nu + 1.0)*log(1.0 + resid*resid/var);
+    }
 
     if(std::isnan(logL) || std::isinf(logL))
         logL = -1E300;
