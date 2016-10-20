@@ -12,6 +12,7 @@ namespace Crystals
 class Data
 {
     private:
+        // Data x and y
         std::vector<double> theta;
         std::vector<int> count;
 
