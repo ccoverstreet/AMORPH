@@ -4,7 +4,7 @@
 
 int main(int argc, char** argv)
 {
-	DNest4::start<Crystals::MyModel>(argc, argv);
-	return 0;
+    DNest4::start<Crystals::MyModel>(argc, argv);
+    return 0;
 }
 
