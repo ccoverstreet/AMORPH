@@ -32,6 +32,10 @@ void Data::load(const char* filename)
     // Temporary variables for reading
     double temp1, temp2;
 
+	// Read past comment lines at the top of the file
+    while(fin.peek() == '#')
+        fin.ignore(1000000, '\n');
+
     // Read the data
     while(fin>>temp1 && fin>>temp2)
     {
