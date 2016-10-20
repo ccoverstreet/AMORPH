@@ -14,6 +14,9 @@ class MyModel
         // Constant background
         double background;
 
+        /* Static variables */
+        static const DNest4::Cauchy cauchy;
+
     public:
         // Constructor only gives size of params
         MyModel();

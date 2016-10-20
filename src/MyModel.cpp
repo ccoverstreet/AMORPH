@@ -4,6 +4,8 @@
 namespace Crystals
 {
 
+const DNest4::Cauchy MyModel::cauchy(0.0, 5.0);
+
 MyModel::MyModel()
 {
 
@@ -11,16 +13,12 @@ MyModel::MyModel()
 
 void MyModel::from_prior(DNest4::RNG& rng)
 {
-    const DNest4::Cauchy cauchy(0.0, 5.0);
-
     background = cauchy.generate(rng);
 }
 
 double MyModel::perturb(DNest4::RNG& rng)
 {
     double logH = 0.0;
-
-    const DNest4::Cauchy cauchy(0.0, 5.0);
 
     int which = rng.rand_int(1);
 
