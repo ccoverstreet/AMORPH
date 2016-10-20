@@ -34,6 +34,9 @@ class Data
         double get_theta_min() const { return theta_min; }
         double get_theta_max() const { return theta_max; }
         double get_theta_range() const { return theta_range; }
+
+        // Calculate the summaries
+        void compute_summaries();
 };
 
 } // namespace Crystals

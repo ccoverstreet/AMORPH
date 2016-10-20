@@ -22,8 +22,34 @@ void Data::load(const char* filename)
         return;
     }
 
+    // Clear any existing data
+    theta.clear();
+    count.clear();
 
+    // Temporary variables for reading
+    double temp1; int temp2;
+
+    // Read the data
+    while(fin>>temp1 && fin>>temp2)
+    {
+        theta.push_back(temp1);
+        count.push_back(temp2);
+    }
+
+    // Print message to screen
+    std::cout<<"# Read "<<theta.size()<<" data points from file ";
+    std::cout<<filename<<'.'<<std::endl;
+
+    // Compute summaries
+    compute_summaries();
+
+    // Close the file
     fin.close();
+}
+
+void Data::compute_summaries()
+{
+
 }
 
 } // namespace Crystals
