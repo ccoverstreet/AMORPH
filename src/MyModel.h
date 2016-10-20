@@ -1,9 +1,12 @@
-#ifndef DNest4_Template_MyModel
-#define DNest4_Template_MyModel
+#ifndef Crystals_MyModel
+#define Crystals_MyModel
 
 #include "DNest4/code/DNest4.h"
 #include "MyConditionalPrior.h"
 #include <ostream>
+
+namespace Crystals
+{
 
 class MyModel
 {
@@ -29,6 +32,8 @@ class MyModel
 		// Return string with column information
 		std::string description() const;
 };
+
+} // namespace Crystals
 
 #endif
 

@@ -2,19 +2,20 @@
 #include "DNest4/code/DNest4.h"
 #include <cmath>
 
-using namespace DNest4;
+namespace Crystals
+{
 
 MyConditionalPrior::MyConditionalPrior()
 {
 
 }
 
-void MyConditionalPrior::from_prior(RNG& rng)
+void MyConditionalPrior::from_prior(DNest4::RNG& rng)
 {
 
 }
 
-double MyConditionalPrior::perturb_hyperparameters(RNG& rng)
+double MyConditionalPrior::perturb_hyperparameters(DNest4::RNG& rng)
 {
 	double logH = 0.;
 
@@ -40,4 +41,6 @@ void MyConditionalPrior::print(std::ostream& out) const
 {
 	out<<' ';
 }
+
+} // namespace Crystals
 

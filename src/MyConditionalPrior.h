@@ -1,7 +1,10 @@
-#ifndef DNest4_Template_MyConditionalPrior
-#define DNest4_Template_MyConditionalPrior
+#ifndef Crystals_MyConditionalPrior
+#define Crystals_MyConditionalPrior
 
 #include "DNest4/code/DNest4.h"
+
+namespace Crystals
+{
 
 class MyConditionalPrior:public DNest4::ConditionalPrior
 {
@@ -21,6 +24,8 @@ class MyConditionalPrior:public DNest4::ConditionalPrior
 		void print(std::ostream& out) const;
 		static const int weight_parameter = 1;
 };
+
+} // namespace Crystals
 
 #endif
 
