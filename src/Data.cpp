@@ -26,8 +26,8 @@ void Data::load(const char* filename)
     }
 
     // Clear any existing data
-    theta.clear();
-    count.clear();
+    x.clear();
+    y.clear();
 
     // Temporary variables for reading
     double temp1, temp2;
@@ -35,12 +35,12 @@ void Data::load(const char* filename)
     // Read the data
     while(fin>>temp1 && fin>>temp2)
     {
-        theta.push_back(temp1);
-        count.push_back(temp2);
+        x.push_back(temp1);
+        y.push_back(temp2);
     }
 
     // Print message to screen
-    std::cout<<"# Read "<<theta.size()<<" data points from file ";
+    std::cout<<"# Read "<<x.size()<<" data points from file ";
     std::cout<<filename<<'.'<<std::endl;
 
     // Compute summaries
@@ -55,9 +55,9 @@ void Data::load(const char* filename)
 
 void Data::compute_summaries()
 {
-    theta_min = *std::min_element(theta.begin(), theta.end());
-    theta_max = *std::max_element(theta.begin(), theta.end());
-    theta_range = theta_max - theta_min;
+    x_min = *std::min_element(x.begin(), x.end());
+    x_max = *std::max_element(x.begin(), x.end());
+    x_range = x_max - x_min;
 }
 
 } // namespace Crystals

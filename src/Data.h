@@ -13,11 +13,11 @@ class Data
 {
     private:
         // Data x and y
-        std::vector<double> theta;
-        std::vector<double> count;
+        std::vector<double> x;
+        std::vector<double> y;
 
         // Some summaries
-        double theta_min, theta_max, theta_range;
+        double x_min, x_max, x_range;
 
         // Whether the data has been loaded or not
         bool loaded;
@@ -30,13 +30,13 @@ class Data
         void load(const char* filename);
 
         // Getters (by reference - use caution)
-        const std::vector<double>& get_theta() const { return theta; }
-        const std::vector<double>& get_count() const { return count; }
+        const std::vector<double>& get_x() const { return x; }
+        const std::vector<double>& get_y() const { return y; }
 
         // More getters (not by reference)
-        double get_theta_min() const { return theta_min; }
-        double get_theta_max() const { return theta_max; }
-        double get_theta_range() const { return theta_range; }
+        double get_x_min() const { return x_min; }
+        double get_x_max() const { return x_max; }
+        double get_x_range() const { return x_range; }
         bool get_loaded() const { return loaded; }
 
         // Calculate the summaries
