@@ -1,12 +1,13 @@
 #include "MyModel.h"
 #include "DNest4/code/DNest4.h"
 #include <sstream>
+#include <cmath>
 
 namespace Crystals
 {
 
 Data MyModel::data;
-const DNest4::Cauchy MyModel::cauchy(0.0, 5.0);
+const DNest4::Laplace MyModel::laplace(0.0, 5.0);
 
 MyModel::MyModel()
 :model_curve(data.get_y().size())
@@ -17,14 +18,14 @@ MyModel::MyModel()
 
 void MyModel::from_prior(DNest4::RNG& rng)
 {
-    background = exp(cauchy.generate(rng));
+    background = exp(laplace.generate(rng));
 
-    amplitude = exp(cauchy.generate(rng));
+    amplitude = exp(laplace.generate(rng));
     center = data.get_x_min() + data.get_x_range()*rng.rand();
     width = data.get_x_range()*rng.rand();
 
-    sigma0 = exp(cauchy.generate(rng));
-    sigma1 = exp(cauchy.generate(rng));
+    sigma0 = exp(laplace.generate(rng));
+    sigma1 = exp(laplace.generate(rng));
     nu = exp(log(1.0) + log(1E3)*rng.rand());
 
     compute_model_curve();
@@ -39,7 +40,7 @@ double MyModel::perturb(DNest4::RNG& rng)
     if(which == 0)
     {
         background = log(background);
-        logH += cauchy.perturb(background, rng);
+        logH += laplace.perturb(background, rng);
         background = exp(background);
 
         compute_model_curve();
@@ -47,7 +48,7 @@ double MyModel::perturb(DNest4::RNG& rng)
     else if(which == 1)
     {
         amplitude = log(amplitude);
-        logH += cauchy.perturb(amplitude, rng);
+        logH += laplace.perturb(amplitude, rng);
         amplitude = exp(amplitude);
 
         compute_model_curve();
@@ -69,13 +70,13 @@ double MyModel::perturb(DNest4::RNG& rng)
     else if(which == 4)
     {
         sigma0 = log(sigma0);
-        logH += cauchy.perturb(sigma0, rng);
+        logH += laplace.perturb(sigma0, rng);
         sigma0 = exp(sigma0);
     }
     else if(which == 5)
     {
         sigma1 = log(sigma1);
-        logH += cauchy.perturb(sigma1, rng);
+        logH += laplace.perturb(sigma1, rng);
         sigma1 = exp(sigma1);
     }
     else
@@ -92,6 +93,15 @@ double MyModel::perturb(DNest4::RNG& rng)
 void MyModel::compute_model_curve()
 {
     const auto& data_x = data.get_x();
+
+    double tau = 1.0/(width*width);
+    double rsq;
+
+    for(size_t i=0; i<model_curve.size(); ++i)
+    {
+        rsq = pow(data_x[i] - center, 2);
+        model_curve[i] = amplitude*exp(-0.5*rsq*tau);
+    }
 }
 
 double MyModel::log_likelihood() const
@@ -111,7 +121,11 @@ double MyModel::log_likelihood() const
 void MyModel::print(std::ostream& out) const
 {
     out<<background<<' '<<amplitude<<' '<<center<<' '<<width<<' ';
+
     out<<sigma0<<' '<<sigma1<<' '<<nu<<' ';
+
+    for(auto m: model_curve)
+        out<<m<<' ';
 }
 
 std::string MyModel::description() const
@@ -119,6 +133,9 @@ std::string MyModel::description() const
     std::stringstream s;
     s<<"background, amplitude, center, width, ";
     s<<"sigma0, sigma1, nu, ";
+    for(size_t i=0; i<model_curve.size(); ++i)
+        s<<"model_curve["<<i<<"], ";
+
     return s.str();
 }
 

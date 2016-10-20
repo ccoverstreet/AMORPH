@@ -52,8 +52,8 @@ class MyModel
         // The dataset!
         static Data data;
 
-        // A useful Cauchy distribution
-        static const DNest4::Cauchy cauchy;
+        // A useful laplace distribution
+        static const DNest4::Laplace laplace;
 
     public:
         static void load_data(const char* filename);
