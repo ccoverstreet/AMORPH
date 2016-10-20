@@ -4,4 +4,5 @@ src/posterior_sample.txt
 src/sample.txt
 src/sample_info.txt
 src/weights.txt
+src/sampler_state.txt
 
