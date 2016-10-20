@@ -15,6 +15,9 @@ class MyModel
         // Constant background
         double background;
 
+        // Parameters of the wide gaussian component
+        double amplitude, center, width;
+
         /* Static variables */
         // The dataset!
         static Data data;
