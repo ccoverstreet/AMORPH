@@ -11,7 +11,8 @@ namespace Crystals
 class MyModel
 {
     private:
-
+        // Constant background
+        double background;
 
     public:
         // Constructor only gives size of params
