@@ -30,7 +30,7 @@ void Data::load(const char* filename)
     count.clear();
 
     // Temporary variables for reading
-    double temp1; int temp2;
+    double temp1, temp2;
 
     // Read the data
     while(fin>>temp1 && fin>>temp2)

@@ -14,7 +14,7 @@ class Data
     private:
         // Data x and y
         std::vector<double> theta;
-        std::vector<int> count;
+        std::vector<double> count;
 
         // Some summaries
         double theta_min, theta_max, theta_range;
@@ -31,7 +31,7 @@ class Data
 
         // Getters (by reference - use caution)
         const std::vector<double>& get_theta() const { return theta; }
-        const std::vector<int>& get_count() const { return count; }
+        const std::vector<double>& get_count() const { return count; }
 
         // More getters (not by reference)
         double get_theta_min() const { return theta_min; }
