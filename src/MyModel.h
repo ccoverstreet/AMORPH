@@ -1,9 +1,10 @@
 #ifndef Crystals_MyModel
 #define Crystals_MyModel
 
-#include "DNest4/code/DNest4.h"
-#include "MyConditionalPrior.h"
 #include <ostream>
+#include "DNest4/code/DNest4.h"
+#include "Data.h"
+#include "MyConditionalPrior.h"
 
 namespace Crystals
 {
@@ -15,6 +16,10 @@ class MyModel
         double background;
 
         /* Static variables */
+        // The dataset!
+        static Data data;
+
+        // A useful Cauchy distribution
         static const DNest4::Cauchy cauchy;
 
     public:

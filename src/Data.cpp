@@ -8,6 +8,7 @@ namespace Crystals
 {
 
 Data::Data()
+:loaded(false)
 {
 
 }
@@ -47,6 +48,9 @@ void Data::load(const char* filename)
 
     // Close the file
     fin.close();
+
+    // Set flag
+    loaded = true;
 }
 
 void Data::compute_summaries()

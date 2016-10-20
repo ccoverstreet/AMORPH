@@ -19,6 +19,9 @@ class Data
         // Some summaries
         double theta_min, theta_max, theta_range;
 
+        // Whether the data has been loaded or not
+        bool loaded;
+
     public:
         // Construct as empty dataset
         Data();
@@ -34,6 +37,7 @@ class Data
         double get_theta_min() const { return theta_min; }
         double get_theta_max() const { return theta_max; }
         double get_theta_range() const { return theta_range; }
+        bool get_loaded() const { return loaded; }
 
         // Calculate the summaries
         void compute_summaries();
