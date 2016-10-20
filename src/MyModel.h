@@ -18,16 +18,14 @@ class MyModel
         // Parameters of the wide gaussian component
         double amplitude, center, width;
 
-
         // Noise-related parameters
         double sigma0, sigma1, nu;
 
-        /* Static variables */
-        // The dataset!
-        static Data data;
+        // Model-predicted curve
+        std::vector<double> model_curve;
 
-        // A useful Cauchy distribution
-        static const DNest4::Cauchy cauchy;
+        // Calculate the model-predicted curve
+        void compute_model_curve();
 
     public:
         // Constructor only gives size of params
@@ -48,7 +46,16 @@ class MyModel
         // Return string with column information
         std::string description() const;
 
-        /* Static functions */
+
+        /********** STATIC STUFF **********/
+    private:
+        // The dataset!
+        static Data data;
+
+        // A useful Cauchy distribution
+        static const DNest4::Cauchy cauchy;
+
+    public:
         static void load_data(const char* filename);
 };
 

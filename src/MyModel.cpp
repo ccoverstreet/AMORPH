@@ -9,15 +9,14 @@ Data MyModel::data;
 const DNest4::Cauchy MyModel::cauchy(0.0, 5.0);
 
 MyModel::MyModel()
+:model_curve(data.get_y().size())
 {
-
+    if(!data.get_loaded())
+        std::cerr<<"# WARNING: it appears no data has been loaded."<<std::endl;
 }
 
 void MyModel::from_prior(DNest4::RNG& rng)
 {
-    if(!data.get_loaded())
-        std::cerr<<"# WARNING: it appears no data has been loaded."<<std::endl;
-
     background = exp(cauchy.generate(rng));
 
     amplitude = exp(cauchy.generate(rng));
@@ -27,6 +26,8 @@ void MyModel::from_prior(DNest4::RNG& rng)
     sigma0 = exp(cauchy.generate(rng));
     sigma1 = exp(cauchy.generate(rng));
     nu = exp(log(1.0) + log(1E3)*rng.rand());
+
+    compute_model_curve();
 }
 
 double MyModel::perturb(DNest4::RNG& rng)
@@ -40,22 +41,30 @@ double MyModel::perturb(DNest4::RNG& rng)
         background = log(background);
         logH += cauchy.perturb(background, rng);
         background = exp(background);
+
+        compute_model_curve();
     }
     else if(which == 1)
     {
         amplitude = log(amplitude);
         logH += cauchy.perturb(amplitude, rng);
         amplitude = exp(amplitude);
+
+        compute_model_curve();
     }
     else if(which == 2)
     {
         center += data.get_x_range()*rng.rand();
         DNest4::wrap(center, data.get_x_min(), data.get_x_max());
+
+        compute_model_curve();
     }
     else if(which == 3)
     {
         width += data.get_x_range()*rng.rand();
         DNest4::wrap(width, 0.0, data.get_x_range());
+
+        compute_model_curve();
     }
     else if(which == 4)
     {
@@ -78,6 +87,11 @@ double MyModel::perturb(DNest4::RNG& rng)
     }
 
     return logH;
+}
+
+void MyModel::compute_model_curve()
+{
+    const auto& data_x = data.get_x();
 }
 
 double MyModel::log_likelihood() const
