@@ -1,6 +1,8 @@
 #include "Data.h"
+
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 
 namespace Crystals
 {
@@ -49,7 +51,9 @@ void Data::load(const char* filename)
 
 void Data::compute_summaries()
 {
-
+    theta_min = *std::min_element(theta.begin(), theta.end());
+    theta_max = *std::max_element(theta.begin(), theta.end());
+    theta_range = theta_max - theta_min;
 }
 
 } // namespace Crystals
