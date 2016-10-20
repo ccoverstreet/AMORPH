@@ -48,5 +48,10 @@ std::string MyModel::description() const
     return std::string("background, ");
 }
 
+void MyModel::load_data(const char* filename)
+{
+    data.load(filename);
+}
+
 } // namespace Crystals
 

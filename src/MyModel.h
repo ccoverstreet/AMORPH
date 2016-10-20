@@ -40,6 +40,9 @@ class MyModel
 
         // Return string with column information
         std::string description() const;
+
+        /* Static functions */
+        static void load_data(const char* filename);
 };
 
 } // namespace Crystals
