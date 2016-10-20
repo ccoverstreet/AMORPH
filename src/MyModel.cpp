@@ -1,5 +1,6 @@
 #include "MyModel.h"
 #include "DNest4/code/DNest4.h"
+#include <sstream>
 
 namespace Crystals
 {
@@ -22,13 +23,17 @@ void MyModel::from_prior(DNest4::RNG& rng)
     amplitude = exp(cauchy.generate(rng));
     center = data.get_x_min() + data.get_x_range()*rng.rand();
     width = data.get_x_range()*rng.rand();
+
+    sigma0 = exp(cauchy.generate(rng));
+    sigma1 = exp(cauchy.generate(rng));
+    nu = exp(log(1.0) + log(1E3)*rng.rand());
 }
 
 double MyModel::perturb(DNest4::RNG& rng)
 {
     double logH = 0.0;
 
-    int which = rng.rand_int(4);
+    int which = rng.rand_int(7);
 
     if(which == 0)
     {
@@ -47,10 +52,29 @@ double MyModel::perturb(DNest4::RNG& rng)
         center += data.get_x_range()*rng.rand();
         DNest4::wrap(center, data.get_x_min(), data.get_x_max());
     }
-    else
+    else if(which == 3)
     {
         width += data.get_x_range()*rng.rand();
         DNest4::wrap(width, 0.0, data.get_x_range());
+    }
+    else if(which == 4)
+    {
+        sigma0 = log(sigma0);
+        logH += cauchy.perturb(sigma0, rng);
+        sigma0 = exp(sigma0);
+    }
+    else if(which == 5)
+    {
+        sigma1 = log(sigma1);
+        logH += cauchy.perturb(sigma1, rng);
+        sigma1 = exp(sigma1);
+    }
+    else
+    {
+        nu = log(nu);
+        nu += log(1E3)*rng.randh();
+        DNest4::wrap(nu, log(1.0), log(1E3));
+        nu = exp(nu);
     }
 
     return logH;
@@ -73,11 +97,15 @@ double MyModel::log_likelihood() const
 void MyModel::print(std::ostream& out) const
 {
     out<<background<<' '<<amplitude<<' '<<center<<' '<<width<<' ';
+    out<<sigma0<<' '<<sigma1<<' '<<nu<<' ';
 }
 
 std::string MyModel::description() const
 {
-    return std::string("background, amplitude, center, width, ");
+    std::stringstream s;
+    s<<"background, amplitude, center, width, ";
+    s<<"sigma0, sigma1, nu, ";
+    return s.str();
 }
 
 void MyModel::load_data(const char* filename)

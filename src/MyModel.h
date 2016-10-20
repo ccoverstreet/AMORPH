@@ -18,6 +18,10 @@ class MyModel
         // Parameters of the wide gaussian component
         double amplitude, center, width;
 
+
+        // Noise-related parameters
+        double sigma0, sigma1, nu;
+
         /* Static variables */
         // The dataset!
         static Data data;
