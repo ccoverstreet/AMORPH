@@ -30,6 +30,29 @@ double MyConditionalPrior::perturb_hyperparameters(DNest4::RNG& rng)
 {
     double logH = 0.0;
 
+    int which = rng.rand_int(4);
+    if(which == 0)
+    {
+        logH += laplace.perturb(location_log_amplitude, rng);
+    }
+    else if(which == 1)
+    {
+        scale_log_amplitude += 5*rng.randh();
+        DNest4::wrap(scale_log_amplitude, 0.0, 5.0);
+    }
+    else if(which == 2)
+    {
+        K += rng.randh();
+        DNest4::wrap(K, 0.0, 1.0);
+    }
+    else
+    {
+        max_width = log(max_width);
+        max_width += log(1E3)*rng.randh();
+        DNest4::wrap(max_width, log(1E-3*x_range), log(x_range));
+        max_width = exp(max_width);
+    }
+
     return logH;
 }
 
