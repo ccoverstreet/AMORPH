@@ -16,7 +16,7 @@ class MyConditionalPrior:public DNest4::ConditionalPrior
         double location_log_amplitude, scale_log_amplitude;
 
         // For widths
-        double min_width, max_width;
+        double K, max_width;
 
         double perturb_hyperparameters(DNest4::RNG& rng);
 
