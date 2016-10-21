@@ -12,6 +12,11 @@ class MyConditionalPrior:public DNest4::ConditionalPrior
         // Data-related stuff which will be useful for the priors
         double x_min, x_max, x_range;
 
+        // For amplitudes
+        double location_log_amplitude, scale_log_amplitude;
+
+        // For widths
+        double min_width, max_width;
 
         double perturb_hyperparameters(DNest4::RNG& rng);
 
@@ -25,6 +30,10 @@ class MyConditionalPrior:public DNest4::ConditionalPrior
         void to_uniform(std::vector<double>& vec) const;
 
         void print(std::ostream& out) const;
+
+        /* Static stuff */
+    private:
+        static const DNest4::Laplace laplace;
         static const int weight_parameter = 1;
 };
 
