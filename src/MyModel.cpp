@@ -10,7 +10,8 @@ Data MyModel::data;
 const DNest4::Laplace MyModel::laplace(0.0, 5.0);
 
 MyModel::MyModel()
-:spikes(3, 100, false, MyConditionalPrior(), DNest4::PriorType::log_uniform)
+:spikes(3, 100, false, MyConditionalPrior(data.get_x_min(), data.get_x_max()),
+                                DNest4::PriorType::log_uniform)
 ,model_curve(data.get_y().size())
 {
     if(!data.get_loaded())

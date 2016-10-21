@@ -9,11 +9,14 @@ namespace Crystals
 class MyConditionalPrior:public DNest4::ConditionalPrior
 {
     private:
+        // Data-related stuff which will be useful for the priors
+        double x_min, x_max, x_range;
+
 
         double perturb_hyperparameters(DNest4::RNG& rng);
 
     public:
-        MyConditionalPrior();
+        MyConditionalPrior(double x_min, double x_max);
 
         void from_prior(DNest4::RNG& rng);
 

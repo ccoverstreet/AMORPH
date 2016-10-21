@@ -5,7 +5,10 @@
 namespace Crystals
 {
 
-MyConditionalPrior::MyConditionalPrior()
+MyConditionalPrior::MyConditionalPrior(double x_min, double x_max)
+:x_min(x_min)
+,x_max(x_max)
+,x_range(x_max - x_min)
 {
 
 }
