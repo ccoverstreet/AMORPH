@@ -10,7 +10,8 @@ Data MyModel::data;
 const DNest4::Laplace MyModel::laplace(0.0, 5.0);
 
 MyModel::MyModel()
-:spikes(3, 100, false, MyConditionalPrior(data.get_x_min(), data.get_x_max()),
+:spikes(3, max_num_spikes, false,
+            MyConditionalPrior(data.get_x_min(), data.get_x_max()),
                                 DNest4::PriorType::log_uniform)
 ,model_curve(data.get_y().size())
 {
@@ -156,7 +157,7 @@ double MyModel::log_likelihood() const
 void MyModel::print(std::ostream& out) const
 {
     out<<background<<' '<<amplitude<<' '<<center<<' '<<width<<' ';
-
+    spikes.print(out);
     out<<sigma0<<' '<<sigma1<<' '<<nu<<' ';
 
     for(auto m: model_curve)
@@ -167,6 +168,15 @@ std::string MyModel::description() const
 {
     std::stringstream s;
     s<<"background, amplitude, center, width, ";
+    s<<"dim_spikes, max_num_spikes, ";
+    s<<"location_log_amplitude, scale_log_amplitude, ";
+    s<<"K, max_width, num_spikes, ";
+    for(size_t i=0; i<max_num_spikes; ++i)
+        s<<"center["<<i<<"], ";
+    for(size_t i=0; i<max_num_spikes; ++i)
+        s<<"log_amplitude["<<i<<"], ";
+    for(size_t i=0; i<max_num_spikes; ++i)
+        s<<"width["<<i<<"], ";
     s<<"sigma0, sigma1, nu, ";
     for(size_t i=0; i<model_curve.size(); ++i)
         s<<"model_curve["<<i<<"], ";

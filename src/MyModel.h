@@ -58,6 +58,9 @@ class MyModel
         // A useful laplace distribution
         static const DNest4::Laplace laplace;
 
+        // Maximum number of spikes
+        static constexpr size_t max_num_spikes = 100;
+
     public:
         static void load_data(const char* filename);
 };
