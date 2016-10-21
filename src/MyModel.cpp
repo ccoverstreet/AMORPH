@@ -10,7 +10,8 @@ Data MyModel::data;
 const DNest4::Laplace MyModel::laplace(0.0, 5.0);
 
 MyModel::MyModel()
-:model_curve(data.get_y().size())
+:spikes(3, 100, false, MyConditionalPrior(), DNest4::PriorType::log_uniform)
+,model_curve(data.get_y().size())
 {
     if(!data.get_loaded())
         std::cerr<<"# WARNING: it appears no data has been loaded."<<std::endl;
@@ -24,6 +25,8 @@ void MyModel::from_prior(DNest4::RNG& rng)
     center = data.get_x_min() + data.get_x_range()*rng.rand();
     width = data.get_x_range()*rng.rand();
 
+    spikes.from_prior(rng);
+
     sigma0 = exp(laplace.generate(rng));
     sigma1 = exp(laplace.generate(rng));
     nu = exp(log(1.0) + log(1E3)*rng.rand());
@@ -35,56 +38,74 @@ double MyModel::perturb(DNest4::RNG& rng)
 {
     double logH = 0.0;
 
-    int which = rng.rand_int(7);
+    // Select blocks of parameters
+    int choice = rng.rand_int(3);
 
-    if(which == 0)
+    if(choice == 0)
     {
-        background = log(background);
-        logH += laplace.perturb(background, rng);
-        background = exp(background);
+        // Perturb spikes
+        logH += spikes.perturb(rng);
+    }
+    else if(choice == 1)
+    {
+        // Perturb a parameter related to the background or wide component
+        int which = rng.rand_int(4);
 
-        compute_model_curve();
-    }
-    else if(which == 1)
-    {
-        amplitude = log(amplitude);
-        logH += laplace.perturb(amplitude, rng);
-        amplitude = exp(amplitude);
+        if(which == 0)
+        {
+            background = log(background);
+            logH += laplace.perturb(background, rng);
+            background = exp(background);
 
-        compute_model_curve();
-    }
-    else if(which == 2)
-    {
-        center += data.get_x_range()*rng.rand();
-        DNest4::wrap(center, data.get_x_min(), data.get_x_max());
+            compute_model_curve();
+        }
+        else if(which == 1)
+        {
+            amplitude = log(amplitude);
+            logH += laplace.perturb(amplitude, rng);
+            amplitude = exp(amplitude);
 
-        compute_model_curve();
-    }
-    else if(which == 3)
-    {
-        width += data.get_x_range()*rng.rand();
-        DNest4::wrap(width, 0.0, data.get_x_range());
+            compute_model_curve();
+        }
+        else if(which == 2)
+        {
+            center += data.get_x_range()*rng.rand();
+            DNest4::wrap(center, data.get_x_min(), data.get_x_max());
 
-        compute_model_curve();
-    }
-    else if(which == 4)
-    {
-        sigma0 = log(sigma0);
-        logH += laplace.perturb(sigma0, rng);
-        sigma0 = exp(sigma0);
-    }
-    else if(which == 5)
-    {
-        sigma1 = log(sigma1);
-        logH += laplace.perturb(sigma1, rng);
-        sigma1 = exp(sigma1);
+            compute_model_curve();
+        }
+        else if(which == 3)
+        {
+            width += data.get_x_range()*rng.rand();
+            DNest4::wrap(width, 0.0, data.get_x_range());
+
+            compute_model_curve();
+        }
     }
     else
     {
-        nu = log(nu);
-        nu += log(1E3)*rng.randh();
-        DNest4::wrap(nu, log(1.0), log(1E3));
-        nu = exp(nu);
+        // Perturb a noise-related parameter
+        int which = rng.rand_int(3);
+
+        if(which == 0)
+        {
+            sigma0 = log(sigma0);
+            logH += laplace.perturb(sigma0, rng);
+            sigma0 = exp(sigma0);
+        }
+        else if(which == 1)
+        {
+            sigma1 = log(sigma1);
+            logH += laplace.perturb(sigma1, rng);
+            sigma1 = exp(sigma1);
+        }
+        else
+        {
+            nu = log(nu);
+            nu += log(1E3)*rng.randh();
+            DNest4::wrap(nu, log(1.0), log(1E3));
+            nu = exp(nu);
+        }
     }
 
     return logH;

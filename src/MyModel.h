@@ -18,6 +18,9 @@ class MyModel
         // Parameters of the wide gaussian component
         double amplitude, center, width;
 
+        // Use an RJObject for the narrow spikes
+        DNest4::RJObject<MyConditionalPrior> spikes;
+
         // Noise-related parameters
         double sigma0, sigma1, nu;
 
