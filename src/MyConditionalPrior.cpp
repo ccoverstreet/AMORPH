@@ -69,7 +69,13 @@ double MyConditionalPrior::log_pdf(const std::vector<double>& vec) const
         return -1E300;
 
     DNest4::Laplace l(location_log_amplitude, scale_log_amplitude);
-    return l.log_pdf(vec[1]);
+
+    double logp = 0.0;
+
+    logp += l.log_pdf(vec[1]);
+    logp += -log(max_width - min_width);
+
+    return logp;
 }
 
 void MyConditionalPrior::from_uniform(std::vector<double>& vec) const
