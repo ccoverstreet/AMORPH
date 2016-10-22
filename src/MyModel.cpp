@@ -141,7 +141,8 @@ void MyModel::compute_model_curve()
         for(size_t j=0; j<model_curve.size(); ++j)
         {
             rsq = pow(data_x[j] - c, 2);
-            model_curve[j] += a*exp(-0.5*rsq*tau);
+            if(rsq*tau < 100.0)
+                model_curve[j] += a*exp(-0.5*rsq*tau);
         }
     }
 }
