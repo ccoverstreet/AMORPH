@@ -133,6 +133,11 @@ void MyModel::compute_the_spikes(bool update)
 {
     const auto& data_x = data.get_x();
 
+    // Zero the curve if this is not an update
+    if(!update)
+        for(double& t: the_spikes)
+            t = 0.0;
+
     const auto& components = (update)?(spikes.get_added())
                                 :(spikes.get_components());
 
