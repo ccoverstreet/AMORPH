@@ -23,7 +23,7 @@ void MyConditionalPrior::from_prior(DNest4::RNG& rng)
     scale_log_amplitude = 5*rng.rand();
 
     K = rng.rand();
-    max_width = exp(log(1E-3*x_range) + log(1E3)*rng.rand());
+    max_width = exp(log(0.001*x_range) + log(100.0)*rng.rand());
 }
 
 double MyConditionalPrior::perturb_hyperparameters(DNest4::RNG& rng)
@@ -48,8 +48,8 @@ double MyConditionalPrior::perturb_hyperparameters(DNest4::RNG& rng)
     else
     {
         max_width = log(max_width);
-        max_width += log(1E3)*rng.randh();
-        DNest4::wrap(max_width, log(1E-3*x_range), log(x_range));
+        max_width += log(100.0)*rng.randh();
+        DNest4::wrap(max_width, log(0.001*x_range), log(0.1*x_range));
         max_width = exp(max_width);
     }
 
