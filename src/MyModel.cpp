@@ -13,7 +13,8 @@ MyModel::MyModel()
 :spikes(3, max_num_spikes, false,
             MyConditionalPrior(data.get_x_min(), data.get_x_max()),
                                 DNest4::PriorType::log_uniform)
-,model_curve(data.get_y().size())
+,wide_component(data.get_y().size())
+,the_spikes(data.get_y().size())
 {
     if(!data.get_loaded())
         std::cerr<<"# WARNING: it appears no data has been loaded."<<std::endl;
@@ -33,7 +34,8 @@ void MyModel::from_prior(DNest4::RNG& rng)
     sigma1 = exp(laplace.generate(rng));
     nu = exp(log(1.0) + log(1E3)*rng.rand());
 
-    compute_model_curve();
+    compute_wide_component();
+    compute_the_spikes();
 }
 
 double MyModel::perturb(DNest4::RNG& rng)
@@ -48,7 +50,7 @@ double MyModel::perturb(DNest4::RNG& rng)
         // Perturb spikes
         logH += spikes.perturb(rng);
 
-        compute_model_curve(spikes.get_removed().size() == 0);
+        compute_the_spikes(spikes.get_removed().size() == 0);
     }
     else if(choice == 1)
     {
@@ -60,8 +62,6 @@ double MyModel::perturb(DNest4::RNG& rng)
             background = log(background);
             logH += laplace.perturb(background, rng);
             background = exp(background);
-
-            compute_model_curve();
         }
         else if(which == 1)
         {
@@ -69,21 +69,21 @@ double MyModel::perturb(DNest4::RNG& rng)
             logH += laplace.perturb(amplitude, rng);
             amplitude = exp(amplitude);
 
-            compute_model_curve();
+            compute_wide_component();
         }
         else if(which == 2)
         {
             center += data.get_x_range()*rng.rand();
             DNest4::wrap(center, data.get_x_min(), data.get_x_max());
 
-            compute_model_curve();
+            compute_wide_component();
         }
         else if(which == 3)
         {
             width += data.get_x_range()*rng.rand();
             DNest4::wrap(width, 0.0, data.get_x_range());
 
-            compute_model_curve();
+            compute_wide_component();
         }
     }
     else
@@ -115,26 +115,28 @@ double MyModel::perturb(DNest4::RNG& rng)
     return logH;
 }
 
-void MyModel::compute_model_curve(bool update)
+void MyModel::compute_wide_component()
 {
     const auto& data_x = data.get_x();
-    double rsq, tau;
 
-    // The wide component
-    if(!update)
+    double tau = 1.0/(width*width);
+
+    double rsq;
+    for(size_t i=0; i<wide_component.size(); ++i)
     {
-        tau = 1.0/(width*width);
-
-        for(size_t i=0; i<model_curve.size(); ++i)
-        {
-            rsq = pow(data_x[i] - center, 2);
-            model_curve[i] = amplitude*exp(-0.5*rsq*tau);
-        }
+        rsq = pow(data_x[i] - center, 2);
+        wide_component[i] = amplitude*exp(-0.5*rsq*tau);
     }
+}
 
-    double c, a, w;
+void MyModel::compute_the_spikes(bool update)
+{
+    const auto& data_x = data.get_x();
+
     const auto& components = (update)?(spikes.get_added())
                                 :(spikes.get_components());
+
+    double rsq, tau, c, a, w;
     for(size_t i=0; i<components.size(); ++i)
     {
         // {center, log_amplitude, width}
@@ -143,11 +145,11 @@ void MyModel::compute_model_curve(bool update)
         w = components[i][2];
         tau = 1.0/(w*w);
 
-        for(size_t j=0; j<model_curve.size(); ++j)
+        for(size_t j=0; j<the_spikes.size(); ++j)
         {
             rsq = pow(data_x[j] - c, 2);
             if(rsq*tau < 100.0)
-                model_curve[j] += a*exp(-0.5*rsq*tau);
+                the_spikes[j] += a*exp(-0.5*rsq*tau);
         }
     }
 }
@@ -163,11 +165,12 @@ double MyModel::log_likelihood() const
     double C = lgamma(0.5*(nu + 1.0)) - log(0.5*nu) - 0.5*log(M_PI*nu);
 
     // T likelihood
-    double resid, var;
+    double model, resid, var;
     for(size_t i=0; i<data_y.size(); ++i)
     {
-        resid = data_y[i] - model_curve[i];
-        var = sigma0*sigma0 + sigma1*model_curve[i];
+        model = background + wide_component[i] + the_spikes[i];
+        resid = data_y[i] - model;
+        var = sigma0*sigma0 + sigma1*model;
 
         logL += C - 0.5*log(var)
                   - 0.5*(nu + 1.0)*log(1.0 + resid*resid/var);
@@ -185,8 +188,12 @@ void MyModel::print(std::ostream& out) const
     spikes.print(out);
     out<<sigma0<<' '<<sigma1<<' '<<nu<<' ';
 
-    for(auto m: model_curve)
-        out<<m<<' ';
+    double model;
+    for(size_t i=0; i<wide_component.size(); ++i)
+    {
+        model = background + wide_component[i] + the_spikes[i];
+        out<<model<<' ';
+    }
 }
 
 std::string MyModel::description() const
@@ -203,7 +210,7 @@ std::string MyModel::description() const
     for(size_t i=0; i<max_num_spikes; ++i)
         s<<"width["<<i<<"], ";
     s<<"sigma0, sigma1, nu, ";
-    for(size_t i=0; i<model_curve.size(); ++i)
+    for(size_t i=0; i<wide_component.size(); ++i)
         s<<"model_curve["<<i<<"], ";
 
     return s.str();

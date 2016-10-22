@@ -24,11 +24,13 @@ class MyModel
         // Noise-related parameters
         double sigma0, sigma1, nu;
 
-        // Model-predicted curve
-        std::vector<double> model_curve;
+        // Components of the model-predicted curve
+        std::vector<double> wide_component;
+        std::vector<double> the_spikes;
 
-        // Calculate the model-predicted curve
-        void compute_model_curve(bool update=false);
+        // Calculate the parts of the model-predicted curve
+        void compute_wide_component();
+        void compute_the_spikes(bool update=false);
 
     public:
         // Constructor only gives size of params

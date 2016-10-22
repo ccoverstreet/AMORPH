@@ -38,6 +38,7 @@ def display(data_file="50% glass .02step3secdwell.txt"):
         spikes_w = posterior_sample\
                     [i, indices["width[0]"]:\
                     indices["width[0]"] + max_num_spikes]
+
         spikes_integral[i] = np.sum(spikes_a*spikes_w)*np.sqrt(2*np.pi)
 
 #        print(wide_integral[i], spikes_integral[i])
