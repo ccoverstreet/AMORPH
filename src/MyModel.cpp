@@ -48,7 +48,7 @@ double MyModel::perturb(DNest4::RNG& rng)
         // Perturb spikes
         logH += spikes.perturb(rng);
 
-        compute_model_curve();
+        compute_model_curve(spikes.get_removed().size() == 0);
     }
     else if(choice == 1)
     {
@@ -115,21 +115,26 @@ double MyModel::perturb(DNest4::RNG& rng)
     return logH;
 }
 
-void MyModel::compute_model_curve()
+void MyModel::compute_model_curve(bool update)
 {
     const auto& data_x = data.get_x();
+    double rsq, tau;
 
-    double tau = 1.0/(width*width);
-    double rsq;
-
-    for(size_t i=0; i<model_curve.size(); ++i)
+    // The wide component
+    if(!update)
     {
-        rsq = pow(data_x[i] - center, 2);
-        model_curve[i] = amplitude*exp(-0.5*rsq*tau);
+        tau = 1.0/(width*width);
+
+        for(size_t i=0; i<model_curve.size(); ++i)
+        {
+            rsq = pow(data_x[i] - center, 2);
+            model_curve[i] = amplitude*exp(-0.5*rsq*tau);
+        }
     }
 
     double c, a, w;
-    const auto& components = spikes.get_components();
+    const auto& components = (update)?(spikes.get_added())
+                                :(spikes.get_components());
     for(size_t i=0; i<components.size(); ++i)
     {
         // {center, log_amplitude, width}

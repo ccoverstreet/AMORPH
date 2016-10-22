@@ -28,7 +28,7 @@ class MyModel
         std::vector<double> model_curve;
 
         // Calculate the model-predicted curve
-        void compute_model_curve();
+        void compute_model_curve(bool update=false);
 
     public:
         // Constructor only gives size of params
