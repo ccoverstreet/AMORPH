@@ -8,3 +8,4 @@ src/sampler_state.txt
 src/__pycache__
 src/Crystals
 src/logfile
+runs/
