@@ -49,19 +49,39 @@ double MyModel::perturb(DNest4::RNG& rng)
     double logH = 0.0;
 
     // Select blocks of parameters
-    int choice = rng.rand_int(3);
+    int choice = rng.rand_int(4);
 
     if(choice == 0)
+    {
+        // Perturb a single n or many ns
+        if(rng.rand() <= 0.5)
+        {
+            int which = rng.rand_int(n.size());
+            logH -= -0.5*pow(n[which], 2);
+            n[which] += rng.randh();
+            logH += -0.5*pow(n[which], 2);
+        }
+        else
+        {
+            int reps = (int)pow(10.0, 3*rng.rand());
+            for(int i=0; i<reps; ++i)
+                n[rng.rand_int(n.size())] = rng.randn();
+        }
+
+        compute_wide_component();
+    }
+    else if(choice == 1)
     {
         // Perturb spikes
         logH += spikes.perturb(rng);
 
         compute_the_spikes(spikes.get_removed().size() == 0);
     }
-    else if(choice == 1)
+    else if(choice == 2)
     {
-        // Perturb a parameter related to the background or wide component
-        int which = rng.rand_int(4);
+        // Perturb a parameter related to the
+        // background or wide component
+        int which = rng.rand_int(6);
 
         if(which == 0)
         {
@@ -90,6 +110,21 @@ double MyModel::perturb(DNest4::RNG& rng)
             DNest4::wrap(width, 0.0, data.get_x_range());
 
             compute_wide_component();
+        }
+        else if(which == 4)
+        {
+            beta = log(beta);
+            beta += log(1E6)*rng.randh();
+            DNest4::wrap(beta, log(1E-6), log(1.0));
+            beta = exp(beta);
+        }
+        else if(which == 5)
+        {
+            L = log(L);
+            L += log(1E2)*rng.randh();
+            DNest4::wrap(L, log(1E-2*data.get_x_range()),
+                            log(data.get_x_range()));
+            L = exp(L);
         }
     }
     else
