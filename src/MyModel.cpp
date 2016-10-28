@@ -246,8 +246,15 @@ double MyModel::log_likelihood() const
 void MyModel::print(std::ostream& out) const
 {
     out<<background<<' '<<amplitude<<' '<<center<<' '<<width<<' ';
+    out<<beta<<' '<<L<<' ';
     spikes.print(out);
     out<<sigma0<<' '<<sigma1<<' '<<nu<<' ';
+
+    for(size_t i=0; i<wide_component.size(); ++i)
+        out<<wide_component[i]<<' ';
+
+    for(size_t i=0; i<the_spikes.size(); ++i)
+        out<<the_spikes[i]<<' ';
 
     double model;
     for(size_t i=0; i<wide_component.size(); ++i)
@@ -261,6 +268,7 @@ std::string MyModel::description() const
 {
     std::stringstream s;
     s<<"background, amplitude, center, width, ";
+    s<<"beta, L, ";
     s<<"dim_spikes, max_num_spikes, ";
     s<<"location_log_amplitude, scale_log_amplitude, ";
     s<<"K, max_width, num_spikes, ";
@@ -271,7 +279,12 @@ std::string MyModel::description() const
     for(size_t i=0; i<max_num_spikes; ++i)
         s<<"width["<<i<<"], ";
     s<<"sigma0, sigma1, nu, ";
+
     for(size_t i=0; i<wide_component.size(); ++i)
+        s<<"wide_component["<<i<<"], ";
+    for(size_t i=0; i<the_spikes.size(); ++i)
+        s<<"the_spikes["<<i<<"], ";
+    for(size_t i=0; i<the_spikes.size(); ++i)
         s<<"model_curve["<<i<<"], ";
 
     return s.str();

@@ -23,25 +23,23 @@ def display(data_file="50% glass .02step3secdwell.txt"):
             plt.plot(data[:,0], data[:,1], "ko", markersize=3)
             plt.hold(True)
 
+        # Extract the wide component
+        start = indices["wide_component[0]"]
+        end = start + data.shape[0]
+        wide_component = posterior_sample[i, start:end]
+
+        # Extract the spikes component
+        start = indices["the_spikes[0]"]
+        end = start + data.shape[0]
+        the_spikes = posterior_sample[i, start:end]
+
         # Extract the model curve
         start = indices["model_curve[0]"]
         end = start + data.shape[0]
         model = posterior_sample[i, start:end]
 
-        wide_integral[i] = posterior_sample[i, indices["amplitude"]]*\
-                           posterior_sample[i, indices["width"]]*\
-                           np.sqrt(2*np.pi)
-
-        spikes_a = np.exp(posterior_sample\
-                    [i, indices["log_amplitude[0]"]:\
-                    indices["log_amplitude[0]"] + max_num_spikes])
-        spikes_w = posterior_sample\
-                    [i, indices["width[0]"]:\
-                    indices["width[0]"] + max_num_spikes]
-
-        spikes_integral[i] = np.sum(spikes_a*spikes_w)*np.sqrt(2*np.pi)
-
-#        print(wide_integral[i], spikes_integral[i])
+        wide_integral[i] = np.sum(wide_component)
+        spikes_integral[i] = np.sum(the_spikes)
 
         # Plot the model
         if i < 50:
