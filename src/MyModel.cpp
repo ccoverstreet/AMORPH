@@ -10,8 +10,7 @@ Data MyModel::data;
 const DNest4::Laplace MyModel::laplace(0.0, 5.0);
 
 MyModel::MyModel()
-:n(data.get_y().size())
-,spikes(3, max_num_spikes, false,
+:spikes(3, max_num_spikes, false,
             MyConditionalPrior(data.get_x_min(), data.get_x_max()),
                                 DNest4::PriorType::log_uniform)
 ,wide_component(data.get_y().size())
@@ -29,11 +28,6 @@ void MyModel::from_prior(DNest4::RNG& rng)
     center = data.get_x_min() + data.get_x_range()*rng.rand();
     width = data.get_x_range()*rng.rand();
 
-    beta = exp(log(1E-6) + log(1E6)*rng.rand());
-    L = exp(log(1E-2)*data.get_x_range() + log(1E3)*rng.rand());
-    for(auto& _n: n)
-        _n = rng.randn();
-
     spikes.from_prior(rng);
 
     sigma0 = exp(laplace.generate(rng));
@@ -49,39 +43,20 @@ double MyModel::perturb(DNest4::RNG& rng)
     double logH = 0.0;
 
     // Select blocks of parameters
-    int choice = rng.rand_int(4);
+    int choice = rng.rand_int(3);
 
     if(choice == 0)
-    {
-        // Perturb a single n or many ns
-        if(rng.rand() <= 0.5)
-        {
-            int which = rng.rand_int(n.size());
-            logH -= -0.5*pow(n[which], 2);
-            n[which] += rng.randh();
-            logH += -0.5*pow(n[which], 2);
-        }
-        else
-        {
-            int reps = (int)pow(10.0, 3*rng.rand());
-            for(int i=0; i<reps; ++i)
-                n[rng.rand_int(n.size())] = rng.randn();
-        }
-
-        compute_wide_component();
-    }
-    else if(choice == 1)
     {
         // Perturb spikes
         logH += spikes.perturb(rng);
 
         compute_the_spikes(spikes.get_removed().size() == 0);
     }
-    else if(choice == 2)
+    else if(choice == 1)
     {
         // Perturb a parameter related to the
         // background or wide component
-        int which = rng.rand_int(6);
+        int which = rng.rand_int(4);
 
         if(which == 0)
         {
@@ -108,25 +83,6 @@ double MyModel::perturb(DNest4::RNG& rng)
         {
             width += data.get_x_range()*rng.rand();
             DNest4::wrap(width, 0.0, data.get_x_range());
-
-            compute_wide_component();
-        }
-        else if(which == 4)
-        {
-            beta = log(beta);
-            beta += log(1E6)*rng.randh();
-            DNest4::wrap(beta, log(1E-6), log(1.0));
-            beta = exp(beta);
-
-            compute_wide_component();
-        }
-        else if(which == 5)
-        {
-            L = log(L);
-            L += log(1E3)*rng.randh();
-            DNest4::wrap(L, log(1E-2*data.get_x_range()),
-                            log(10*data.get_x_range()));
-            L = exp(L);
 
             compute_wide_component();
         }
@@ -173,16 +129,6 @@ void MyModel::compute_wide_component()
         rsq = pow(data_x[i] - center, 2);
         wide_component[i] = amplitude*exp(-0.5*rsq*tau);
     }
-
-    // Multiply by the free-form component
-    double alpha = exp(-1.0/L);
-    double s = beta/sqrt(1.0 - alpha*alpha);
-    std::vector<double> ar1(n.size());
-    ar1[0] = s*n[0];
-    for(size_t i=1; i<ar1.size(); ++i)
-        ar1[i] = alpha*ar1[i-1] + beta*n[i];
-    for(size_t i=0; i<wide_component.size(); ++i)
-        wide_component[i] *= exp(ar1[i]);
 }
 
 void MyModel::compute_the_spikes(bool update)
@@ -246,7 +192,6 @@ double MyModel::log_likelihood() const
 void MyModel::print(std::ostream& out) const
 {
     out<<background<<' '<<amplitude<<' '<<center<<' '<<width<<' ';
-    out<<beta<<' '<<L<<' ';
     spikes.print(out);
     out<<sigma0<<' '<<sigma1<<' '<<nu<<' ';
 
@@ -268,7 +213,6 @@ std::string MyModel::description() const
 {
     std::stringstream s;
     s<<"background, amplitude, center, width, ";
-    s<<"beta, L, ";
     s<<"dim_spikes, max_num_spikes, ";
     s<<"location_log_amplitude, scale_log_amplitude, ";
     s<<"K, max_width, num_spikes, ";
