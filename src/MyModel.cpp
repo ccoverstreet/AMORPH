@@ -162,12 +162,23 @@ void MyModel::compute_wide_component()
 
     double tau = 1.0/(width*width);
 
+    // Make the wide gaussian
     double rsq;
     for(size_t i=0; i<wide_component.size(); ++i)
     {
         rsq = pow(data_x[i] - center, 2);
         wide_component[i] = amplitude*exp(-0.5*rsq*tau);
     }
+
+    // Multiply by the free-form component
+    double alpha = exp(-1.0/L);
+    double s = beta/sqrt(1.0 - alpha*alpha);
+    std::vector<double> ar1(n.size());
+    ar1[0] = s*n[0];
+    for(size_t i=1; i<ar1.size(); ++i)
+        ar1[i] = alpha*ar1[i-1] + beta*n[i];
+    for(size_t i=0; i<wide_component.size(); ++i)
+        wide_component[i] *= exp(ar1[i]);
 }
 
 void MyModel::compute_the_spikes(bool update)
