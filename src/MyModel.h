@@ -15,8 +15,12 @@ class MyModel
         // Constant background
         double background;
 
-        // Parameters of the wide gaussian component
+        // Parameters of the gaussian for the wide component
         double amplitude, center, width;
+
+        // For the free-form part of the wide component
+        double beta, L;
+        std::vector<double> n;
 
         // Use an RJObject for the narrow spikes
         DNest4::RJObject<MyConditionalPrior> spikes;

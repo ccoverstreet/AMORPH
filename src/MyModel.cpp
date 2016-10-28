@@ -10,7 +10,8 @@ Data MyModel::data;
 const DNest4::Laplace MyModel::laplace(0.0, 5.0);
 
 MyModel::MyModel()
-:spikes(3, max_num_spikes, false,
+:n(data.get_y().size())
+,spikes(3, max_num_spikes, false,
             MyConditionalPrior(data.get_x_min(), data.get_x_max()),
                                 DNest4::PriorType::log_uniform)
 ,wide_component(data.get_y().size())
@@ -27,6 +28,11 @@ void MyModel::from_prior(DNest4::RNG& rng)
     amplitude = exp(laplace.generate(rng));
     center = data.get_x_min() + data.get_x_range()*rng.rand();
     width = data.get_x_range()*rng.rand();
+
+    beta = exp(log(1E-6) + log(1E6)*rng.rand());
+    L = exp(log(1E-2)*data.get_x_range() + log(1E2)*rng.rand());
+    for(auto& _n: n)
+        _n = rng.randn();
 
     spikes.from_prior(rng);
 
