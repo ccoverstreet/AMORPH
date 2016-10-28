@@ -30,7 +30,7 @@ void MyModel::from_prior(DNest4::RNG& rng)
     width = data.get_x_range()*rng.rand();
 
     beta = exp(log(1E-6) + log(1E6)*rng.rand());
-    L = exp(log(1E-2)*data.get_x_range() + log(1E2)*rng.rand());
+    L = exp(log(1E-2)*data.get_x_range() + log(1E3)*rng.rand());
     for(auto& _n: n)
         _n = rng.randn();
 
@@ -123,9 +123,9 @@ double MyModel::perturb(DNest4::RNG& rng)
         else if(which == 5)
         {
             L = log(L);
-            L += log(1E2)*rng.randh();
+            L += log(1E3)*rng.randh();
             DNest4::wrap(L, log(1E-2*data.get_x_range()),
-                            log(data.get_x_range()));
+                            log(10*data.get_x_range()));
             L = exp(L);
 
             compute_wide_component();
