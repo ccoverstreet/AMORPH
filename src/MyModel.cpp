@@ -117,6 +117,8 @@ double MyModel::perturb(DNest4::RNG& rng)
             beta += log(1E6)*rng.randh();
             DNest4::wrap(beta, log(1E-6), log(1.0));
             beta = exp(beta);
+
+            compute_wide_component();
         }
         else if(which == 5)
         {
@@ -125,6 +127,8 @@ double MyModel::perturb(DNest4::RNG& rng)
             DNest4::wrap(L, log(1E-2*data.get_x_range()),
                             log(data.get_x_range()));
             L = exp(L);
+
+            compute_wide_component();
         }
     }
     else
