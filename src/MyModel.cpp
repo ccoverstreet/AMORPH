@@ -10,7 +10,9 @@ Data MyModel::data;
 const DNest4::Laplace MyModel::laplace(0.0, 5.0);
 
 MyModel::MyModel()
-:spikes(3, max_num_spikes, false,
+:sinewaves(3, 10, false, ConditionalPriorSinewaves(),
+            DNest4::PriorType::log_uniform)
+,spikes(3, max_num_spikes, false,
             MyConditionalPrior(data.get_x_min(), data.get_x_max()),
                                 DNest4::PriorType::log_uniform)
 ,wide_component(data.get_y().size())
