@@ -2,7 +2,7 @@ import dnest4.classic as dn4
 import numpy as np
 import matplotlib.pyplot as plt
 
-def display(data_file="50% glass .02step3secdwell.txt"):
+def display(data_file="easy_data.txt"):
     """
     Function to load and plot the output of a run.
     """

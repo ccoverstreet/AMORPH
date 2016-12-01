@@ -13,7 +13,7 @@ int main(int argc, char** argv)
     // Get specified data file. If none, use a default.
     std::string data_file = clo.get_data_file();
     if(data_file.length() == 0)
-        data_file = std::string("50% glass .02step3secdwell.txt");
+        data_file = std::string("easy_data.txt");
 
     // Load data
     Crystals::MyModel::load_data(data_file.c_str());
