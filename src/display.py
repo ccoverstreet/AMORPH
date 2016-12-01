@@ -2,7 +2,7 @@ import dnest4.classic as dn4
 import numpy as np
 import matplotlib.pyplot as plt
 
-def display(data_file="50% glass .02step3secdwell.txt"):
+def display(data_file="easy_data.txt"):
     """
     Function to load and plot the output of a run.
     """
@@ -58,5 +58,20 @@ def display(data_file="50% glass .02step3secdwell.txt"):
     plt.show()
 
 if __name__ == "__main__":
-    display()
+    import getopt, sys
+
+    data_file = "easy_data.txt"
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "d:", ["data_file="])
+    except getopt.GetoptError as err:
+        # print help information and exit:
+        print(err) # will print something like "option -a not recognized"
+        sys.exit(2)
+
+    for o, a in opts:
+        if o == "-d":
+            data_file = a
+
+    display(data_file)
 
