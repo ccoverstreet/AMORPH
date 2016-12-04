@@ -49,12 +49,12 @@ def display(data_file="easy_data.txt"):
     plt.ylabel("$y$", fontsize=16)
     plt.show()
 
-    spikes_fraction = spikes_integral/(spikes_integral + wide_integral)
-    plt.hist(spikes_fraction, 100, color=[0.8, 0.8, 0.8])
+    wide_fraction = wide_integral/(spikes_integral + wide_integral)
+    plt.hist(wide_fraction, 100, color=[0.8, 0.8, 0.8])
     plt.xlim([0, 1])
-    plt.xlabel("(total spike flux)/(total spike flux + wide component flux)")
-    print("Spikes fraction = {a} $\pm$ {b}".format(a=spikes_fraction.mean(),\
-           b=spikes_fraction.std()))
+    plt.xlabel("(wide component flux)/(total spike flux + wide component flux)")
+    print("Wide fraction = {a} $\pm$ {b}".format(a=wide_fraction.mean(),\
+           b=wide_fraction.std()))
     plt.show()
 
 if __name__ == "__main__":
