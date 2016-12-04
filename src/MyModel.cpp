@@ -10,7 +10,9 @@ Data MyModel::data;
 const DNest4::Laplace MyModel::laplace(0.0, 5.0);
 
 MyModel::MyModel()
-:spikes(3, max_num_spikes, false,
+:sinewaves(3, 10, false, ConditionalPriorSinewaves(),
+            DNest4::PriorType::log_uniform)
+,spikes(3, max_num_spikes, false,
             MyConditionalPrior(data.get_x_min(), data.get_x_max()),
                                 DNest4::PriorType::log_uniform)
 ,wide_component(data.get_y().size())
@@ -28,6 +30,7 @@ void MyModel::from_prior(DNest4::RNG& rng)
     center = data.get_x_min() + data.get_x_range()*rng.rand();
     width = data.get_x_range()*rng.rand();
 
+    sinewaves.from_prior(rng);
     spikes.from_prior(rng);
 
     sigma0 = exp(laplace.generate(rng));
@@ -43,16 +46,22 @@ double MyModel::perturb(DNest4::RNG& rng)
     double logH = 0.0;
 
     // Select blocks of parameters
-    int choice = rng.rand_int(3);
+    int choice = rng.rand_int(4);
 
     if(choice == 0)
+    {
+        logH += sinewaves.perturb(rng);
+
+        compute_wide_component();
+    }
+    else if(choice == 1)
     {
         // Perturb spikes
         logH += spikes.perturb(rng);
 
         compute_the_spikes(spikes.get_removed().size() == 0);
     }
-    else if(choice == 1)
+    else if(choice == 2)
     {
         // Perturb a parameter related to the
         // background or wide component
@@ -129,6 +138,24 @@ void MyModel::compute_wide_component()
         rsq = pow(data_x[i] - center, 2);
         wide_component[i] = amplitude*exp(-0.5*rsq*tau);
     }
+
+    // Multiply by the sinewaves
+    const auto& components = sinewaves.get_components();
+
+    std::vector<double> temp(wide_component.size(), 0.0);
+
+    double P, A, phi;
+	for(size_t j=0; j<components.size(); j++)
+	{
+		P = exp(components[j][0]);
+		A = exp(components[j][1]);
+		phi = components[j][2];
+		for(size_t i=0; i<wide_component.size(); i++)
+			temp[i] += A*sin(2*M_PI*data_x[i]/P + phi);
+	}
+
+    for(size_t i=0; i<wide_component.size(); i++)
+        wide_component[i] *= exp(temp[i]);
 }
 
 void MyModel::compute_the_spikes(bool update)
