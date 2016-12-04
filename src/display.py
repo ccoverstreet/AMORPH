@@ -61,3 +61,6 @@ def display():
            b=wide_fraction.std()))
     plt.show()
 
+if __name__ == "__main__":
+    display()
+
