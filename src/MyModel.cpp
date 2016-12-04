@@ -30,7 +30,7 @@ void MyModel::from_prior(DNest4::RNG& rng)
     rc = rng.rand();
     power = 0.1 + 1.9*rng.rand();
 
-    asymmetry = exp(0.2*rng.randn());
+    asymmetry = exp(0.5*rng.randn());
     r_asymmetry = rng.rand();
 
     spikes.from_prior(rng);
@@ -98,9 +98,9 @@ double MyModel::perturb(DNest4::RNG& rng)
         else if(which == 6)
         {
             asymmetry = log(asymmetry);
-            logH -= -0.5*pow(asymmetry/0.2, 2);
-            asymmetry += 0.2*rng.randh();
-            logH += -0.5*pow(asymmetry/0.2, 2);
+            logH -= -0.5*pow(asymmetry/0.5, 2);
+            asymmetry += 0.5*rng.randh();
+            logH += -0.5*pow(asymmetry/0.5, 2);
             asymmetry = exp(asymmetry);
         }
         else
