@@ -59,35 +59,34 @@ double ConditionalPriorSinewaves::log_pdf(const std::vector<double>& vec) const
 {
     double logp = 0.0;
 
-    Laplace l1(location_log_period, scale_log_period);
-    Laplace l2(location_log_amplitude, scale_log_amplitude);
+    if(vec[0] < location_log_period)
+        return -1E300;
 
-    logp += l1.log_pdf(vec[0]);
-    logp += l2.log_pdf(vec[1]);
     if(vec[2] < 0.0 || vec[2] > 2*M_PI)
-        logp = -1E300;
-    else
-        logp += -log(2*M_PI);
+        return -1E300;
+
+    logp += -log(scale_log_period) - (vec[0] - location_log_period)/scale_log_period;
+
+    Laplace l2(location_log_amplitude, scale_log_amplitude);
+    logp += l2.log_pdf(vec[1]);
 
     return logp;
 }
 
 void ConditionalPriorSinewaves::from_uniform(std::vector<double>& vec) const
 {
-    Laplace l1(location_log_period, scale_log_period);
     Laplace l2(location_log_amplitude, scale_log_amplitude);
 
-    vec[0] = l1.cdf_inverse(vec[0]);
+    vec[0] = location_log_period - scale_log_period*log(1.0 - vec[0]);
     vec[1] = l2.cdf_inverse(vec[1]);
     vec[2] = 2*M_PI*vec[2];
 }
 
 void ConditionalPriorSinewaves::to_uniform(std::vector<double>& vec) const
 {
-    Laplace l1(location_log_period, scale_log_period);
     Laplace l2(location_log_amplitude, scale_log_amplitude);
 
-    vec[0] = l1.cdf(vec[0]);
+    vec[0] = 1.0 - exp(-(vec[0] - location_log_period)/scale_log_period);
     vec[1] = l2.cdf(vec[1]);
     vec[2] = vec[2]/(2*M_PI);
 }
