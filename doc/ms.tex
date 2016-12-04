@@ -41,6 +41,32 @@ where the first step is true in general by the product rule, and the second
 step assumes that knowing the parameters would make the hyperparameters
 irrelevant when predicting what data would be observed.
 
+All of the assumptions are given in Table~\ref{tab:priors}.
+
+\begin{table}
+\centering
+\begin{tabular}{|lll|}
+\hline
+{\bf Quantity}      &   {\bf Meaning}   &  {\bf Prior distribution}\\
+\hline
+{\em Hyperparameters} & &\\
+\hline
+{\em Parameters}& &\\
+\hline
+{\em Data}&&\\
+\hline
+$\{y_1, y_2, ..., y_n\}$  &   Measurements    & $t$(, ,)\\
+\hline
+{\em Prior information}&&\\
+\hline
+$n$ & Number of measurements & given\\
+$\{x_1, x_2, ..., x_n\}$  & $x$-values of measurements & given \\
+
+\hline
+\end{tabular}
+\caption{\label{tab:priors}}
+\end{table}
+
 
 
 \bibliographystyle{plainnat}
