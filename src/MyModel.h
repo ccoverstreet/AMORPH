@@ -18,6 +18,9 @@ class MyModel
         // Parameters of the wide component
         double amplitude, center, width, rc, power;
 
+        // Sigmoid parameters for asymmetry
+        double asymmetry, r_asymmetry;
+
         // Use an RJObject for the narrow spikes
         DNest4::RJObject<MyConditionalPrior> spikes;
 

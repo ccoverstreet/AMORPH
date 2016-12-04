@@ -30,6 +30,9 @@ void MyModel::from_prior(DNest4::RNG& rng)
     rc = rng.rand();
     power = 0.1 + 1.9*rng.rand();
 
+    asymmetry = exp(0.2*rng.randn());
+    r_asymmetry = rng.rand();
+
     spikes.from_prior(rng);
 
     sigma0 = exp(laplace.generate(rng));
@@ -58,7 +61,7 @@ double MyModel::perturb(DNest4::RNG& rng)
     {
         // Perturb a parameter related to the
         // background or wide component
-        int which = rng.rand_int(6);
+        int which = rng.rand_int(8);
 
         if(which == 0)
         {
@@ -87,10 +90,23 @@ double MyModel::perturb(DNest4::RNG& rng)
             rc += rng.randh();
             DNest4::wrap(rc, 0.0, 1.0);
         }
-        else
+        else if(which == 5)
         {
             power += 1.9*rng.randh();
             DNest4::wrap(power, 0.1, 2.0);
+        }
+        else if(which == 6)
+        {
+            asymmetry = log(asymmetry);
+            logH -= -0.5*pow(asymmetry/0.2, 2);
+            asymmetry += 0.2*rng.randh();
+            logH += -0.5*pow(asymmetry/0.2, 2);
+            asymmetry = exp(asymmetry);
+        }
+        else
+        {
+            r_asymmetry += rng.randh();
+            DNest4::wrap(r_asymmetry, 0.0, 1.0);
         }
 
         if(which != 0)
@@ -131,13 +147,25 @@ void MyModel::compute_wide_component()
 
     double tau = 1.0/(width*width);
 
-    // Make the wide gaussian
+    // Make the wide non-gaussian thing
     double rsq;
     for(size_t i=0; i<wide_component.size(); ++i)
     {
         rsq = pow(data_x[i] - center, 2) + pow(rc*width, 2);
         wide_component[i] = exp(-pow(rsq*tau, power));
     }
+
+    // Multiply by a sigmoid for asymmetry
+    double n;
+    double start = asymmetry;
+    double end = 1.0/asymmetry;
+    for(size_t i=0; i<wide_component.size(); ++i)
+    {
+        n = (data_x[i] - center)/(r_asymmetry*width);
+        wide_component[i] *= start + (end - start)/(1.0 + exp(-n));
+    }
+
+    // Normalise to amplitude
     double c = amplitude/
                 (*max_element(wide_component.begin(), wide_component.end()));
     for(size_t i=0; i<wide_component.size(); ++i)
@@ -205,7 +233,7 @@ double MyModel::log_likelihood() const
 void MyModel::print(std::ostream& out) const
 {
     out<<background<<' '<<amplitude<<' '<<center<<' '<<width<<' ';
-    out<<rc<<' '<<power<<' ';
+    out<<rc<<' '<<power<<' '<<asymmetry<<' '<<r_asymmetry<<' ';
     spikes.print(out);
     out<<sigma0<<' '<<sigma1<<' '<<nu<<' ';
 
@@ -227,6 +255,7 @@ std::string MyModel::description() const
 {
     std::stringstream s;
     s<<"background, amplitude, center, width, rc, power, ";
+    s<<"asymmetry, r_asymmetry, ";
     s<<"dim_spikes, max_num_spikes, ";
     s<<"location_log_amplitude, scale_log_amplitude, ";
     s<<"K, max_width, num_spikes, ";
