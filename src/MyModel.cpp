@@ -1,5 +1,6 @@
 #include "MyModel.h"
 #include "DNest4/code/DNest4.h"
+#include "Lookup.h"
 #include <sstream>
 #include <cmath>
 
@@ -197,7 +198,7 @@ void MyModel::compute_the_spikes(bool update)
         {
             rsq = pow(data_x[j] - c, 2);
             if(rsq*tau < 100.0)
-                the_spikes[j] += a*exp(-0.5*rsq*tau);
+                the_spikes[j] += a*Lookup::evaluate(0.5*rsq*tau);
         }
     }
 }
