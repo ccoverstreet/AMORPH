@@ -153,7 +153,7 @@ void MyModel::compute_wide_component()
     for(size_t i=0; i<wide_component.size(); ++i)
     {
         rsq = pow(data_x[i] - center, 2) + pow(rc*width, 2);
-        wide_component[i] = exp(-pow(rsq*tau, power));
+        wide_component[i] = Lookup::evaluate(pow(rsq*tau, power));
     }
 
     // Multiply by a sigmoid for asymmetry
@@ -163,7 +163,7 @@ void MyModel::compute_wide_component()
     for(size_t i=0; i<wide_component.size(); ++i)
     {
         n = (data_x[i] - center)/(r_asymmetry*width);
-        wide_component[i] *= start + (end - start)/(1.0 + exp(-n));
+        wide_component[i] *= start + (end - start)/(1.0 + Lookup::evaluate(n));
     }
 
     // Normalise to amplitude
