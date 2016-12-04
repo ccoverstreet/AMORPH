@@ -7,6 +7,11 @@
 \usepackage{natbib}
 \usepackage{microtype}
 
+\newcommand{\hypers}{\boldsymbol{\alpha}}
+\newcommand{\params}{\boldsymbol{\theta}}
+\newcommand{\data}{\boldsymbol{x}}
+\newcommand{\info}{\boldsymbol{M}}
+
 \title{Crystals}
 \author{Brendon J. Brewer}
 \date{}
@@ -21,6 +26,20 @@
 \setlength{\parskip}{8pt}
 
 \section{The prior information}
+
+The joint prior distribution for the hyperparameters, parameters, and data,
+is written $p(\hypers, \params, \data | \info)$, and is usually factorised
+in this way:
+\begin{align}
+p(\hypers, \params, \data | \info) &=
+    p(\hypers | \info)p(\params | \hypers, \info)
+    p(\data | \params, \hypers, \info)\\
+    &= p(\hypers | \info)p(\params | \hypers, \info)
+    p(\data | \params, \info)
+\end{align}
+where the first step is true in general by the product rule, and the second
+step assumes that knowing the parameters would make the hyperparameters
+irrelevant when predicting what data would be observed.
 
 
 
