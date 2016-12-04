@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include "DNest4/code/DNest4.h"
 
 // From this project
@@ -14,6 +15,11 @@ int main(int argc, char** argv)
     std::string data_file = clo.get_data_file();
     if(data_file.length() == 0)
         data_file = std::string("easy_data.txt");
+
+    // Save the data filename
+    std::fstream fout("run_data.txt", std::ios::out);
+    fout<<data_file;
+    fout.close();
 
     // Load data
     Crystals::MyModel::load_data(data_file.c_str());

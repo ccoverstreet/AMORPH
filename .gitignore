@@ -6,6 +6,6 @@ src/sample_info.txt
 src/weights.txt
 src/sampler_state.txt
 src/__pycache__
-src/Crystals
+src/run_data.txt
 src/logfile
 runs/

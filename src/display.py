@@ -2,10 +2,14 @@ import dnest4.classic as dn4
 import numpy as np
 import matplotlib.pyplot as plt
 
-def display(data_file="50% glass .02step3secdwell.txt"):
+def display():
     """
     Function to load and plot the output of a run.
     """
+    f = open("run_data.txt")
+    data_file = f.read()
+    f.close()
+
     data = dn4.my_loadtxt(data_file)
     posterior_sample = dn4.my_loadtxt("posterior_sample.txt")
     temp = dn4.load_column_names("posterior_sample.txt")
@@ -53,25 +57,7 @@ def display(data_file="50% glass .02step3secdwell.txt"):
     plt.hist(wide_fraction, 100, color=[0.8, 0.8, 0.8])
     plt.xlim([0, 1])
     plt.xlabel("(wide component flux)/(total spike flux + wide component flux)")
-    print("Wide fraction = {a} $\pm$ {b}".format(a=wide_fraction.mean(),\
+    print("Wide fraction = {a} +- {b}".format(a=wide_fraction.mean(),\
            b=wide_fraction.std()))
     plt.show()
-
-if __name__ == "__main__":
-    import getopt, sys
-
-    data_file = "easy_data.txt"
-
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], "d:", ["data_file="])
-    except getopt.GetoptError as err:
-        # print help information and exit:
-        print(err) # will print something like "option -a not recognized"
-        sys.exit(2)
-
-    for o, a in opts:
-        if o == "-d":
-            data_file = a
-
-    display(data_file)
 
