@@ -9,3 +9,9 @@ src/__pycache__
 src/run_data.txt
 src/logfile
 runs/
+doc/ms.aux
+doc/ms.bbl
+doc/ms.blg
+doc/ms.log
+doc/ms.pdf
+
