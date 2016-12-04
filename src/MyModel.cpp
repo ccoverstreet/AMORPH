@@ -205,6 +205,7 @@ double MyModel::log_likelihood() const
 void MyModel::print(std::ostream& out) const
 {
     out<<background<<' '<<amplitude<<' '<<center<<' '<<width<<' ';
+    out<<rc<<' '<<power<<' ';
     spikes.print(out);
     out<<sigma0<<' '<<sigma1<<' '<<nu<<' ';
 
@@ -225,7 +226,7 @@ void MyModel::print(std::ostream& out) const
 std::string MyModel::description() const
 {
     std::stringstream s;
-    s<<"background, amplitude, center, width, ";
+    s<<"background, amplitude, center, width, rc, power, ";
     s<<"dim_spikes, max_num_spikes, ";
     s<<"location_log_amplitude, scale_log_amplitude, ";
     s<<"K, max_width, num_spikes, ";
