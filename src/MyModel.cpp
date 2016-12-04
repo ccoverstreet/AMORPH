@@ -27,6 +27,8 @@ void MyModel::from_prior(DNest4::RNG& rng)
     amplitude = exp(laplace.generate(rng));
     center = data.get_x_min() + data.get_x_range()*rng.rand();
     width = data.get_x_range()*rng.rand();
+    rc = rng.rand();
+    power = 0.1 + 1.9*rng.rand();
 
     spikes.from_prior(rng);
 
@@ -56,7 +58,7 @@ double MyModel::perturb(DNest4::RNG& rng)
     {
         // Perturb a parameter related to the
         // background or wide component
-        int which = rng.rand_int(4);
+        int which = rng.rand_int(6);
 
         if(which == 0)
         {
@@ -69,23 +71,30 @@ double MyModel::perturb(DNest4::RNG& rng)
             amplitude = log(amplitude);
             logH += laplace.perturb(amplitude, rng);
             amplitude = exp(amplitude);
-
-            compute_wide_component();
         }
         else if(which == 2)
         {
             center += data.get_x_range()*rng.rand();
             DNest4::wrap(center, data.get_x_min(), data.get_x_max());
-
-            compute_wide_component();
         }
         else if(which == 3)
         {
             width += data.get_x_range()*rng.rand();
             DNest4::wrap(width, 0.0, data.get_x_range());
-
-            compute_wide_component();
         }
+        else if(which == 4)
+        {
+            rc += rng.randh();
+            DNest4::wrap(rc, 0.0, 1.0);
+        }
+        else
+        {
+            power += 1.9*rng.randh();
+            DNest4::wrap(power, 0.1, 2.0);
+        }
+
+        if(which != 0)
+            compute_wide_component();
     }
     else
     {
@@ -126,9 +135,13 @@ void MyModel::compute_wide_component()
     double rsq;
     for(size_t i=0; i<wide_component.size(); ++i)
     {
-        rsq = pow(data_x[i] - center, 2);
-        wide_component[i] = amplitude*exp(-0.5*rsq*tau);
+        rsq = pow(data_x[i] - center, 2) + pow(rc*width, 2);
+        wide_component[i] = exp(-pow(rsq*tau, power));
     }
+    double c = amplitude/
+                (*max_element(wide_component.begin(), wide_component.end()));
+    for(size_t i=0; i<wide_component.size(); ++i)
+        wide_component[i] *= c;
 }
 
 void MyModel::compute_the_spikes(bool update)

@@ -15,8 +15,8 @@ class MyModel
         // Constant background
         double background;
 
-        // Parameters of the gaussian for the wide component
-        double amplitude, center, width;
+        // Parameters of the wide component
+        double amplitude, center, width, rc, power;
 
         // Use an RJObject for the narrow spikes
         DNest4::RJObject<MyConditionalPrior> spikes;
