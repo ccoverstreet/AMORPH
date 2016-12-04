@@ -5,7 +5,6 @@
 #include "DNest4/code/DNest4.h"
 #include "Data.h"
 #include "MyConditionalPrior.h"
-#include "ConditionalPriorSinewaves.h"
 
 namespace Crystals
 {
@@ -18,10 +17,6 @@ class MyModel
 
         // Parameters of the gaussian for the wide component
         double amplitude, center, width;
-
-        // Use RJObject_SineWaves to add some flexibility to the
-        // shape of the wide component
-        DNest4::RJObject<ConditionalPriorSinewaves> sinewaves;
 
         // Use an RJObject for the narrow spikes
         DNest4::RJObject<MyConditionalPrior> spikes;
