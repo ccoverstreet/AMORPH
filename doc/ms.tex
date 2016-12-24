@@ -72,6 +72,16 @@ $\{x_1, x_2, ..., x_n\}$  & $x$-values of measurements & given \\
 \end{table}
 
 
+The shape of the model function $f(x)$ is therefore
+\begin{align}
+f(x) &= A + f_{\rm wide}(x) + \sum_{i=1}^N a_i f_i(x)
+\end{align}
+and the crystallinity is
+\begin{align}
+C &= \frac{\int f_{\rm wide}(x) \, dx}
+          {\int f_{\rm wide}(x) \, dx + \int f_{\rm narrow}(x) \, dx}
+\end{align}
+
 
 \bibliographystyle{plainnat}
 \bibliography{references}
