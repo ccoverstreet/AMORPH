@@ -48,6 +48,9 @@ def display():
         # Plot the model
         if i < 50:
             plt.plot(data[:,0], model, "g", linewidth=2, alpha=0.1)
+            plt.plot(data[:,0], wide_component, "b", linewidth=2, alpha=0.1)
+            plt.plot(data[:,0], the_spikes, "r", linewidth=2, alpha=0.1)
+            plt.ylim(0)
 
     plt.xlabel("$x$", fontsize=16)
     plt.ylabel("$y$", fontsize=16)
