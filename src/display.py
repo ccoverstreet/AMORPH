@@ -24,7 +24,7 @@ def display():
             plt.clf()
 
             # Plot the data
-            plt.plot(data[:,0], data[:,1], "ko", markersize=3)
+            plt.plot(data[:,0], data[:,1], "ko", markersize=3, alpha=0.2)
             plt.hold(True)
 
         # Extract the wide component
