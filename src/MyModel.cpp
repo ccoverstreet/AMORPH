@@ -163,7 +163,7 @@ void MyModel::compute_wide_component()
     for(size_t i=0; i<wide_component.size(); ++i)
     {
         n = (data_x[i] - center)/(r_asymmetry*width);
-        wide_component[i] *= start + (end - start)/(1.0 + Lookup::evaluate(n));
+        wide_component[i] *= start + (end - start)/(1.0 + exp(-n));
     }
 
     // Normalise to amplitude
