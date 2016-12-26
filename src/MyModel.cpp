@@ -259,7 +259,7 @@ std::string MyModel::description() const
     s<<"asymmetry, r_asymmetry, ";
     s<<"dim_spikes, max_num_spikes, ";
     s<<"location_log_amplitude, scale_log_amplitude, ";
-    s<<"K, max_width, num_spikes, ";
+    s<<"location_log_width, scale_log_width, num_spikes, ";
     for(size_t i=0; i<max_num_spikes; ++i)
         s<<"center["<<i<<"], ";
     for(size_t i=0; i<max_num_spikes; ++i)
