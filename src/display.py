@@ -16,7 +16,7 @@ def display():
     indices = temp["indices"]
     wide_integral = np.zeros(posterior_sample.shape[0])
     spikes_integral = np.zeros(posterior_sample.shape[0])
-    max_num_spikes = int(posterior_sample[0, indices["max_num_spikes"]])
+    max_num_spikes = int(posterior_sample[0, indices["max_num_gaussians1"]])
 
     for i in range(0, posterior_sample.shape[0]):
 
@@ -28,12 +28,12 @@ def display():
             plt.hold(True)
 
         # Extract the wide component
-        start = indices["wide_component[0]"]
+        start = indices["wide[0]"]
         end = start + data.shape[0]
         wide_component = posterior_sample[i, start:end]
 
         # Extract the spikes component
-        start = indices["the_spikes[0]"]
+        start = indices["narrow[0]"]
         end = start + data.shape[0]
         the_spikes = posterior_sample[i, start:end]
 
