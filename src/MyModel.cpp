@@ -11,11 +11,14 @@ Data MyModel::data;
 const DNest4::Laplace MyModel::laplace(0.0, 5.0);
 
 MyModel::MyModel()
-:spikes(3, max_num_spikes, false,
-            MyConditionalPrior(data.get_x_min(), data.get_x_max()),
+:narrow_gaussians(3, max_num_spikes, false,
+            MyConditionalPrior(data.get_x_min(), data.get_x_max(), true),
                                 DNest4::PriorType::log_uniform)
-,wide_component(data.get_y().size())
-,the_spikes(data.get_y().size())
+,wide_gaussians(3, max_num_spikes, false,
+            MyConditionalPrior(data.get_x_min(), data.get_x_max(), false),
+                                DNest4::PriorType::log_uniform)
+,narrow(data.get_y().size())
+,wide(data.get_y().size())
 {
     if(!data.get_loaded())
         std::cerr<<"# WARNING: it appears no data has been loaded."<<std::endl;
@@ -25,23 +28,15 @@ void MyModel::from_prior(DNest4::RNG& rng)
 {
     background = exp(laplace.generate(rng));
 
-    amplitude = exp(laplace.generate(rng));
-    center = data.get_x_min() + data.get_x_range()*rng.rand();
-    width = data.get_x_range()*rng.rand();
-    rc = rng.rand();
-    power = 0.1 + 1.9*rng.rand();
+    narrow_gaussians.from_prior(rng);
+    wide_gaussians.from_prior(rng);
 
-    asymmetry = exp(0.5*rng.randn());
-    r_asymmetry = rng.rand();
-
-    spikes.from_prior(rng);
+    compute_narrow();
+    compute_wide();
 
     sigma0 = exp(laplace.generate(rng));
     sigma1 = exp(laplace.generate(rng));
     nu = exp(log(1.0) + log(1E3)*rng.rand());
-
-    compute_wide_component();
-    compute_the_spikes();
 }
 
 double MyModel::perturb(DNest4::RNG& rng)
@@ -54,15 +49,21 @@ double MyModel::perturb(DNest4::RNG& rng)
     if(choice == 0)
     {
         // Perturb spikes
-        logH += spikes.perturb(rng);
+        logH += narrow_gaussians.perturb(rng);
 
-        compute_the_spikes(spikes.get_removed().size() == 0);
+        compute_narrow(narrow_gaussians.get_removed().size() == 0);
     }
     else if(choice == 1)
     {
-        // Perturb a parameter related to the
-        // background or wide component
-        int which = rng.rand_int(8);
+        // Perturb spikes
+        logH += wide_gaussians.perturb(rng);
+
+        compute_wide(wide_gaussians.get_removed().size() == 0);
+    }
+    else
+    {
+        // Perturb one of these parameters
+        int which = rng.rand_int(4);
 
         if(which == 0)
         {
@@ -72,59 +73,11 @@ double MyModel::perturb(DNest4::RNG& rng)
         }
         else if(which == 1)
         {
-            amplitude = log(amplitude);
-            logH += laplace.perturb(amplitude, rng);
-            amplitude = exp(amplitude);
-        }
-        else if(which == 2)
-        {
-            center += data.get_x_range()*rng.rand();
-            DNest4::wrap(center, data.get_x_min(), data.get_x_max());
-        }
-        else if(which == 3)
-        {
-            width += data.get_x_range()*rng.rand();
-            DNest4::wrap(width, 0.0, data.get_x_range());
-        }
-        else if(which == 4)
-        {
-            rc += rng.randh();
-            DNest4::wrap(rc, 0.0, 1.0);
-        }
-        else if(which == 5)
-        {
-            power += 1.9*rng.randh();
-            DNest4::wrap(power, 0.1, 2.0);
-        }
-        else if(which == 6)
-        {
-            asymmetry = log(asymmetry);
-            logH -= -0.5*pow(asymmetry/0.5, 2);
-            asymmetry += 0.5*rng.randh();
-            logH += -0.5*pow(asymmetry/0.5, 2);
-            asymmetry = exp(asymmetry);
-        }
-        else
-        {
-            r_asymmetry += rng.randh();
-            DNest4::wrap(r_asymmetry, 0.0, 1.0);
-        }
-
-        if(which != 0)
-            compute_wide_component();
-    }
-    else
-    {
-        // Perturb a noise-related parameter
-        int which = rng.rand_int(3);
-
-        if(which == 0)
-        {
             sigma0 = log(sigma0);
             logH += laplace.perturb(sigma0, rng);
             sigma0 = exp(sigma0);
         }
-        else if(which == 1)
+        else if(which == 2)
         {
             sigma1 = log(sigma1);
             logH += laplace.perturb(sigma1, rng);
@@ -142,48 +95,18 @@ double MyModel::perturb(DNest4::RNG& rng)
     return logH;
 }
 
-void MyModel::compute_wide_component()
-{
-    const auto& data_x = data.get_x();
 
-    double tau = 1.0/(width*width);
-
-    // Make the wide non-gaussian thing
-    double rsq;
-    for(size_t i=0; i<wide_component.size(); ++i)
-    {
-        rsq = pow(data_x[i] - center, 2) + pow(rc*width, 2);
-        wide_component[i] = Lookup::evaluate(pow(rsq*tau, power));
-    }
-
-    // Multiply by a sigmoid for asymmetry
-    double n;
-    double start = asymmetry;
-    double end = 1.0/asymmetry;
-    for(size_t i=0; i<wide_component.size(); ++i)
-    {
-        n = (data_x[i] - center)/(r_asymmetry*width);
-        wide_component[i] *= start + (end - start)/(1.0 + exp(-n));
-    }
-
-    // Normalise to amplitude
-    double c = amplitude/
-                (*max_element(wide_component.begin(), wide_component.end()));
-    for(size_t i=0; i<wide_component.size(); ++i)
-        wide_component[i] *= c;
-}
-
-void MyModel::compute_the_spikes(bool update)
+void MyModel::compute_narrow(bool update)
 {
     const auto& data_x = data.get_x();
 
     // Zero the curve if this is not an update
     if(!update)
-        for(double& t: the_spikes)
-            t = 0.0;
+        for(double& y: narrow)
+            y = 0.0;
 
-    const auto& components = (update)?(spikes.get_added())
-                                :(spikes.get_components());
+    const auto& components = (update)?(narrow_gaussians.get_added())
+                                :(narrow_gaussians.get_components());
 
     double rsq, tau, c, a, w;
     for(size_t i=0; i<components.size(); ++i)
@@ -194,14 +117,46 @@ void MyModel::compute_the_spikes(bool update)
         w = components[i][2];
         tau = 1.0/(w*w);
 
-        for(size_t j=0; j<the_spikes.size(); ++j)
+        for(size_t j=0; j<narrow.size(); ++j)
         {
             rsq = pow(data_x[j] - c, 2);
             if(rsq*tau < 100.0)
-                the_spikes[j] += a*Lookup::evaluate(0.5*rsq*tau);
+                narrow[j] += a*Lookup::evaluate(0.5*rsq*tau);
         }
     }
 }
+
+void MyModel::compute_wide(bool update)
+{
+    const auto& data_x = data.get_x();
+
+    // Zero the curve if this is not an update
+    if(!update)
+        for(double& y: wide)
+            y = 0.0;
+
+    const auto& components = (update)?(wide_gaussians.get_added())
+                                :(wide_gaussians.get_components());
+
+    double rsq, tau, c, a, w;
+    for(size_t i=0; i<components.size(); ++i)
+    {
+        // {center, log_amplitude, width}
+        c = components[i][0];
+        a = exp(components[i][1]);
+        w = components[i][2];
+        tau = 1.0/(w*w);
+
+        for(size_t j=0; j<wide.size(); ++j)
+        {
+            rsq = pow(data_x[j] - c, 2);
+            if(rsq*tau < 100.0)
+                wide[j] += a*Lookup::evaluate(0.5*rsq*tau);
+        }
+    }
+}
+
+
 
 double MyModel::log_likelihood() const
 {
@@ -217,7 +172,7 @@ double MyModel::log_likelihood() const
     double model, resid, var;
     for(size_t i=0; i<data_y.size(); ++i)
     {
-        model = background + wide_component[i] + the_spikes[i];
+        model = background + narrow[i] + wide[i];
         resid = data_y[i] - model;
         var = sigma0*sigma0 + sigma1*model;
 
@@ -233,21 +188,22 @@ double MyModel::log_likelihood() const
 
 void MyModel::print(std::ostream& out) const
 {
-    out<<background<<' '<<amplitude<<' '<<center<<' '<<width<<' ';
-    out<<rc<<' '<<power<<' '<<asymmetry<<' '<<r_asymmetry<<' ';
-    spikes.print(out);
+    out<<background<<' ';
+    narrow_gaussians.print(out);
+    wide_gaussians.print(out);
     out<<sigma0<<' '<<sigma1<<' '<<nu<<' ';
 
-    for(size_t i=0; i<wide_component.size(); ++i)
-        out<<wide_component[i]<<' ';
 
-    for(size_t i=0; i<the_spikes.size(); ++i)
-        out<<the_spikes[i]<<' ';
+    for(size_t i=0; i<narrow.size(); ++i)
+        out<<narrow[i]<<' ';
+
+    for(size_t i=0; i<wide.size(); ++i)
+        out<<wide[i]<<' ';
 
     double model;
-    for(size_t i=0; i<wide_component.size(); ++i)
+    for(size_t i=0; i<wide.size(); ++i)
     {
-        model = background + wide_component[i] + the_spikes[i];
+        model = background + narrow[i] + wide[i];
         out<<model<<' ';
     }
 }
@@ -255,24 +211,34 @@ void MyModel::print(std::ostream& out) const
 std::string MyModel::description() const
 {
     std::stringstream s;
-    s<<"background, amplitude, center, width, rc, power, ";
-    s<<"asymmetry, r_asymmetry, ";
-    s<<"dim_spikes, max_num_spikes, ";
-    s<<"location_log_amplitude, scale_log_amplitude, ";
-    s<<"location_log_width, scale_log_width, num_spikes, ";
+    s<<"background, ";
+    s<<"dim_gaussians1, max_num_gaussians1, ";
+    s<<"location_log_amplitude1, scale_log_amplitude1, ";
+    s<<"location_log_width1, scale_log_width1, num_gaussians1, ";
     for(size_t i=0; i<max_num_spikes; ++i)
-        s<<"center["<<i<<"], ";
+        s<<"center1["<<i<<"], ";
     for(size_t i=0; i<max_num_spikes; ++i)
-        s<<"log_amplitude["<<i<<"], ";
+        s<<"log_amplitude1["<<i<<"], ";
     for(size_t i=0; i<max_num_spikes; ++i)
-        s<<"width["<<i<<"], ";
+        s<<"width1["<<i<<"], ";
+
+    s<<"dim_gaussians2, max_num_gaussians2, ";
+    s<<"location_log_amplitude2, scale_log_amplitude2, ";
+    s<<"location_log_width2, scale_log_width2, num_gaussians2, ";
+    for(size_t i=0; i<max_num_spikes; ++i)
+        s<<"center2["<<i<<"], ";
+    for(size_t i=0; i<max_num_spikes; ++i)
+        s<<"log_amplitude2["<<i<<"], ";
+    for(size_t i=0; i<max_num_spikes; ++i)
+        s<<"width2["<<i<<"], ";
+
     s<<"sigma0, sigma1, nu, ";
 
-    for(size_t i=0; i<wide_component.size(); ++i)
-        s<<"wide_component["<<i<<"], ";
-    for(size_t i=0; i<the_spikes.size(); ++i)
-        s<<"the_spikes["<<i<<"], ";
-    for(size_t i=0; i<the_spikes.size(); ++i)
+    for(size_t i=0; i<narrow.size(); ++i)
+        s<<"narrow["<<i<<"], ";
+    for(size_t i=0; i<wide.size(); ++i)
+        s<<"wide["<<i<<"], ";
+    for(size_t i=0; i<wide.size(); ++i)
         s<<"model_curve["<<i<<"], ";
 
     return s.str();

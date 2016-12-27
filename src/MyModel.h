@@ -15,25 +15,19 @@ class MyModel
         // Constant background
         double background;
 
-        // Parameters of the wide component
-        double amplitude, center, width, rc, power;
-
-        // Sigmoid parameters for asymmetry
-        double asymmetry, r_asymmetry;
-
-        // Use an RJObject for the narrow spikes
-        DNest4::RJObject<MyConditionalPrior> spikes;
+        // Use an RJObject for the narrow spikes and one for the wide spikes
+        DNest4::RJObject<MyConditionalPrior> narrow_gaussians, wide_gaussians;
 
         // Noise-related parameters
         double sigma0, sigma1, nu;
 
         // Components of the model-predicted curve
-        std::vector<double> wide_component;
-        std::vector<double> the_spikes;
+        std::vector<double> narrow;
+        std::vector<double> wide;
 
         // Calculate the parts of the model-predicted curve
-        void compute_wide_component();
-        void compute_the_spikes(bool update=false);
+        void compute_narrow(bool update=false);
+        void compute_wide(bool update=false);
 
     public:
         // Constructor only gives size of params

@@ -18,10 +18,13 @@ class MyConditionalPrior:public DNest4::ConditionalPrior
         // For widths
         double location_log_width, scale_log_width;
 
+        // This determines the prior for location_log_width
+        bool narrow;
+
         double perturb_hyperparameters(DNest4::RNG& rng);
 
     public:
-        MyConditionalPrior(double x_min, double x_max);
+        MyConditionalPrior(double x_min, double x_max, bool narrow);
 
         void from_prior(DNest4::RNG& rng);
 

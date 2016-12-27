@@ -8,10 +8,12 @@ namespace Crystals
 
 const DNest4::Laplace MyConditionalPrior::laplace(0.0, 5.0);
 
-MyConditionalPrior::MyConditionalPrior(double x_min, double x_max)
+MyConditionalPrior::MyConditionalPrior(double x_min, double x_max,
+    bool narrow)
 :x_min(x_min)
 ,x_max(x_max)
 ,x_range(x_max - x_min)
+,narrow(narrow)
 {
     if(x_min >= x_max)
         throw std::domain_error("Error in MyConditionalPrior constructor.");
@@ -22,7 +24,11 @@ void MyConditionalPrior::from_prior(DNest4::RNG& rng)
     location_log_amplitude = laplace.generate(rng);
     scale_log_amplitude = 5*rng.rand();
 
-    location_log_width = log(0.001*x_range) + log(100.0)*rng.rand();
+    if(narrow)
+        location_log_width = log(0.001*x_range) + log(100.0)*rng.rand();
+    else
+        location_log_width = log(0.1*x_range) + log(10.0)*rng.rand();
+
     scale_log_width = 0.2*rng.rand();
 }
 
@@ -42,8 +48,16 @@ double MyConditionalPrior::perturb_hyperparameters(DNest4::RNG& rng)
     }
     else if(which == 2)
     {
-        location_log_width += log(100.0)*rng.randh();
-        DNest4::wrap(location_log_width, log(0.001*x_range), log(0.1*x_range));
+        if(narrow)
+        {
+            location_log_width += log(100.0)*rng.randh();
+            DNest4::wrap(location_log_width, log(0.001*x_range), log(0.1*x_range));
+        }
+        else
+        {
+            location_log_width += log(10.0)*rng.randh();
+            DNest4::wrap(location_log_width, log(0.1*x_range), log(x_range));
+        }
     }
     else
     {
