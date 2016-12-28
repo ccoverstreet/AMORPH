@@ -25,11 +25,15 @@ void MyConditionalPrior::from_prior(DNest4::RNG& rng)
     scale_log_amplitude = 5*rng.rand();
 
     if(narrow)
-        location_log_width = log(0.001*x_range) + log(100.0)*rng.rand();
+    {
+        location_log_width = log(0.001*x_range) + log(50.0)*rng.rand();
+        scale_log_width = 0.1*rng.rand();
+    }
     else
-        location_log_width = log(0.1*x_range) + log(10.0)*rng.rand();
-
-    scale_log_width = 0.2*rng.rand();
+    {
+        location_log_width = log(0.05*x_range) + log(20.0)*rng.rand();
+        scale_log_width = 0.2*rng.rand();
+    }
 }
 
 double MyConditionalPrior::perturb_hyperparameters(DNest4::RNG& rng)
@@ -50,19 +54,28 @@ double MyConditionalPrior::perturb_hyperparameters(DNest4::RNG& rng)
     {
         if(narrow)
         {
-            location_log_width += log(100.0)*rng.randh();
-            DNest4::wrap(location_log_width, log(0.001*x_range), log(0.1*x_range));
+            location_log_width += log(50.0)*rng.randh();
+            DNest4::wrap(location_log_width, log(0.001*x_range), log(0.05*x_range));
         }
         else
         {
-            location_log_width += log(10.0)*rng.randh();
-            DNest4::wrap(location_log_width, log(0.1*x_range), log(x_range));
+            location_log_width += log(20.0)*rng.randh();
+            DNest4::wrap(location_log_width, log(0.05*x_range), log(x_range));
         }
+
     }
     else
     {
-        scale_log_width += 0.2*rng.randh();
-        DNest4::wrap(scale_log_width, 0.0, 0.2);
+        if(narrow)
+        {
+            scale_log_width += 0.1*rng.randh();
+            DNest4::wrap(scale_log_width, 0.0, 0.1);
+        }
+        else
+        {
+            scale_log_width += 0.2*rng.randh();
+            DNest4::wrap(scale_log_width, 0.0, 0.2);
+        }
     }
 
     return logH;
