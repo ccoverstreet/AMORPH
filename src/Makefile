@@ -10,3 +10,7 @@ default:
 	$(CC) -pthread -L$(DNEST4_PATH)/DNest4/code -o main *.o $(LIBS)
 	rm *.o
 
+windows:
+	x86_64-w64-mingw32-g++-posix -I$(DNEST4_PATH) $(CXXFLAGS) -c *.cpp
+	x86_64-w64-mingw32-g++-posix -pthread -L$(DNEST4_PATH)/DNest4/code -o main *.o $(DNEST4_PATH)/DNest4/code/dnest4.lib
+	rm -f *.o

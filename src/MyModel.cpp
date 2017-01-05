@@ -165,8 +165,11 @@ double MyModel::log_likelihood() const
     // References to the data vector
     const auto& data_y = data.get_y();
 
+    // pi
+    static constexpr double pi = 3.141592653589793;
+
     // Normalising constant of the t distribution
-    double C = lgamma(0.5*(nu + 1.0)) - log(0.5*nu) - 0.5*log(DNest4::M_PI*nu);
+    double C = lgamma(0.5*(nu + 1.0)) - log(0.5*nu) - 0.5*log(pi*nu);
 
     // T likelihood
     double model, resid, var;
