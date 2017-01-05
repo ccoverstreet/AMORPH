@@ -166,7 +166,7 @@ double MyModel::log_likelihood() const
     const auto& data_y = data.get_y();
 
     // Normalising constant of the t distribution
-    double C = lgamma(0.5*(nu + 1.0)) - log(0.5*nu) - 0.5*log(M_PI*nu);
+    double C = lgamma(0.5*(nu + 1.0)) - log(0.5*nu) - 0.5*log(DNest4::M_PI*nu);
 
     // T likelihood
     double model, resid, var;
