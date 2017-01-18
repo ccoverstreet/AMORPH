@@ -10,11 +10,21 @@ def display():
     data_file = f.read()
     f.close()
 
+    # Load the data file
     data = dn4.my_loadtxt(data_file)
+    x = data[:,0]
+    y = data[:,1]
+
+    # Load posterior samples etc
     posterior_sample = dn4.my_loadtxt("posterior_sample.txt")
     temp = dn4.load_column_names("posterior_sample.txt")
     indices = temp["indices"]
+
+    # Prepare some arrays
     wide_integral = np.zeros(posterior_sample.shape[0])
+    wide_center_of_mass = np.zeros(posterior_sample.shape[0])
+    wide_width = np.zeros(posterior_sample.shape[0])
+
     spikes_integral = np.zeros(posterior_sample.shape[0])
     max_num_spikes = int(posterior_sample[0, indices["max_num_gaussians1"]])
 
@@ -42,7 +52,13 @@ def display():
         end = start + data.shape[0]
         model = posterior_sample[i, start:end]
 
+        # Compute some integrals
         wide_integral[i] = np.sum(wide_component)
+        wide_center_of_mass[i] = np.sum(x * wide_component) / wide_integral[i]
+        wide_width[i] = np.sqrt(\
+                        np.sum((x - wide_center_of_mass[i])**2*wide_component)\
+                            / wide_integral[i])
+
         spikes_integral[i] = np.sum(the_spikes)
 
         # Plot the model
@@ -64,6 +80,18 @@ def display():
     plt.xlabel("(wide component flux)/(total spike flux + wide component flux)")
     print("Wide fraction = {a} +- {b}".format(a=wide_fraction.mean(),\
            b=wide_fraction.std()))
+    plt.show()
+
+    plt.hist(wide_center_of_mass, 100, color=[0.8, 0.8, 0.8])
+    plt.xlabel("Center of mass of wide component")
+    print("Center of mass = {a} +- {b}".format(a=wide_center_of_mass.mean(),
+           b=wide_center_of_mass.std()))
+    plt.show()
+
+    plt.hist(wide_width, 100, color=[0.8, 0.8, 0.8])
+    plt.xlabel("Width of wide component")
+    print("Width = {a} +- {b}".format(a=wide_width.mean(),
+           b=wide_width.std()))
     plt.show()
 
 if __name__ == "__main__":
