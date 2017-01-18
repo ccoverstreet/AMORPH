@@ -8,6 +8,8 @@ src/sampler_state.txt
 src/__pycache__
 src/run_data.txt
 src/logfile
+src/dnest4.lib
+src/main.exe
 runs/
 doc/ms.aux
 doc/ms.bbl
