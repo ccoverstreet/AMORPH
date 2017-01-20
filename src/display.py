@@ -37,6 +37,11 @@ def display():
             plt.plot(data[:,0], data[:,1], "ko", markersize=3, alpha=0.2)
             plt.hold(True)
 
+        # Extract the background
+        start = indices["bg[0]"]
+        end = start + data.shape[0]
+        bg = posterior_sample[i, start:end]
+
         # Extract the wide component
         start = indices["wide[0]"]
         end = start + data.shape[0]
@@ -66,8 +71,7 @@ def display():
             plt.plot(data[:,0], model, "g", linewidth=2, alpha=0.1)
             plt.plot(data[:,0], wide_component, "b", linewidth=2, alpha=0.1)
             plt.plot(data[:,0], the_spikes, "r", linewidth=2, alpha=0.1)
-            plt.plot(data[:,0], posterior_sample[i, 0]*np.ones(len(model)),\
-                                                "y", linewidth=2, alpha=0.1)
+            plt.plot(data[:,0], bg, "y", linewidth=2, alpha=0.1)
             plt.ylim(0)
 
     plt.xlabel("$x$", fontsize=16)
