@@ -22,10 +22,12 @@ class MyModel
         double sigma0, sigma1, nu;
 
         // Components of the model-predicted curve
+        std::vector<double> bg;
         std::vector<double> narrow;
         std::vector<double> wide;
 
         // Calculate the parts of the model-predicted curve
+        void compute_bg();
         void compute_narrow(bool update=false);
         void compute_wide(bool update=false);
 

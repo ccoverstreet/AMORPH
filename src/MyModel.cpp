@@ -17,6 +17,7 @@ MyModel::MyModel()
 ,wide_gaussians(3, max_num_spikes, false,
             MyConditionalPrior(data.get_x_min(), data.get_x_max(), false),
                                 DNest4::PriorType::log_uniform)
+,bg(data.get_y().size())
 ,narrow(data.get_y().size())
 ,wide(data.get_y().size())
 {
@@ -31,6 +32,7 @@ void MyModel::from_prior(DNest4::RNG& rng)
     narrow_gaussians.from_prior(rng);
     wide_gaussians.from_prior(rng);
 
+    compute_bg();
     compute_narrow();
     compute_wide();
 
@@ -70,6 +72,8 @@ double MyModel::perturb(DNest4::RNG& rng)
             background = log(background);
             logH += laplace.perturb(background, rng);
             background = exp(background);
+
+            compute_bg();
         }
         else if(which == 1)
         {
@@ -93,6 +97,12 @@ double MyModel::perturb(DNest4::RNG& rng)
     }
 
     return logH;
+}
+
+void MyModel::compute_bg()
+{
+    for(double& y: bg)
+        y = background;
 }
 
 
@@ -175,7 +185,7 @@ double MyModel::log_likelihood() const
     double model, resid, var;
     for(size_t i=0; i<data_y.size(); ++i)
     {
-        model = background + narrow[i] + wide[i];
+        model = bg[i] + narrow[i] + wide[i];
         resid = data_y[i] - model;
         var = sigma0*sigma0 + sigma1*model;
 
@@ -196,6 +206,9 @@ void MyModel::print(std::ostream& out) const
     wide_gaussians.print(out);
     out<<sigma0<<' '<<sigma1<<' '<<nu<<' ';
 
+
+    for(size_t i=0; i<bg.size(); ++i)
+        out<<bg[i]<<' ';
 
     for(size_t i=0; i<narrow.size(); ++i)
         out<<narrow[i]<<' ';
@@ -237,6 +250,8 @@ std::string MyModel::description() const
 
     s<<"sigma0, sigma1, nu, ";
 
+    for(size_t i=0; i<narrow.size(); ++i)
+        s<<"bg["<<i<<"], ";
     for(size_t i=0; i<narrow.size(); ++i)
         s<<"narrow["<<i<<"], ";
     for(size_t i=0; i<wide.size(); ++i)
