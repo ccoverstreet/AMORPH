@@ -267,7 +267,7 @@ void MyModel::print(std::ostream& out) const
     double model;
     for(size_t i=0; i<wide.size(); ++i)
     {
-        model = background + narrow[i] + wide[i];
+        model = bg[i] + narrow[i] + wide[i];
         out<<model<<' ';
     }
 }
