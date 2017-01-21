@@ -85,8 +85,17 @@ double MyConditionalPrior::perturb_hyperparameters(DNest4::RNG& rng)
 
 double MyConditionalPrior::log_pdf(const std::vector<double>& vec) const
 {
-    if(vec[0] < x_min || vec[0] > x_max)
-        return -1E300;
+    if(narrow)
+    {
+        if(vec[0] < x_min || vec[0] > x_max)
+            return -1E300;
+    }
+    else
+    {
+        double xc = 0.5*(x_min + x_max);
+        if(std::abs(vec[0] - xc) > 0.2*x_range)
+            return -1E300;
+    }
 
     if(vec[2] <= 0.0)
         return -1E300;
@@ -106,7 +115,17 @@ double MyConditionalPrior::log_pdf(const std::vector<double>& vec) const
 void MyConditionalPrior::from_uniform(std::vector<double>& vec) const
 {
     DNest4::Laplace l(location_log_amplitude, scale_log_amplitude);
-    vec[0] = x_min + x_range*vec[0];
+
+    if(narrow)
+    {
+        vec[0] = x_min + x_range*vec[0];
+    }
+    else
+    {
+        double xc = 0.5*(x_min + x_max);
+        vec[0] = xc - 0.2*x_range + 0.4*x_range*vec[0];
+    }
+
     vec[1] = l.cdf_inverse(vec[1]);
 
     l = DNest4::Laplace(location_log_width, scale_log_width);
@@ -116,7 +135,16 @@ void MyConditionalPrior::from_uniform(std::vector<double>& vec) const
 void MyConditionalPrior::to_uniform(std::vector<double>& vec) const
 {
     DNest4::Laplace l(location_log_amplitude, scale_log_amplitude);
-    vec[0] = (vec[0] - x_min)/x_range;
+
+    if(narrow)
+    {
+        vec[0] = (vec[0] - x_min)/x_range;
+    }
+    else
+    {
+        double xc = 0.5*(x_min + x_max);
+        vec[0] = (vec[0] - (xc - 0.2*x_range)) / (0.4 * x_range);
+    }
     vec[1] = l.cdf(vec[1]);
 
     l = DNest4::Laplace(location_log_width, scale_log_width);
