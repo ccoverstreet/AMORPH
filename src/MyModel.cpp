@@ -7,11 +7,16 @@
 namespace Crystals
 {
 
+// Static things
 Data MyModel::data;
 const DNest4::Laplace MyModel::laplace(0.0, 5.0);
+const std::vector<double> MyModel::x_knots{data.get_x_min(),
+                                            10.0, 40.0, data.get_x_max()};
 
+// Constructor
 MyModel::MyModel()
-:narrow_gaussians(3, max_num_spikes, false,
+:n_knots(4)
+,narrow_gaussians(3, max_num_spikes, false,
             MyConditionalPrior(data.get_x_min(), data.get_x_max(), true),
                                 DNest4::PriorType::log_uniform)
 ,wide_gaussians(3, max_num_spikes, false,
@@ -28,6 +33,8 @@ MyModel::MyModel()
 void MyModel::from_prior(DNest4::RNG& rng)
 {
     background = exp(laplace.generate(rng));
+    for(double& nn: n_knots)
+        nn = rng.randn();
 
     narrow_gaussians.from_prior(rng);
     wide_gaussians.from_prior(rng);
@@ -65,7 +72,7 @@ double MyModel::perturb(DNest4::RNG& rng)
     else
     {
         // Perturb one of these parameters
-        int which = rng.rand_int(4);
+        int which = rng.rand_int(5);
 
         if(which == 0)
         {
@@ -77,11 +84,20 @@ double MyModel::perturb(DNest4::RNG& rng)
         }
         else if(which == 1)
         {
+            int i = rng.rand_int(n_knots.size());
+            logH -= -0.5*pow(n_knots[i], 2);
+            n_knots[i] += rng.randh();
+            logH += -0.5*pow(n_knots[i], 2);
+
+            compute_bg();
+        }
+        else if(which == 2)
+        {
             sigma0 = log(sigma0);
             logH += laplace.perturb(sigma0, rng);
             sigma0 = exp(sigma0);
         }
-        else if(which == 2)
+        else if(which == 3)
         {
             sigma1 = log(sigma1);
             logH += laplace.perturb(sigma1, rng);
@@ -101,8 +117,37 @@ double MyModel::perturb(DNest4::RNG& rng)
 
 void MyModel::compute_bg()
 {
-    for(double& y: bg)
-        y = background;
+    // Value at left and right end of interval,
+    // fractional position within interval.
+    double x1, x2, val1, val2, lambda;
+
+    for(size_t i=0; i<bg.size(); ++i)
+    {
+        if(data.get_x()[i] < x_knots[1])
+        {
+            x1 = x_knots[0];
+            x2 = x_knots[1];
+            val1 = background * exp(n_knots[0]);
+            val2 = background * exp(n_knots[1]);
+        }
+        else if(data.get_x()[i] < x_knots[2])
+        {
+            x1 = x_knots[1];
+            x2 = x_knots[2];
+            val1 = background * exp(n_knots[1]);
+            val2 = background * exp(n_knots[2]);
+        }
+        else
+        {
+            x1 = x_knots[2];
+            x2 = x_knots[3];
+            val1 = background * exp(n_knots[2]);
+            val2 = background * exp(n_knots[3]);
+        }
+
+        lambda = (data.get_x()[i] - x1) / (x2 - x1);
+        bg[i] = (1.0 - lambda)*val1 + lambda*val2;
+    }
 }
 
 
@@ -202,6 +247,9 @@ double MyModel::log_likelihood() const
 void MyModel::print(std::ostream& out) const
 {
     out<<background<<' ';
+    for(double nn: n_knots)
+        out<<nn<<' ';
+
     narrow_gaussians.print(out);
     wide_gaussians.print(out);
     out<<sigma0<<' '<<sigma1<<' '<<nu<<' ';
@@ -228,6 +276,9 @@ std::string MyModel::description() const
 {
     std::stringstream s;
     s<<"background, ";
+    for(size_t i=0; i<n_knots.size(); ++i)
+        s<<"n_knots["<<i<<"], ";
+
     s<<"dim_gaussians1, max_num_gaussians1, ";
     s<<"location_log_amplitude1, scale_log_amplitude1, ";
     s<<"location_log_width1, scale_log_width1, num_gaussians1, ";

@@ -15,6 +15,9 @@ class MyModel
         // Constant background
         double background;
 
+        // Knots in background
+        std::vector<double> n_knots;
+
         // Use an RJObject for the narrow spikes and one for the wide spikes
         DNest4::RJObject<MyConditionalPrior> narrow_gaussians, wide_gaussians;
 
@@ -58,6 +61,9 @@ class MyModel
 
         // A useful laplace distribution
         static const DNest4::Laplace laplace;
+
+        // x-positions of background knots
+        static const std::vector<double> x_knots;
 
         // Maximum number of spikes
         static constexpr size_t max_num_spikes = 300;
