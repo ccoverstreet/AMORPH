@@ -73,12 +73,16 @@ All of the assumptions are given in Table~\ref{tab:priors}.
 {\bf Quantity}      &   {\bf Meaning}   &  {\bf Prior distribution}\\
 \hline
 {\em Hyperparameters} & &\\
-$N$     &   Number of spikes    &  $p(N) \propto 1/(N+1), N \in \{0, 1, ..., 300\}$\\
+$N_{\rm narrow}$   &   Number of narrow spikes    &  $\propto 1/(N_{\rm narrow}+1)$, $N_{\rm narrow} \in \{0, 1, ..., 300\}$ \\
+$N_{\rm wide}$   &   Number of wide spikes    &  $\propto 1/(N_{\rm wide}+1)$,
+$N_{\rm wide} \in \{0, 1, ..., 300\}$ \\
 \hline
 {\em Parameters}& &\\
 $\sigma_0$ &    Constant noise level  &   $\ln(\sigma_0) \sim \textnormal{Laplace}(0,5)$\\
 $\sigma_1$ &    Noise proportionality   &  $\ln(\sigma_1) \sim \textnormal{Laplace}(0,5)$ \\
-$\nu$     &   Shape parameter for residuals   &   Loguniform$(1, 1000)$\\
+$\nu$     &   Shape parameter for residuals   &   LogUniform$(1, 1000)$\\
+$b$       & Mean background level       & $\ln(b) \sim$ Laplace$(0, 5)$\\
+$\{n_1, ..., n_4\}$  & 
 \hline
 {\em Data}&&\\
 \hline
