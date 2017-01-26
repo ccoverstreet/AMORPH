@@ -1,5 +1,6 @@
 \documentclass[a4paper, 12pt]{article}
 \usepackage{amsmath}
+\usepackage{color}
 \usepackage{dsfont}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
@@ -7,10 +8,17 @@
 \usepackage{natbib}
 \usepackage{microtype}
 
+
+\definecolor{orange}{rgb}{1, 0.5, 0}
+\definecolor{green}{rgb}{0, 0.5, 0}
+
 \newcommand{\hypers}{\boldsymbol{\alpha}}
 \newcommand{\params}{\boldsymbol{\theta}}
 \newcommand{\data}{\boldsymbol{x}}
 \newcommand{\info}{\boldsymbol{M}}
+\newcommand{\x}{x}
+\newcommand{\todo}{\color{orange} \bf}
+
 
 \title{Crystals}
 \author{Brendon J. Brewer}
@@ -26,6 +34,21 @@
 \setlength{\parskip}{8pt}
 
 \section{The prior information}
+
+\subsection{The shape of the model curve}
+The function $f(\x)$, defined from $\x_{\rm min}$ to $\x_{\rm max}$,
+is assumed to be a sum of the following components:
+\begin{enumerate}
+\item A background component
+\item $N_{\rm wide}$ wide gaussians
+\item $N_{\rm narrow}$ narrow gaussians, to model the spikes
+\end{enumerate}
+
+The background component is assumed to be linear
+{\todo between $x_{\rm min}$ and A, between A and B, and between B
+and $x_{\rm max}$}.
+
+\subsection{Prior probability distributions}
 
 The joint prior distribution for the hyperparameters, parameters, and data,
 is written $p(\hypers, \params, \data | \info)$, and is usually factorised
