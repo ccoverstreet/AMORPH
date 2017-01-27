@@ -55,9 +55,22 @@ calculate the marginal posterior distribution of the crystallinity, describing
 uncertainty about its value in the light of the data.
 
 
-The background component is assumed to be linear
-{\todo between $x_{\rm min}$ and A, between A and B, and between B
-and $x_{\rm max}$}.
+The background component is assumed to be piecewise linear
+{\todo between $\x=x_{\rm min}$ and $\x=10$, between $\x=10$ and $\x=40$,
+and between $\x=40$ and $\x=\x_{\rm max}$}.
+We parameterise the background component using
+five parameters. Firstly, there is a mean level $b$, which sets the
+typical amplitude of the background component. There are also four parameters
+$n_1, ..., n_4$, which set the positions of four control points:
+\begin{align}
+\left(\x_{\rm min}, be^{n_1}\right) \nonumber\\
+\left(10, be^{n_2}\right) \nonumber\\
+\left(40, be^{n_3}\right) \nonumber\\
+\left(\x_{\rm max}, be^{n_4}\right) \nonumber
+\end{align}
+The value of the background component at any other point is found by
+linear interpolation.
+
 
 \subsection{Prior probability distributions}
 
