@@ -35,14 +35,25 @@
 
 \section{The prior information}
 
+
+
 \subsection{The shape of the model curve}
-The function $f(\x)$, defined from $\x_{\rm min}$ to $\x_{\rm max}$,
-is assumed to be a sum of the following components:
+The algorithm fits the data with a model curve
+$f(\x)$, defined between $\x=\x_{\rm min}$ and $\x=\x_{\rm max}$,
+which is assumed to be a sum of the following components:
 \begin{enumerate}
 \item A background component
 \item $N_{\rm wide}$ wide gaussians
-\item $N_{\rm narrow}$ narrow gaussians, to model the spikes
+\item $N_{\rm narrow}$ narrow gaussians, to model the spikes.
 \end{enumerate}
+
+We compute the posterior distribution for the unknown parameters of the
+components, and use \citep{dnest4} to generate samples from that posterior
+distribution, representing plausible parameter values. From each sample,
+it is possible to compute the crystallinity, making it straightforward to
+calculate the marginal posterior distribution of the crystallinity, describing
+uncertainty about its value in the light of the data.
+
 
 The background component is assumed to be linear
 {\todo between $x_{\rm min}$ and A, between A and B, and between B
