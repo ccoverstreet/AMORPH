@@ -56,7 +56,7 @@ uncertainty about its value in the light of the data.
 
 
 The background component is assumed to be piecewise linear
-{\todo between $\x=x_{\rm min}$ and $\x=10$, between $\x=10$ and $\x=40$,
+{\todo between $\x=\x_{\rm min}$ and $\x=10$, between $\x=10$ and $\x=40$,
 and between $\x=40$ and $\x=\x_{\rm max}$}.
 We parameterise the background component using
 five parameters. Firstly, there is a mean level $b$, which sets the
@@ -125,7 +125,7 @@ $\{y_1, y_2, ..., y_n\}$  &   Measurements    & Student $t(f(x_i; \params), ,\nu
 {\em Prior information}&&\\
 \hline
 $n$ & Number of measurements & given\\
-$\{x_1, x_2, ..., x_n\}$  & $x$-values of measurements & given \\
+$\{\x_1, \x_2, ..., \x_n\}$  & $\x$-values of measurements & given \\
 \hline
 \end{tabular}
 \caption{\label{tab:priors}}
@@ -140,12 +140,13 @@ p(x | a, b) &= \frac{1}{2b}\exp\left[-\frac{|x - a|}{b}\right].
 
 The shape of the model function $f(x)$ is therefore
 \begin{align}
-f(x) &= f_{\rm bg}(x) + f_{\rm wide}(x) + f_{\rm narrow}(x)
+f(\x) &= f_{\rm bg}(\x) + f_{\rm wide}(\x) + f_{\rm narrow}(\x)
 \end{align}
-and the crystallinity is
+and the crystallinity is defined as the proportion of the area in the
+wide and narrow components which is accounted for by the wide component:
 \begin{align}
-C &= \frac{\int f_{\rm wide}(x) \, dx}
-          {\int f_{\rm wide}(x) \, dx + \int f_{\rm narrow}(x) \, dx}
+C &= \frac{\int f_{\rm wide}(\x) \, d\x}
+          {\int f_{\rm wide}(\x) \, d\x + \int f_{\rm narrow}(\x) \, d\x}
 \end{align}
 
 
