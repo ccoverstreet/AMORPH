@@ -117,6 +117,7 @@ def display():
 
     plt.hist(wide_nongaussianity, 100, color=[0.8, 0.8, 0.8])
     plt.xlabel("Nongaussianity of wide component")
+    plt.xlim(0.0)
     print("Nongaussianity = {a} +- {b}".format(a=wide_nongaussianity.mean(),
            b=wide_nongaussianity.std()))
     plt.show()
