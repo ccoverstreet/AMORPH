@@ -60,18 +60,17 @@ def display():
 
         # Compute some integrals
         wide_integral[i] = np.sum(wide_component)
-        wide_center_of_mass[i] = np.sum(x * wide_component) / wide_integral[i]
-        wide_width[i] = np.sqrt(\
-                        np.sum((x - wide_center_of_mass[i])**2*wide_component)\
-                            / wide_integral[i])
-        wide_skewness[i] = np.sum(((x - wide_center_of_mass[i])\
-                                    /wide_width[i])**3) / wide_integral[i]
+        f = wide_component / wide_integral[i] # Normalised
+
+        wide_center_of_mass[i] = np.sum(x * f)
+        wide_width[i] = np.sqrt(np.sum((x - wide_center_of_mass[i])**2*f))
+        wide_skewness[i] = np.sum(f *\
+                            ((x - wide_center_of_mass[i]) / wide_width[i])**3)
 
         # Best fitting gaussian to the wide component
         gaussian = np.exp(-0.5*(x - wide_center_of_mass[i])**2 \
                             / wide_width[i]**2)
         gaussian /= gaussian.sum()
-        f = wide_component / wide_component.sum()
 
         # Nongaussianity based on KL divergence
         wide_nongaussianity[i] = np.sum(f*np.log(f / gaussian + 1E-300))
