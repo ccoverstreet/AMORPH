@@ -24,6 +24,8 @@ def display():
     wide_integral = np.zeros(posterior_sample.shape[0])
     wide_center_of_mass = np.zeros(posterior_sample.shape[0])
     wide_width = np.zeros(posterior_sample.shape[0])
+    wide_skewness = np.zeros(posterior_sample.shape[0])
+    wide_nongaussianity = np.zeros(posterior_sample.shape[0])
 
     spikes_integral = np.zeros(posterior_sample.shape[0])
     max_num_spikes = int(posterior_sample[0, indices["max_num_gaussians1"]])
@@ -35,7 +37,6 @@ def display():
 
             # Plot the data
             plt.plot(data[:,0], data[:,1], "ko", markersize=3, alpha=0.2)
-            plt.hold(True)
 
         # Extract the background
         start = indices["bg[0]"]
@@ -63,6 +64,8 @@ def display():
         wide_width[i] = np.sqrt(\
                         np.sum((x - wide_center_of_mass[i])**2*wide_component)\
                             / wide_integral[i])
+        wide_skewness[i] = np.sum(((x - wide_center_of_mass[i])\
+                                    /wide_width[i])**3) / wide_integral[i]
 
         spikes_integral[i] = np.sum(the_spikes)
 
@@ -96,6 +99,12 @@ def display():
     plt.xlabel("Width of wide component")
     print("Width = {a} +- {b}".format(a=wide_width.mean(),
            b=wide_width.std()))
+    plt.show()
+
+    plt.hist(wide_skewness, 100, color=[0.8, 0.8, 0.8])
+    plt.xlabel("Skewness of wide component")
+    print("Skewness = {a} +- {b}".format(a=wide_skewness.mean(),
+           b=wide_skewness.std()))
     plt.show()
 
 if __name__ == "__main__":
