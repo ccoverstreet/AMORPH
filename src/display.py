@@ -67,6 +67,15 @@ def display():
         wide_skewness[i] = np.sum(((x - wide_center_of_mass[i])\
                                     /wide_width[i])**3) / wide_integral[i]
 
+        # Best fitting gaussian to the wide component
+        gaussian = np.exp(-0.5*(x - wide_center_of_mass[i])**2 \
+                            / wide_width[i]**2)
+        gaussian /= gaussian.sum()
+        f = wide_component / wide_component.sum()
+
+        # Nongaussianity based on KL divergence
+        wide_nongaussianity[i] = np.sum(f*np.log(f / gaussian + 1E-300))
+
         spikes_integral[i] = np.sum(the_spikes)
 
         # Plot the model
@@ -105,6 +114,12 @@ def display():
     plt.xlabel("Skewness of wide component")
     print("Skewness = {a} +- {b}".format(a=wide_skewness.mean(),
            b=wide_skewness.std()))
+    plt.show()
+
+    plt.hist(wide_nongaussianity, 100, color=[0.8, 0.8, 0.8])
+    plt.xlabel("Nongaussianity of wide component")
+    print("Nongaussianity = {a} +- {b}".format(a=wide_nongaussianity.mean(),
+           b=wide_nongaussianity.std()))
     plt.show()
 
 if __name__ == "__main__":
