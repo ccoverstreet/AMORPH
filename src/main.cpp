@@ -19,6 +19,9 @@ int main(int argc, char** argv)
         std::cin >> data_file;
     }
 
+    // Load the control points
+    Crystals::MyModel::load_control_points("control_points.in");
+
     // Save the data filename
     std::fstream fout("run_data.txt", std::ios::out);
     fout<<data_file;

@@ -10,7 +10,7 @@ namespace Crystals
 // Static things
 Data MyModel::data;
 const DNest4::Laplace MyModel::laplace(0.0, 5.0);
-const std::vector<double> MyModel::x_knots{data.get_x_min(),
+std::vector<double> MyModel::x_knots{data.get_x_min(),
                                             10.0, 40.0, data.get_x_max()};
 
 // Constructor
@@ -242,6 +242,17 @@ double MyModel::log_likelihood() const
         logL = -1E300;
 
     return logL;
+}
+
+void MyModel::load_control_points(const char* filename)
+{
+    std::fstream fin(filename, std::ios::in);
+    if(!fin)
+        std::cerr<<"# ERROR couldn't open "<<filename<<"."<<std::endl;
+
+    fin>>x_knots[1];
+    fin>>x_knots[2];
+    fin.close();
 }
 
 void MyModel::print(std::ostream& out) const

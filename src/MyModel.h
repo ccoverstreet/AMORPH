@@ -63,13 +63,14 @@ class MyModel
         static const DNest4::Laplace laplace;
 
         // x-positions of background knots
-        static const std::vector<double> x_knots;
+        static std::vector<double> x_knots;
 
         // Maximum number of spikes
         static constexpr size_t max_num_spikes = 300;
 
     public:
         static void load_data(const char* filename);
+        static void load_control_points(const char* filename);
 };
 
 } // namespace Crystals
