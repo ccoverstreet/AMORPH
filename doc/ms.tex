@@ -76,7 +76,8 @@ values of the parameters.
 \begin{figure}
 \centering
 \includegraphics[width=0.7\textwidth]{figures/background.pdf}
-\caption{\label{fig:background}}
+\caption{Three example functions showing possible shapes of the
+background component.\label{fig:background}}
 \end{figure}
 
 
@@ -111,16 +112,18 @@ $N_{\rm wide}$   &   Number of wide spikes    &  $\propto 1/(N_{\rm wide}+1)$,
 $N_{\rm wide} \in \{0, 1, ..., 300\}$ \\
 
 \hline
-{\em Parameters}& &\\
+{\em Background parameters}\\
+$b$       & Mean background level       & Laplace$(0, 5)$\\
+$\{n_1, ..., n_4\}$  & Background deviations & iid Normal$(0,1)$\\
+\hline 
+{\em Noise parameters}\\
 $\sigma_0$ &    Constant noise level  &   $\ln(\sigma_0) \sim \textnormal{Laplace}(0,5)$\\
 $\sigma_1$ &    Noise proportionality   &  $\ln(\sigma_1) \sim \textnormal{Laplace}(0,5)$ \\
 $\nu$     &   Shape parameter for residuals   &   LogUniform$(1, 1000)$\\
-$b$       & Mean background level       & Laplace$(0, 5)$\\
-$\{n_1, ..., n_4\}$  & Background deviations & iid Normal$(0,1)$\\
 \hline
 {\em Data}&&\\
 \hline
-$\{y_1, y_2, ..., y_n\}$  &   Measurements    & Student $t(f(x_i; \params), ,\nu)$\\
+$\{y_1, y_2, ..., y_n\}$  &   Measurements    & Student-$t(f(x_i; \params), ,\nu)$\\
 \hline
 {\em Prior information}&&\\
 \hline
@@ -131,12 +134,16 @@ $\{\x_1, \x_2, ..., \x_n\}$  & $\x$-values of measurements & given \\
 \caption{\label{tab:priors}}
 \end{table}
 
-The Laplace, or biexponential, distribution with location parameter $a$ and
-scale parameter $b$ has probability density
+The Laplace, or biexponential, distribution with location parameter
+(central position) $a$ and scale parameter (width) $b$ has probability
+density given by
 \begin{align}
 p(x | a, b) &= \frac{1}{2b}\exp\left[-\frac{|x - a|}{b}\right].
 \end{align}
-
+We used a Laplace distribution for informative priors, rather than
+a more conventional normal distribution, because it assigns higher
+prior probability to values far from the center, and can be computed conveniently, i.e., no special functions such as {\tt erf} are needed
+to compute the cumulative distribution function.
 
 The shape of the model function $f(x)$ is therefore
 \begin{align}
