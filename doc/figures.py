@@ -2,6 +2,10 @@ import numpy as np
 import numpy.random as rng
 import matplotlib.pyplot as plt
 
+# Set up fonts
+plt.rc("font", size=14, family="serif", serif="Computer Sans")
+plt.rc("text", usetex=True)
+
 # Set rng seed
 rng.seed(3)
 
@@ -13,8 +17,6 @@ b = 1.0
 
 # Create figure
 plt.figure(1)
-plt.hold(True)
-
 for i in range(0, 3):
     # Control point parameters
     n = rng.randn(4)
@@ -26,9 +28,9 @@ for i in range(0, 3):
     # Plot the background component shape
     plt.plot(xx, yy, "ko-", alpha=0.2)
 
-plt.xlabel("$x$", fontsize=20)
-plt.ylabel("$y$", fontsize=20)
-plt.title("Background component", fontsize=14)
+plt.xlabel("$x$", fontsize=16)
+plt.ylabel("$y$", fontsize=16)
+plt.title("Background component")
 plt.savefig("figures/background.pdf", bbox_inches="tight")
 plt.show()
 
