@@ -101,34 +101,42 @@ irrelevant when predicting what data would be observed.
 All of the assumptions are given in Table~\ref{tab:priors}.
 
 \begin{table}
+\footnotesize
 \centering
 \begin{tabular}{|lll|}
 \hline
 {\bf Quantity}      &   {\bf Meaning}   &  {\bf Prior distribution}\\
 \hline
-{\em Hyperparameters} & &\\
-$N_{\rm narrow}$   &   Number of narrow spikes    &  $\propto 1/(N_{\rm narrow}+1)$, $N_{\rm narrow} \in \{0, 1, ..., 300\}$ \\
-$N_{\rm wide}$   &   Number of wide spikes    &  $\propto 1/(N_{\rm wide}+1)$,
-$N_{\rm wide} \in \{0, 1, ..., 300\}$ \\
-
-\hline
-{\em Background parameters}\\
-$b$       & Mean background level       & Laplace$(0, 5)$\\
-$\{n_1, ..., n_4\}$  & Background deviations & iid Normal$(0,1)$\\
-\hline 
-{\em Noise parameters}\\
-$\sigma_0$ &    Constant noise level  &   $\ln(\sigma_0) \sim \textnormal{Laplace}(0,5)$\\
-$\sigma_1$ &    Noise proportionality   &  $\ln(\sigma_1) \sim \textnormal{Laplace}(0,5)$ \\
-$\nu$     &   Shape parameter for residuals   &   LogUniform$(1, 1000)$\\
-\hline
-{\em Data}&&\\
-\hline
-$\{y_1, y_2, ..., y_n\}$  &   Measurements    & Student-$t(f(x_i; \params), ,\nu)$\\
-\hline
 {\em Prior information}&&\\
 \hline
 $n$ & Number of measurements & given\\
 $\{\x_1, \x_2, ..., \x_n\}$  & $\x$-values of measurements & given \\
+\hline
+{\em Hyperparameters} & &\\
+$N_{\rm narrow}$   &   Number of narrow spikes    &  $\propto 1/(N_{\rm narrow}+1)$, $N_{\rm narrow} \in \{0, 1, ..., 300\}$ \\
+$N_{\rm wide}$   &   Number of wide spikes    &  $\propto 1/(N_{\rm wide}+1)$,
+$N_{\rm wide} \in \{0, 1, ..., 300\}$ \\
+$a_{\ln A, \rm narrow}$ & Typical log-amplitude of narrow spikes & Laplace(0, 5)\\
+$a_{\ln A, \rm wide}$ & Typical log-amplitude of wide spikes & Laplace(0, 5)\\
+$b_{\ln A, \rm narrow}$ & Diversity of log-amplitude of narrow spikes & Uniform(0, 5)\\
+$b_{\ln A, \rm wide}$ & Diversity of log-amplitude of wide spikes & Uniform(0, 5)\\
+$a_{\ln W, \rm narrow}$ & Typical log-width of narrow spikes & LogUniform$(10^{-3}x_{\rm range}, 0.05x_{\rm range})$\\
+$a_{\ln W, \rm wide}$ & Typical log-width of wide spikes & LogUniform$(0.05x_{\rm range}, x_{\rm range})$\\
+$b_{\ln W, \rm narrow}$ & Diversity of log-width of narrow spikes & Uniform(0, 0.1)\\
+$b_{\ln W, \rm wide}$ & Diversity of log-width of wide spikes & Uniform(0, 0.2)\\
+\hline
+{\em Background parameters}&&\\
+$b$       & Mean background level       & Laplace$(0, 5)$\\
+$\{n_1, ..., n_4\}$  & Background deviations & iid Normal$(0,1)$\\
+\hline 
+{\em Noise parameters}&&\\
+$\sigma_0$ &    Constant noise level  &   $\ln \sigma_0 \sim \textnormal{Laplace}(0,5)$\\
+$\sigma_1$ &    Noise proportionality   &  $\ln \sigma_1 \sim \textnormal{Laplace}(0,5)$ \\
+$\nu$     &   Shape parameter for residuals   &   LogUniform$(1, 1000)$\\
+\hline
+{\em Data}&&\\
+\hline
+$\{y_1, y_2, ..., y_n\}$  &   Measurements    & iid Student-$t(f(x_i; \params), ,\nu)$\\
 \hline
 \end{tabular}
 \caption{\label{tab:priors}}
