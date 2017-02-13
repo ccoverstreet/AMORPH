@@ -5,8 +5,9 @@
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage[left=2cm, right=2cm, bottom=3cm, top=2cm]{geometry}
-\usepackage{natbib}
 \usepackage{microtype}
+\usepackage{natbib}
+\usepackage{pdflscape}
 
 
 \definecolor{orange}{rgb}{1, 0.5, 0}
@@ -100,6 +101,8 @@ irrelevant when predicting what data would be observed.
 
 All of the assumptions are given in Table~\ref{tab:priors}.
 
+\begin{landscape}
+
 \begin{table}
 \footnotesize
 \centering
@@ -128,7 +131,23 @@ $b_{\ln W, \rm wide}$ & Diversity of log-width of wide spikes & Uniform(0, 0.2)\
 {\em Background parameters}&&\\
 $b$       & Mean background level       & Laplace$(0, 5)$\\
 $\{n_1, ..., n_4\}$  & Background deviations & iid Normal$(0,1)$\\
-\hline 
+\hline
+{\em Narrow spike parameters}&&\\
+$X_{i, \rm narrow}$ & Positions of narrow spikes &
+                            Uniform$(x_{\rm min}, x_{\rm max})$ \\
+$A_{i, \rm narrow}$ & Amplitudes of narrow spikes &
+ $\ln A_{i, \rm narrow} \sim \textnormal{Laplace}\left(a_{\ln A, \rm narrow}, b_{\ln A, \rm narrow}\right)$ \\
+$W_{i, \rm narrow}$ & Widths of narrow spikes &
+ $\ln W_{i, \rm narrow} \sim \textnormal{Laplace}\left(a_{\ln W, \rm narrow}, b_{\ln W, \rm narrow}\right)$ \\
+\hline
+{\em Wide spike parameters}&&\\
+$X_{i, \rm wide}$ & Positions of wide spikes &
+          Uniform$(x_{\rm min}+0.3x_{\rm range}, x_{\rm max}-0.3x_{\rm range})$ \\
+$A_{i, \rm wide}$ & Amplitudes of wide spikes &
+ $\ln A_{i, \rm wide} \sim \textnormal{Laplace}\left(a_{\ln A, \rm wide}, b_{\ln A, \rm wide}\right)$ \\
+$W_{i, \rm wide}$ & Widths of wide spikes &
+ $\ln W_{i, \rm wide} \sim \textnormal{Laplace}\left(a_{\ln W, \rm wide}, b_{\ln W, \rm wide}\right)$ \\
+\hline
 {\em Noise parameters}&&\\
 $\sigma_0$ &    Constant noise level  &   $\ln \sigma_0 \sim \textnormal{Laplace}(0,5)$\\
 $\sigma_1$ &    Noise proportionality   &  $\ln \sigma_1 \sim \textnormal{Laplace}(0,5)$ \\
@@ -141,6 +160,8 @@ $\{y_1, y_2, ..., y_n\}$  &   Measurements    & iid Student-$t(f(x_i; \params), 
 \end{tabular}
 \caption{\label{tab:priors}}
 \end{table}
+
+\end{landscape}
 
 The Laplace, or biexponential, distribution with location parameter
 (central position) $a$ and scale parameter (width) $b$ has probability
