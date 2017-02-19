@@ -35,8 +35,25 @@
 \setlength{\parskip}{8pt}
 
 \section{The prior information}
-
-
+In the Bayesian framework, probability distributions are used to model
+states of uncertainty about the values of unknown quantities.
+Typically, one starts with the ``prior distribution''
+for unknown quantities (`parameters') $\params$, written $p(\params | \info)$
+(the probability distribution for $\params$ {\em given} prior information
+$\info$). This is supplemented with $p(\data | \params, \info)$,
+which describes the uncertainty about the data which we {\em would} have,
+if we knew the parameters (and the prior information). The
+product of these is the joint prior
+\begin{align}
+p(\params, \data | \info) &= p(\params | \info)p(\data | \params, \info).
+\end{align}
+Once a specific observed dataset $\data_o$ is known, knowledge about
+$\params$ is updated from the prior to the posterior
+\begin{align}
+p(\params | \data, \info) &\propto
+    p(\params | \info)p(\data_o | \params, \info).
+\end{align}
+which takes the data into account.
 
 \subsection{The shape of the model curve}
 The algorithm fits the data with a model curve
