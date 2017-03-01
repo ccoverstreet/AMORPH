@@ -15,8 +15,8 @@
 
 \newcommand{\hypers}{\boldsymbol{\alpha}}
 \newcommand{\params}{\boldsymbol{\theta}}
-\newcommand{\data}{\boldsymbol{x}}
-\newcommand{\info}{\boldsymbol{M}}
+\newcommand{\data}{\boldsymbol{d}}
+\newcommand{\info}{I}
 \newcommand{\x}{x}
 \newcommand{\todo}{\color{orange} \bf}
 
@@ -34,7 +34,7 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{8pt}
 
-\section{The prior information}
+\section{Bayesian inference}
 In the Bayesian framework, probability distributions are used to model
 states of uncertainty about the values of unknown quantities.
 Typically, one starts with the ``prior distribution''
@@ -50,28 +50,44 @@ p(\params, \data | \info) &= p(\params | \info)p(\data | \params, \info).
 Once a specific observed dataset $\data_o$ is known, knowledge about
 $\params$ is updated from the prior to the posterior
 \begin{align}
-p(\params | \data, \info) &\propto
+p(\params | \data_0, \info) &\propto
     p(\params | \info)p(\data_o | \params, \info).
 \end{align}
 which takes the data into account.
 
-\subsection{The shape of the model curve}
+\section{The shape of the model curve}
 The algorithm fits the data with a model curve
 $f(\x)$, defined between $\x=\x_{\rm min}$ and $\x=\x_{\rm max}$,
 which is assumed to be a sum of the following components:
 \begin{enumerate}
-\item A background component
-\item $N_{\rm wide}$ wide gaussians
-\item $N_{\rm narrow}$ narrow gaussians, to model the spikes.
+\item A background component, described by parameters $\params_{\rm bg}$
+\item A wide component, described by parameters $\params_{\rm wide}$
+\item Narrow spikes, described by parameters $\params_{\rm narrow}$
 \end{enumerate}
+
+The total model function $f_{\rm tot}(x)$ is therefore
+\begin{align}
+f_{\rm tot}(\x) &= f_{\rm bg}(\x; \params_{\rm bg})
+       + f_{\rm wide}(\x; \params_{\rm wide})
+       + f_{\rm narrow}(\x; \params_{\rm narrow})
+\end{align}
+and the crystallinity is defined as the proportion of the area in the
+wide and narrow components which is accounted for by the wide component:
+\begin{align}
+C &= \frac{\int_{\x_{\rm min}}^{\x_{\rm max}}
+            f_{\rm wide}(\x; \params_{\rm wide}) \, d\x}
+          {\int_{\x_{\rm min}}^{\x_{\rm max}}
+            \left[f_{\rm wide}(\x; \params_{\rm wide})
+            + f_{\rm narrow}(\x; \params_{\rm narrow}) \right] \, d\x}
+\end{align}
+
 
 We compute the posterior distribution for the unknown parameters of the
 components, and use \citep{dnest4} to generate samples from that posterior
 distribution, representing plausible parameter values. From each sample,
 it is possible to compute the crystallinity, making it straightforward to
 calculate the marginal posterior distribution of the crystallinity, describing
-uncertainty about its value in the light of the data.
-
+the remaining uncertainty about its value in the light of the data.
 
 The background component is assumed to be piecewise linear
 {\todo between $\x=\x_{\rm min}$ and $\x=10$, between $\x=10$ and $\x=40$,
@@ -190,17 +206,6 @@ We used a Laplace distribution for informative priors, rather than
 a more conventional normal distribution, because it assigns higher
 prior probability to values far from the center, and can be computed conveniently, i.e., no special functions such as {\tt erf} are needed
 to compute the cumulative distribution function.
-
-The shape of the model function $f(x)$ is therefore
-\begin{align}
-f(\x) &= f_{\rm bg}(\x) + f_{\rm wide}(\x) + f_{\rm narrow}(\x)
-\end{align}
-and the crystallinity is defined as the proportion of the area in the
-wide and narrow components which is accounted for by the wide component:
-\begin{align}
-C &= \frac{\int f_{\rm wide}(\x) \, d\x}
-          {\int f_{\rm wide}(\x) \, d\x + \int f_{\rm narrow}(\x) \, d\x}
-\end{align}
 
 
 \bibliographystyle{plainnat}
