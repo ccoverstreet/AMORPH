@@ -42,7 +42,10 @@ for unknown quantities (`parameters') $\params$, written $p(\params | \info)$
 (the probability distribution for $\params$ {\em given} prior information
 $\info$). This is supplemented with $p(\data | \params, \info)$,
 which describes the uncertainty about the data which we {\em would} have,
-if we knew the parameters (and the prior information). The
+if we knew the parameters (and the prior information), as a function of
+the parameters.
+
+The
 product of these is the joint prior
 \begin{align}
 p(\params, \data | \info) &= p(\params | \info)p(\data | \params, \info).
@@ -53,9 +56,9 @@ $\params$ is updated from the prior to the posterior
 p(\params | \data_0, \info) &\propto
     p(\params | \info)p(\data_o | \params, \info).
 \end{align}
-which takes the data into account.
+which takes the specific data $\data_0$ into account.
 
-\section{The shape of the model curve}
+\section{The model curve}
 The algorithm fits the data with a model curve
 $f(\x)$, defined between $\x=\x_{\rm min}$ and $\x=\x_{\rm max}$,
 which is assumed to be a sum of the following components:
@@ -81,14 +84,23 @@ C &= \frac{\int_{\x_{\rm min}}^{\x_{\rm max}}
             + f_{\rm narrow}(\x; \params_{\rm narrow}) \right] \, d\x}
 \end{align}
 
-
 We compute the posterior distribution for the unknown parameters of the
-components, and use \citep{dnest4} to generate samples from that posterior
-distribution, representing plausible parameter values. From each sample,
+components, using \citep{dnest4} to generate samples from that posterior
+distribution. The output is a collection of plausible values of the
+parameters which can be used to approximate posterior probabilities.
+For example, the probability some parameter $\theta$ is greater than 3.4
+is approximately the proportion of the posterior samples that have
+$\theta > 3.4$.
+
+From each sample,
 it is possible to compute the crystallinity, making it straightforward to
 calculate the marginal posterior distribution of the crystallinity, describing
 the remaining uncertainty about its value in the light of the data.
 
+In the following subsections, I describe the specific parameterisations of the
+three parts of the model curve.
+
+\subsection{The background component}
 The background component is assumed to be piecewise linear
 {\todo between $\x=\x_{\rm min}$ and $\x=10$, between $\x=10$ and $\x=40$,
 and between $\x=40$ and $\x=\x_{\rm max}$}.
@@ -114,7 +126,19 @@ values of the parameters.
 background component.\label{fig:background}}
 \end{figure}
 
+\subsection{The narrow spikes}
+I assumed that there is some number $N_{\rm narrow}$ of narrow spikes,
+with central positions $X_1, X_2, ..., X_{N, \rm narrow}$, amplitudes
+$A_1, A_2, ..., A_{N, \rm narrow}$, and widths
+$W_1, W_2, ..., W_{N, \rm narrow}$. The total shape contributed by the
+narrow spikes is a sum of $N_{\rm narrow}$ gaussians:
+\begin{align}
+f_{\rm narrow}(\x; \params_{\rm narrow}) &=
+    \sum_{i=1}^{N_{\rm narrow}} A_i
+                        \exp\left[-\frac{1}{2W_i^2}\left(x - X_i\right)^2\right]
+\end{align}
 
+\subsection{The wide `spikes'}
 
 \subsection{Prior probability distributions}
 
