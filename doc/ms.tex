@@ -128,20 +128,50 @@ background component.\label{fig:background}}
 
 \subsection{The narrow spikes}
 I assumed that there is some number $N_{\rm narrow}$ of narrow spikes,
-with central positions $X_1, X_2, ..., X_{N, \rm narrow}$, amplitudes
-$A_1, A_2, ..., A_{N, \rm narrow}$, and widths
-$W_1, W_2, ..., W_{N, \rm narrow}$. The total shape contributed by the
-narrow spikes is a sum of $N_{\rm narrow}$ gaussians:
+each of which has a gaussian shape. The $i$th narrow spike is parameterised
+by its central position $X_{i, \rm narrow}$,
+amplitude $A_{i, \rm narrow}$, and width $A_{i, \rm narrow}$.
+The parameter vector for narrow spikes is
+\begin{align}
+\params_{\rm narrow} &=
+  \{N_{\rm narrow}, X_1, X_2, ..., X_{N, \rm narrow},
+    A_1, A_2, ..., A_{N, \rm narrow},
+    W_1, W_2, ..., W_{N, \rm narrow}\}
+\end{align}
+and the total shape contributed by the
+narrow spikes is a sum of the $N_{\rm narrow}$ gaussians:
 \begin{align}
 f_{\rm narrow}(\x; \params_{\rm narrow}) &=
-    \sum_{i=1}^{N_{\rm narrow}} A_i
-                        \exp\left[-\frac{1}{2W_i^2}\left(x - X_i\right)^2\right]
+    \sum_{i=1}^{N_{\rm narrow}} A_{i, \rm narrow}
+ \exp\left[-\frac{1}{2W_{i, \rm narrow}^2}\left(x - X_{i, \rm narrow}\right)^2\right].
 \end{align}
 
-\subsection{The wide `spikes'}
+\subsection{The wide component}
+The wide component is also composed of gaussians, like the narrow spikes.
+In fact, the only real difference is the prior distributions for the positions,
+amplitudes, and widths, given in Section~\ref{sec:priors}.
 
-\subsection{Prior probability distributions}
+There is some number $N_{\rm wide}$ of gaussians in the wide component.
+The $i$th gaussian is parameterised
+by its central position $X_{i, \rm wide}$,
+amplitude $A_{i, \rm wide}$, and width $A_{i, \rm wide}$.
+The parameter vector for wide gaussians is
+\begin{align}
+\params_{\rm wide} &=
+  \{N_{\rm wide}, X_1, X_2, ..., X_{N, \rm wide},
+    A_1, A_2, ..., A_{N, \rm wide},
+    W_1, W_2, ..., W_{N, \rm wide}\}
+\end{align}
+and the total shape contributed by the
+wide component is a sum of the $N_{\rm wide}$ gaussians:
+\begin{align}
+f_{\rm wide}(\x; \params_{\rm wide}) &=
+    \sum_{i=1}^{N_{\rm wide}} A_{i, \rm wide}
+ \exp\left[-\frac{1}{2W_{i, \rm wide}^2}\left(x - X_{i, \rm wide}\right)^2\right].
+\end{align}
 
+
+\subsection{Prior probability distributions}\label{sec:priors}
 The joint prior distribution for the hyperparameters, parameters, and data,
 is written $p(\hypers, \params, \data | \info)$, and is usually factorised
 in this way:
