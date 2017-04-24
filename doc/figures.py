@@ -43,9 +43,14 @@ x = dn4.my_loadtxt("../src/easy_data.txt")[:,0]
 start = indices["wide[0]"]
 end   = indices["wide[1000]"] + 1
 
-for i in range(0, 10):
-    y = sample[i, start:end]
-    y /= y.max()
-    plt.plot(x, y, "-")
+for i in range(0, 8):
+    k = rng.randint(sample.shape[0])
+    y = sample[k, start:end]
+    y /= y.max() + 0.00001
+    y *= np.exp(0.1*rng.randn())
+    plt.plot(x, y, "-", alpha=0.4)
+    plt.xlabel("$x$")
+    plt.ylabel("$y$")
+    plt.title("Wide component")
 plt.show()
 
