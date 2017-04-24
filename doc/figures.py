@@ -1,3 +1,4 @@
+import dnest4.classic as dn4
 import numpy as np
 import numpy.random as rng
 import matplotlib.pyplot as plt
@@ -32,5 +33,19 @@ plt.xlabel("$x$", fontsize=16)
 plt.ylabel("$y$", fontsize=16)
 plt.title("Background component")
 plt.savefig("figures/background.pdf", bbox_inches="tight")
+plt.show()
+
+# Load some prior samples
+sample = dn4.my_loadtxt("figures/sample.txt")
+indices = dn4.load_column_names("figures/sample.txt")["indices"]
+
+x = dn4.my_loadtxt("../src/easy_data.txt")[:,0]
+start = indices["wide[0]"]
+end   = indices["wide[1000]"] + 1
+
+for i in range(0, 10):
+    y = sample[i, start:end]
+    y /= y.max()
+    plt.plot(x, y, "-")
 plt.show()
 
