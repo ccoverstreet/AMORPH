@@ -1,4 +1,4 @@
-import dnest4.classic as dn4
+import dnest_functions as dn4
 import numpy as np
 import matplotlib.pyplot as plt
 
