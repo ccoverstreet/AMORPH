@@ -202,7 +202,21 @@ the skewness is
                          \, d\x.
 \end{align}
 
-
+To quantify the non-gaussianity, we construct a gaussian
+$g'(\x)$
+with the same center and width as $g(\x)$, and compute the
+Kullback-Leibler divergence from $g'$ to $g$:
+\begin{align}
+\textnormal{non-gaussianity} &= 
+    \int_{-\infty}^\infty g(\x) \log\left[\frac{g(\x)}{g'(\x)}\right] \, d\x.
+\end{align}
+where
+\begin{align}
+g'(\x) &= \frac{1}{\textnormal{width} \times \sqrt{2\pi}}
+            \exp\left[-\frac{1}{2\times (\textnormal{width})^2}
+                    \left(\x - \textnormal{center}\right)^2\right].
+\end{align}
+This is zero when $g(\x)$ is a gaussian.
 
 \section{Prior probability distributions}\label{sec:priors}
 The joint prior distribution for the hyperparameters, parameters, and data,
