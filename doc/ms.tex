@@ -170,8 +170,41 @@ f_{\rm wide}(\x; \params_{\rm wide}) &=
  \exp\left[-\frac{1}{2W_{i, \rm wide}^2}\left(x - X_{i, \rm wide}\right)^2\right].
 \end{align}
 
+\subsection{Derived properties}
+Some derived properties of the wide component are used to summarise its shape.
+We have included `skewness', which describes asymmetry, and `nongaussianity'
+which quantifies the departure from gaussianity. These are not the same
+concept, as the wide component could be non-gaussian while still being symmetric
+(and thus having zero skewness).
 
-\subsection{Prior probability distributions}\label{sec:priors}
+Defining the normalised version of the wide component as
+\begin{align}
+g(\x) &= \frac{f_{\rm wide}(\x)}
+             {\int_{-\infty}^\infty f_{\rm wide}(\x') \, d\x'},
+\end{align}
+its center of mass by
+\begin{align}
+\textnormal{center} &= \int_{-\infty}^\infty g(\x) \, d\x,
+\end{align}
+and its width (second central moment) by
+\begin{align}
+\textnormal{width} &= \sqrt{\int_{-\infty}^\infty
+                            g(\x) \left(\x - \textnormal{center}\right)^2
+                            \, d\x},
+\end{align}
+the skewness is
+\begin{align}
+\textnormal{skewness} &= \int_{-\infty}^\infty
+                           g(\x) 
+                           \left(
+                             \frac{x - \textnormal{center}}{\textnormal{width}}
+                           \right)^3
+                         \, d\x.
+\end{align}
+
+
+
+\section{Prior probability distributions}\label{sec:priors}
 The joint prior distribution for the hyperparameters, parameters, and data,
 is written $p(\hypers, \params, \data | \info)$, and is usually factorised
 in this way:
