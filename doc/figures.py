@@ -53,5 +53,7 @@ for i in range(0, 8):
     plt.xlabel("$x$")
     plt.ylabel("$y$")
     plt.title("Wide component")
+
+plt.savefig("figures/wide_component.pdf", bbox_inches="tight")
 plt.show()
 

@@ -122,7 +122,7 @@ values of the parameters.
 \begin{figure}
 \centering
 \includegraphics[width=0.7\textwidth]{figures/background.pdf}
-\caption{Three example functions showing possible shapes of the
+\caption{\it Three example functions showing possible shapes of the
 background component.\label{fig:background}}
 \end{figure}
 
@@ -169,6 +169,18 @@ f_{\rm wide}(\x; \params_{\rm wide}) &=
     \sum_{i=1}^{N_{\rm wide}} A_{i, \rm wide}
  \exp\left[-\frac{1}{2W_{i, \rm wide}^2}\left(x - X_{i, \rm wide}\right)^2\right].
 \end{align}
+
+Figure~\ref{fig:wide_component} shows several examples of plausible
+wide component shapes.
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[scale=0.7]{figures/wide_component.pdf}
+\caption{\it Some examples of plausible shapes for the wide component,
+generated from the prior distribution for its parameters
+(Section~\ref{sec:priors}). For visual purposes only, these
+were scaled to amplitudes $\sim$ 1. \label{fig:wide_component}}
+\end{figure}
 
 \subsection{Derived properties}
 Some derived properties of the wide component are used to summarise its shape.
@@ -292,7 +304,8 @@ $\nu$     &   Shape parameter for residuals   &   LogUniform$(1, 1000)$\\
 $\{y_1, y_2, ..., y_n\}$  &   Measurements    & iid Student-$t(f(x_i; \params), ,\nu)$\\
 \hline
 \end{tabular}
-\caption{\label{tab:priors}}
+\caption{\it The prior distributions for all hyperparameters,
+parameters, and the data.\label{tab:priors}}
 \end{table}
 
 \end{landscape}
