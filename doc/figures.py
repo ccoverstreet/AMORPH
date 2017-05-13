@@ -33,7 +33,8 @@ plt.xlabel("$x$", fontsize=16)
 plt.ylabel("$y$", fontsize=16)
 plt.title("Background component")
 plt.savefig("figures/background.pdf", bbox_inches="tight")
-plt.show()
+print("figures/background.pdf done")
+plt.clf()
 
 # Load some prior samples
 sample = dn4.my_loadtxt("figures/sample.txt")
@@ -55,5 +56,7 @@ for i in range(0, 8):
     plt.title("Wide component")
 
 plt.savefig("figures/wide_component.pdf", bbox_inches="tight")
-plt.show()
+print("figures/wide_component.pdf done")
+plt.clf()
+
 
