@@ -59,4 +59,34 @@ plt.savefig("figures/wide_component.pdf", bbox_inches="tight")
 print("figures/wide_component.pdf done")
 plt.clf()
 
+# Demonstrate skewness and nongaussianity
+def properties(f):
+    f /= f.sum()
+    com = np.sum(f*x)
+    wsq = np.sum(f*(x - com)**2)
+    w = np.sqrt(wsq)
+    skewness = np.sum(f*((x - com)/w)**3)
+    gaussian = np.exp(-0.5*(x - com)**2/wsq)
+    gaussian /= np.sum(gaussian)
+    KL = np.sum(f*np.log(f/gaussian))
+    return (skewness, KL)
+
+width = 3*np.ones(len(x))
+f0 = np.exp(-0.5*(x - 25)**2/width**2)
+
+width = 3 + 1.15*(x > 25)
+f1 = np.exp(-0.5*(x - 25)**2/width**2)
+
+width = 3 + 3.05*(x > 25)
+f2 = np.exp(-0.5*(x - 25)**2/width**2)
+
+plt.plot(x, f0/f0.max(), alpha=0.6, label="Skewness = 0.0")
+plt.plot(x, f1/f1.max(), alpha=0.6, label="Skewness = 0.25")
+plt.plot(x, f2/f2.max(), alpha=0.6, label="Skewness = 0.50")
+plt.xlabel("$x$")
+plt.ylabel("$y$")
+plt.title("Skewness")
+plt.legend(loc="upper left")
+plt.savefig("figures/skewness.pdf", bbox_inches="tight")
+print("figures/skewness.pdf done")
 
