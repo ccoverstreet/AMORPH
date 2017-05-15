@@ -216,7 +216,7 @@ the skewness is
 
 To quantify the non-gaussianity, we construct a gaussian
 $g'(\x)$
-with the same center and width as $g(\x)$, and compute the
+with the same centre, width, and total integral as $g(\x)$, and compute the
 Kullback-Leibler divergence from $g'$ to $g$:
 \begin{align}
 \textnormal{non-gaussianity} &= 
@@ -228,12 +228,27 @@ g'(\x) &= \frac{1}{\textnormal{width} \times \sqrt{2\pi}}
             \exp\left[-\frac{1}{2\times (\textnormal{width})^2}
                     \left(\x - \textnormal{center}\right)^2\right].
 \end{align}
-This is zero when $g(\x)$ is a gaussian.
+The Kullback-Leibler divergence is a standard way of quantifying how
+different one measure is from another \citep{knuth2012foundations}.
+It is zero when the two measures are the same, in our case,
+if $g(\x)$ is a gaussian.
+
+See Figures~\ref{fig:skewness} and~\ref{fig:nongaussianity} for example
+shapes for the wide component, and corresponding values of the skewness
+and nongaussianity.
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[scale=0.7]{figures/skewness.pdf}
-\caption{\label{fig:skewness}}
+\caption{\it Examples of wide component shapes with different values
+for the skewness.\label{fig:skewness}}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[scale=0.7]{figures/nongaussianity.pdf}
+\caption{\it Examples of wide component shapes with different values
+for the nongaussianity.\label{fig:nongaussianity}}
 \end{figure}
 
 \section{Prior probability distributions}\label{sec:priors}
