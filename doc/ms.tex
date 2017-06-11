@@ -35,7 +35,9 @@
 \setlength{\parskip}{8pt}
 
 \section{Bayesian inference}
-In the Bayesian framework, probability distributions are used to model
+In the Bayesian framework
+\citep{gregory2005bayesian, o2004kendall, sivia2006data},
+probability distributions are used to model
 states of uncertainty about the values of unknown quantities.
 Typically, one starts with the ``prior distribution''
 for unknown quantities (`parameters') $\params$, written $p(\params | \info)$
@@ -43,20 +45,42 @@ for unknown quantities (`parameters') $\params$, written $p(\params | \info)$
 $\info$). This is supplemented with $p(\data | \params, \info)$,
 which describes the uncertainty about the data which we {\em would} have,
 if we knew the parameters (and the prior information), as a function of
-the parameters.
-
+the parameters. This describes uncertainty about what data will be observed,
+but knowledge about the fact that the data has something to do with the
+parameters $\params$.
 The
-product of these is the joint prior
+product of these two distributions is the joint prior
 \begin{align}
-p(\params, \data | \info) &= p(\params | \info)p(\data | \params, \info).
+p(\params, \data | \info) &= p(\params | \info)p(\data | \params, \info)
 \end{align}
+which describes uncertainty about the value of both the parameters and the
+dataset.
+
 Once a specific observed dataset $\data_o$ is known, knowledge about
 $\params$ is updated from the prior to the posterior
 \begin{align}
 p(\params | \data_0, \info) &\propto
     p(\params | \info)p(\data_o | \params, \info).
 \end{align}
-which takes the specific data $\data_0$ into account.
+which takes the specific data $\data_0$ into account. With a specific dataset
+$\data_0$ being specified, $p(\data_o | \params,\info)$ is a function of the
+unknown parameters $\params$ and is called the {\em likelihood function}.
+The posterior distribution is therefore proportional to the prior distribution
+times the likelihood function.
+
+When $\params$ is a large collection of parameters, the posterior distribution
+is a probability distribution over a high-dimensional parameter space. To
+represent it computationally, Markov Chain Monte Carlo (MCMC) methods are
+often used to generate samples from the parameter space, according to the
+posterior distribution. The output is a collection of plausible values of the
+parameters which can be used to approximate posterior probabilities.
+For example, the probability some parameter $\theta$ is greater than 3.4
+is approximately the proportion of the posterior samples that have
+$\theta > 3.4$.
+
+We compute the posterior distribution for the unknown parameters of the
+components, using \citep{dnest4} to generate samples from that posterior
+distribution.
 
 \section{The model curve}
 The algorithm fits the data with a model curve
@@ -84,13 +108,7 @@ C &= \frac{\int_{\x_{\rm min}}^{\x_{\rm max}}
             + f_{\rm narrow}(\x; \params_{\rm narrow}) \right] \, d\x}
 \end{align}
 
-We compute the posterior distribution for the unknown parameters of the
-components, using \citep{dnest4} to generate samples from that posterior
-distribution. The output is a collection of plausible values of the
-parameters which can be used to approximate posterior probabilities.
-For example, the probability some parameter $\theta$ is greater than 3.4
-is approximately the proportion of the posterior samples that have
-$\theta > 3.4$.
+
 
 From each sample,
 it is possible to compute the crystallinity, making it straightforward to
