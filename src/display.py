@@ -66,22 +66,29 @@ def display():
 
         # Compute some integrals
         wide_integral[i] = np.sum(wide_component)
-        f = wide_component / wide_integral[i] # Normalised
 
-        wide_center_of_mass[i] = np.sum(x * f)
-        wide_width[i] = np.sqrt(np.sum((x - wide_center_of_mass[i])**2*f))
-        wide_skewness[i] = np.sum(f *\
-                            ((x - wide_center_of_mass[i]) / wide_width[i])**3)
+        if wide_integral[i] != 0.0:
+            f = wide_component / wide_integral[i] # Normalised
 
-        # Best fitting gaussian to the wide component
-        gaussian = np.exp(-0.5*(x - wide_center_of_mass[i])**2 \
-                            / wide_width[i]**2)
-        gaussian /= gaussian.sum()
+            wide_center_of_mass[i] = np.sum(x * f)
+            wide_width[i] = np.sqrt(np.sum((x - wide_center_of_mass[i])**2*f))
+            wide_skewness[i] = np.sum(f *\
+                                ((x - wide_center_of_mass[i]) / wide_width[i])**3)
 
-        # Nongaussianity based on KL divergence
-        wide_nongaussianity[i] = np.sum(f*np.log(f / gaussian + 1E-300))
+            # Best fitting gaussian to the wide component
+            gaussian = np.exp(-0.5*(x - wide_center_of_mass[i])**2 \
+                                / wide_width[i]**2)
+            gaussian /= gaussian.sum()
 
-        spikes_integral[i] = np.sum(the_spikes)
+            # Nongaussianity based on KL divergence
+            wide_nongaussianity[i] = np.sum(f*np.log(f / gaussian + 1E-300))
+
+            spikes_integral[i] = np.sum(the_spikes)
+        else:
+            wide_center_of_mass[i] = np.NaN
+            wide_width[i] = np.NaN
+            wide_skewness[i] = np.NaN
+            wide_nongaussianity[i] = np.NaN
 
         # Plot the model
         if i < 50:
@@ -95,7 +102,10 @@ def display():
     plt.ylabel("$y$", fontsize=16)
     plt.show()
 
+    # Remove any nans before plotting
     wide_fraction = wide_integral/(spikes_integral + wide_integral)
+    wide_fraction = wide_fraction[~np.isnan(wide_fraction)]
+
     plt.hist(wide_fraction, 100, color=[0.8, 0.8, 0.8])
     plt.xlim([0, 1])
     plt.xlabel("(wide component flux)/(total spike flux + wide component flux)")
@@ -103,24 +113,29 @@ def display():
            b=wide_fraction.std()))
     plt.show()
 
+    wide_center_of_mass = wide_center_of_mass[~np.isnan(wide_center_of_mass)]
     plt.hist(wide_center_of_mass, 100, color=[0.8, 0.8, 0.8])
     plt.xlabel("Center of mass of wide component")
     print("Center of mass = {a} +- {b}".format(a=wide_center_of_mass.mean(),
            b=wide_center_of_mass.std()))
     plt.show()
 
+    wide_width = wide_width[~np.isnan(wide_width)]
     plt.hist(wide_width, 100, color=[0.8, 0.8, 0.8])
     plt.xlabel("Width of wide component")
     print("Width = {a} +- {b}".format(a=wide_width.mean(),
            b=wide_width.std()))
     plt.show()
 
+
+    wide_skewness = wide_skewness[~np.isnan(wide_skewness)]
     plt.hist(wide_skewness, 100, color=[0.8, 0.8, 0.8])
     plt.xlabel("Skewness of wide component")
     print("Skewness = {a} +- {b}".format(a=wide_skewness.mean(),
            b=wide_skewness.std()))
     plt.show()
 
+    wide_nongaussianity = wide_nongaussianity[~np.isnan(wide_nongaussianity)]
     plt.hist(wide_nongaussianity, 100, color=[0.8, 0.8, 0.8])
     plt.xlabel("Nongaussianity of wide component")
     plt.xlim(0.0)
