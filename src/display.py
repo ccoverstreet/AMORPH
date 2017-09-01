@@ -98,8 +98,8 @@ def display():
             plt.plot(data[:,0], bg, "y", linewidth=2, alpha=0.1)
             plt.ylim(0)
 
-    plt.xlabel("$x$", fontsize=16)
-    plt.ylabel("$y$", fontsize=16)
+    plt.xlabel("$2\\theta$ (degrees)", fontsize=16)
+    plt.ylabel("$Intensity$", fontsize=16)
     plt.show()
 
     # Remove any nans before plotting
@@ -108,8 +108,8 @@ def display():
 
     plt.hist(wide_fraction, 100, color=[0.8, 0.8, 0.8])
     plt.xlim([0, 1])
-    plt.xlabel("(wide component flux)/(total spike flux + wide component flux)")
-    print("Wide fraction = {a} +- {b}".format(a=wide_fraction.mean(),\
+    plt.xlabel("(amporph)/(amorph + crystal)")
+    print("(amporph)/(amorph + crystal) = {a} +- {b}".format(a=wide_fraction.mean(),\
            b=wide_fraction.std()))
     plt.show()
 
