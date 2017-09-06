@@ -53,7 +53,7 @@ for i in range(0, 8):
     plt.plot(x, y, "-", alpha=0.4)
     plt.xlabel("$x$")
     plt.ylabel("$y$")
-    plt.title("Wide component")
+    plt.title("Amorphous component")
 
 plt.savefig("figures/wide_component.pdf", bbox_inches="tight")
 print("figures/wide_component.pdf done")
