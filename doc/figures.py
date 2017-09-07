@@ -29,8 +29,8 @@ for i in range(0, 3):
     # Plot the background component shape
     plt.plot(xx, yy, "ko-", alpha=0.2)
 
-plt.xlabel("$x$", fontsize=16)
-plt.ylabel("$y$", fontsize=16)
+plt.xlabel("$x$")
+plt.ylabel("$y$")
 plt.title("Background component")
 plt.savefig("figures/background.pdf", bbox_inches="tight")
 print("figures/background.pdf done")
@@ -92,24 +92,25 @@ print("figures/skewness.pdf done")
 plt.close()
 
 nu = 100.0
-f0 = (1.0 + (x - 25.0)**2/nu/3**2)**(-0.5*(nu + 1.0))
+f0 = (1.0 + (x - 30.0)**2/nu/3**2)**(-0.5*(nu + 1.0))
 f0 /= f0.max()
 
 nu = 3.0
-f1 = (1.0 + (x - 25.0)**2/nu/3**2)**(-0.5*(nu + 1.0))
+f1 = (1.0 + (x - 30.0)**2/nu/3**2)**(-0.5*(nu + 1.0))
 f1 /= f1.max()
 
 nu = 1.0
-f2 = (1.0 + (x - 25.0)**2/nu/3**2)**(-0.5*(nu + 1.0))
+f2 = (1.0 + (x - 30.0)**2/nu/3**2)**(-0.5*(nu + 1.0))
 f2 /= f2.max()
 
-plt.figure(figsize=(9, 6))
-plt.plot(x, f0, alpha=0.6, label="non-gaussianity=0")
-plt.plot(x, f1, alpha=0.6, label="non-gaussianity=0.08")
-plt.plot(x, f2, alpha=0.6, label="non-gaussianity=0.15")
+#plt.figure(figsize=(9, 6))
+plt.plot(x, f0, alpha=0.6, label="Non-gaussianity=0")
+plt.plot(x, f1, alpha=0.6, label="Non-gaussianity=0.08")
+plt.plot(x, f2, alpha=0.6, label="Non-gaussianity=0.15")
 plt.xlabel("$x$")
 plt.ylabel("$y$")
-plt.title("non-gaussianity")
+plt.xlim([-5, 55])
+plt.title("Non-gaussianity")
 plt.legend(loc="upper left")
 plt.savefig("figures/nongaussianity.pdf", bbox_inches="tight")
 print("figures/nongaussianity.pdf done")
