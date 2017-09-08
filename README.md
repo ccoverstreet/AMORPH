@@ -6,9 +6,6 @@ AMORPH
 AMORPH is free software licenced under the GNU General Public License,
 version 3. See the LICENSE file for details.
 
-AMORPH is free software, released under the terms of the GNU General Public
-Licence, version 3.
-
 Steps to installing and Operating:
 ==================================
 The entire repository, including C++ and Python source code,
