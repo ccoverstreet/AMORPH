@@ -9,9 +9,19 @@
 namespace Crystals
 {
 
+// Gaussian or Lorentzian shape for narrow peaks?
+enum class PeakShape
+{
+    gaussian, lorentzian
+};
+
+
 class MyModel
 {
     private:
+        // Which peak shape?
+        static const PeakShape peak_shape;
+
         // Constant background
         double background;
 

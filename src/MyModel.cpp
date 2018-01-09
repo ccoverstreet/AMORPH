@@ -1,8 +1,9 @@
 #include "MyModel.h"
 #include "DNest4/code/DNest4.h"
 #include "Lookup.h"
-#include <sstream>
 #include <cmath>
+#include <sstream>
+#include <stdexcept>
 
 namespace Crystals
 {
@@ -12,6 +13,7 @@ Data MyModel::data;
 const DNest4::Laplace MyModel::laplace(0.0, 5.0);
 std::vector<double> MyModel::x_knots{data.get_x_min(),
                                             10.0, 40.0, data.get_x_max()};
+const PeakShape MyModel::peak_shape = PeakShape::gaussian;
 
 // Constructor
 MyModel::MyModel()
@@ -175,8 +177,20 @@ void MyModel::compute_narrow(bool update)
         for(size_t j=0; j<narrow.size(); ++j)
         {
             rsq = pow(data_x[j] - c, 2);
-            if(rsq*tau < 100.0)
-                narrow[j] += a*Lookup::evaluate(0.5*rsq*tau);
+
+            if(peak_shape == PeakShape::gaussian)
+            {
+                if(rsq*tau < 100.0)
+                    narrow[j] += a*Lookup::evaluate(0.5*rsq*tau);
+            }
+            else if(peak_shape == PeakShape::lorentzian)
+            {
+                narrow[j] += a/(1.0 + rsq*tau);
+            }
+            else
+            {
+                throw std::invalid_argument("Unknown peak shape.");
+            }
         }
     }
 }
