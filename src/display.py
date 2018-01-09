@@ -122,6 +122,14 @@ def display():
     plt.ylabel("$Intensity$", fontsize=16)
     plt.show()
 
+    # Number of narrow components
+    binwidth=0.8
+    plt.hist(posterior_sample[:,11], bins=np.arange(0, 301)-0.5*binwidth,
+             width=binwidth, color=[0.3, 0.3, 0.3])
+    plt.xlabel("Number of narrow components")
+    plt.ylabel("Number of posterior samples")
+    plt.show()
+
     # Remove any nans before plotting
     wide_fraction = wide_integral/(spikes_integral + wide_integral)
     wide_fraction = wide_fraction[~np.isnan(wide_fraction)]
