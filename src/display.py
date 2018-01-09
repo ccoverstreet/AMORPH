@@ -36,33 +36,39 @@ def display():
     spikes_integral = np.zeros(posterior_sample.shape[0])
     max_num_spikes = int(posterior_sample[0, indices["max_num_gaussians1"]])
 
+
+    # For calculating posterior means of functions
+    bg_tot = np.zeros(data.shape[0])
+    wide_component_tot = np.zeros(data.shape[0])
+    the_spikes_tot = np.zeros(data.shape[0])
+    model_tot = np.zeros(data.shape[0])
+
+    plt.clf()
     for i in range(0, posterior_sample.shape[0]):
-
-        if i==0:
-            plt.clf()
-
-            # Plot the data
-            plt.plot(data[:,0], data[:,1], "ko", markersize=3, alpha=0.2)
 
         # Extract the background
         start = indices["bg[0]"]
         end = start + data.shape[0]
         bg = posterior_sample[i, start:end]
+        bg_tot += bg
 
         # Extract the wide component
         start = indices["wide[0]"]
         end = start + data.shape[0]
         wide_component = posterior_sample[i, start:end]
+        wide_component_tot += wide_component
 
         # Extract the spikes component
         start = indices["narrow[0]"]
         end = start + data.shape[0]
         the_spikes = posterior_sample[i, start:end]
+        the_spikes_tot += the_spikes
 
         # Extract the model curve
         start = indices["model_curve[0]"]
         end = start + data.shape[0]
         model = posterior_sample[i, start:end]
+        model_tot += model
 
         # Compute some integrals
         wide_integral[i] = np.sum(wide_component)
@@ -90,13 +96,27 @@ def display():
             wide_skewness[i] = np.NaN
             wide_nongaussianity[i] = np.NaN
 
-        # Plot the model
+        # Plot the model. 50 posterior samples and the
+        # posterior mean for each part.
         if i < 50:
-            plt.plot(data[:,0], model, "g", linewidth=2, alpha=0.1)
-            plt.plot(data[:,0], wide_component, "b", linewidth=2, alpha=0.1)
-            plt.plot(data[:,0], the_spikes, "r", linewidth=2, alpha=0.1)
-            plt.plot(data[:,0], bg, "y", linewidth=2, alpha=0.1)
+            plt.plot(data[:,0], model, "g", linewidth=1, alpha=0.1)
+            plt.plot(data[:,0], wide_component, "b", linewidth=1, alpha=0.1)
+            plt.plot(data[:,0], the_spikes, "r", linewidth=1, alpha=0.1)
+            plt.plot(data[:,0], bg, "y", linewidth=1, alpha=0.1)
             plt.ylim(0)
+
+    # Plot the posterior means
+    plt.plot(data[:,0], model_tot/posterior_sample.shape[0],
+                        "g-", linewidth=3, alpha=1)
+    plt.plot(data[:,0], wide_component_tot/posterior_sample.shape[0],
+                        "b--", linewidth=3, alpha=1)
+    plt.plot(data[:,0], the_spikes_tot/posterior_sample.shape[0],
+                        "r--", linewidth=3, alpha=1)
+    plt.plot(data[:,0], bg_tot/posterior_sample.shape[0],
+                        "y--", linewidth=3, alpha=1)
+
+    # Plot the data
+    plt.plot(data[:,0], data[:,1], "ko", markersize=3, alpha=0.5)
 
     plt.xlabel("$2\\theta$ (degrees)", fontsize=16)
     plt.ylabel("$Intensity$", fontsize=16)
@@ -106,7 +126,7 @@ def display():
     wide_fraction = wide_integral/(spikes_integral + wide_integral)
     wide_fraction = wide_fraction[~np.isnan(wide_fraction)]
 
-    plt.hist(wide_fraction, 100, color=[0.8, 0.8, 0.8])
+    plt.hist(wide_fraction, 100, color=[0.3, 0.3, 0.3])
     plt.xlim([0, 1])
     plt.xlabel("(amporph)/(amorph + crystal)")
     print("(amporph)/(amorph + crystal) = {a} +- {b}".format(a=wide_fraction.mean(),\
@@ -114,14 +134,14 @@ def display():
     plt.show()
 
     wide_center_of_mass = wide_center_of_mass[~np.isnan(wide_center_of_mass)]
-    plt.hist(wide_center_of_mass, 100, color=[0.8, 0.8, 0.8])
+    plt.hist(wide_center_of_mass, 100, color=[0.3, 0.3, 0.3])
     plt.xlabel("Center of mass of wide component")
     print("Center of mass = {a} +- {b}".format(a=wide_center_of_mass.mean(),
            b=wide_center_of_mass.std()))
     plt.show()
 
     wide_width = wide_width[~np.isnan(wide_width)]
-    plt.hist(wide_width, 100, color=[0.8, 0.8, 0.8])
+    plt.hist(wide_width, 100, color=[0.3, 0.3, 0.3])
     plt.xlabel("Width of wide component")
     print("Width = {a} +- {b}".format(a=wide_width.mean(),
            b=wide_width.std()))
@@ -129,14 +149,14 @@ def display():
 
 
     wide_skewness = wide_skewness[~np.isnan(wide_skewness)]
-    plt.hist(wide_skewness, 100, color=[0.8, 0.8, 0.8])
+    plt.hist(wide_skewness, 100, color=[0.3, 0.3, 0.3])
     plt.xlabel("Skewness of wide component")
     print("Skewness = {a} +- {b}".format(a=wide_skewness.mean(),
            b=wide_skewness.std()))
     plt.show()
 
     wide_nongaussianity = wide_nongaussianity[~np.isnan(wide_nongaussianity)]
-    plt.hist(wide_nongaussianity, 100, color=[0.8, 0.8, 0.8])
+    plt.hist(wide_nongaussianity, 100, color=[0.3, 0.3, 0.3])
     plt.xlabel("Nongaussianity of wide component")
     plt.xlim(0.0)
     print("Nongaussianity = {a} +- {b}".format(a=wide_nongaussianity.mean(),
