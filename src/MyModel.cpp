@@ -173,22 +173,26 @@ void MyModel::compute_narrow(bool update)
     const auto& components = (update)?(narrow_gaussians.get_added())
                                 :(narrow_gaussians.get_components());
 
-    double rsq, c, a, w, tau;
+    double rsq, c, a, w, tau, w_inv, coeff;
     double power = -0.5*(peak_shape + 1.0);
     double inv_peak_shape = 1.0/peak_shape;
+    double coeff0 = std::tgamma(0.5*(peak_shape + 1.0))
+                    /sqrt(peak_shape*M_PI)/std::tgamma(0.5*peak_shape);
     for(size_t i=0; i<components.size(); ++i)
     {
         // {center, log_amplitude, width}
         c = components[i][0];
         a = exp(components[i][1]);
         w = components[i][2];
-        tau = 1.0/(w*w);
+        w_inv = 1.0/w;
+        tau = w_inv*w_inv;
+        coeff = coeff0*a*w_inv;
 
         for(size_t j=0; j<narrow.size(); ++j)
         {
             rsq = pow(data_x[j] - c, 2);
 
-            narrow[j] += a*pow(1.0 + rsq*tau*inv_peak_shape, power);
+            narrow[j] += coeff*pow(1.0 + rsq*tau*inv_peak_shape, power);
         }
     }
 }
