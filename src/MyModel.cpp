@@ -13,7 +13,6 @@ Data MyModel::data;
 const DNest4::Laplace MyModel::laplace(0.0, 5.0);
 std::vector<double> MyModel::x_knots{data.get_x_min(),
                                             10.0, 40.0, data.get_x_max()};
-const PeakShape MyModel::peak_shape = PeakShape::gaussian;
 
 // Constructor
 MyModel::MyModel()
@@ -45,6 +44,8 @@ void MyModel::from_prior(DNest4::RNG& rng)
     compute_narrow();
     compute_wide();
 
+    peak_shape = exp(log(0.5) + log(200.0)*rng.rand());
+
     sigma0 = exp(laplace.generate(rng));
     sigma1 = exp(laplace.generate(rng));
     nu = exp(log(1.0) + log(1E3)*rng.rand());
@@ -74,7 +75,7 @@ double MyModel::perturb(DNest4::RNG& rng)
     else
     {
         // Perturb one of these parameters
-        int which = rng.rand_int(5);
+        int which = rng.rand_int(6);
 
         if(which == 0)
         {
@@ -95,11 +96,18 @@ double MyModel::perturb(DNest4::RNG& rng)
         }
         else if(which == 2)
         {
+            peak_shape = log(peak_shape);
+            peak_shape += log(200.0)*rng.randh();
+            DNest4::wrap(peak_shape, log(0.5), log(200.0));
+            peak_shape = exp(peak_shape);
+        }
+        else if(which == 3)
+        {
             sigma0 = log(sigma0);
             logH += laplace.perturb(sigma0, rng);
             sigma0 = exp(sigma0);
         }
-        else if(which == 3)
+        else if(which == 4)
         {
             sigma1 = log(sigma1);
             logH += laplace.perturb(sigma1, rng);
@@ -165,7 +173,9 @@ void MyModel::compute_narrow(bool update)
     const auto& components = (update)?(narrow_gaussians.get_added())
                                 :(narrow_gaussians.get_components());
 
-    double rsq, tau, c, a, w;
+    double rsq, c, a, w, tau;
+    double power = -0.5*(peak_shape + 1.0);
+    double inv_peak_shape = 1.0/peak_shape;
     for(size_t i=0; i<components.size(); ++i)
     {
         // {center, log_amplitude, width}
@@ -178,19 +188,7 @@ void MyModel::compute_narrow(bool update)
         {
             rsq = pow(data_x[j] - c, 2);
 
-            if(peak_shape == PeakShape::gaussian)
-            {
-                if(rsq*tau < 100.0)
-                    narrow[j] += a*Lookup::evaluate(0.5*rsq*tau);
-            }
-            else if(peak_shape == PeakShape::lorentzian)
-            {
-                narrow[j] += a/(1.0 + rsq*tau);
-            }
-            else
-            {
-                throw std::invalid_argument("Unknown peak shape.");
-            }
+            narrow[j] += a*pow(1.0 + rsq*tau*inv_peak_shape, power);
         }
     }
 }
@@ -277,8 +275,8 @@ void MyModel::print(std::ostream& out) const
 
     narrow_gaussians.print(out);
     wide_gaussians.print(out);
+    out<<peak_shape<<' ';
     out<<sigma0<<' '<<sigma1<<' '<<nu<<' ';
-
 
     for(size_t i=0; i<bg.size(); ++i)
         out<<bg[i]<<' ';
@@ -324,6 +322,7 @@ std::string MyModel::description() const
     for(size_t i=0; i<max_num_spikes; ++i)
         s<<"width2["<<i<<"], ";
 
+    s<<"peak_shape, ";
     s<<"sigma0, sigma1, nu, ";
 
     for(size_t i=0; i<narrow.size(); ++i)

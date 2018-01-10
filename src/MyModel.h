@@ -9,19 +9,9 @@
 namespace Crystals
 {
 
-// Gaussian or Lorentzian shape for narrow peaks?
-enum class PeakShape
-{
-    gaussian, lorentzian
-};
-
-
 class MyModel
 {
     private:
-        // Which peak shape?
-        static const PeakShape peak_shape;
-
         // Constant background
         double background;
 
@@ -30,6 +20,9 @@ class MyModel
 
         // Use an RJObject for the narrow spikes and one for the wide spikes
         DNest4::RJObject<MyConditionalPrior> narrow_gaussians, wide_gaussians;
+
+        // Shape parameter of narrow peaks
+        double peak_shape;
 
         // Noise-related parameters
         double sigma0, sigma1, nu;

@@ -127,8 +127,8 @@ def display():
     # This is not ideal - really there is a posterior distribution over
     # residuals.
     curve = model_tot/posterior_sample.shape[0]
-    sd = np.sqrt(posterior_sample[:,1819].mean()**2 \
-                    + posterior_sample[:,1820].mean()*curve)
+    sd = np.sqrt(posterior_sample[:,1820].mean()**2 \
+                    + posterior_sample[:,1821].mean()*curve)
     resid = (curve - data[:,1])/sd
     plt.plot(data[:,0], resid, "o", alpha=0.7)
     plt.xlabel("$2\\theta$ (degrees)")
