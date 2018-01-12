@@ -1,5 +1,5 @@
-#ifndef Crystals_MyModel
-#define Crystals_MyModel
+#ifndef AMORPH_MyModel_h
+#define AMORPH_MyModel_h
 
 #include <ostream>
 #include "DNest4/code/DNest4.h"

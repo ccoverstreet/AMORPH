@@ -1,5 +1,5 @@
-#ifndef Crystals_Lookup
-#define Crystals_Lookup
+#ifndef AMORPH_Lookup_h
+#define AMORPH_Lookup_h
 
 #include <vector>
 

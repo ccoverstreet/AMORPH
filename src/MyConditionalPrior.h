@@ -1,5 +1,5 @@
-#ifndef Crystals_MyConditionalPrior
-#define Crystals_MyConditionalPrior
+#ifndef AMORPH_MyConditionalPrior_h
+#define AMORPH_MyConditionalPrior_h
 
 #include "DNest4/code/DNest4.h"
 

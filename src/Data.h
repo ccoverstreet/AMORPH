@@ -1,5 +1,5 @@
-#ifndef Crystals_Data
-#define Crystals_Data
+#ifndef AMORPH_Data_h
+#define AMORPH_Data_h
 
 #include <vector>
 
