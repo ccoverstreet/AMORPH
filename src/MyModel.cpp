@@ -100,6 +100,8 @@ double MyModel::perturb(DNest4::RNG& rng)
             peak_shape += log(200.0)*rng.randh();
             DNest4::wrap(peak_shape, log(0.5), log(200.0));
             peak_shape = exp(peak_shape);
+
+            compute_narrow(false);
         }
         else if(which == 3)
         {
