@@ -19,7 +19,7 @@ class MyModel
         std::vector<double> n_knots;
 
         // Use an RJObject for the narrow spikes and one for the wide spikes
-        DNest4::RJObject<MyConditionalPrior> narrow_gaussians, wide_gaussians;
+        DNest4::RJObject<MyConditionalPrior> narrow_peaks, wide_peaks;
 
         // Shape parameter of narrow peaks
         double peak_shape;

@@ -17,10 +17,10 @@ std::vector<double> MyModel::x_knots{data.get_x_min(),
 // Constructor
 MyModel::MyModel()
 :n_knots(4)
-,narrow_gaussians(3, max_num_spikes, false,
+,narrow_peaks(3, max_num_spikes, false,
             MyConditionalPrior(data.get_x_min(), data.get_x_max(), true),
                                 DNest4::PriorType::log_uniform)
-,wide_gaussians(3, max_num_spikes, false,
+,wide_peaks(3, max_num_spikes, false,
             MyConditionalPrior(data.get_x_min(), data.get_x_max(), false),
                                 DNest4::PriorType::log_uniform)
 ,bg(data.get_y().size())
@@ -37,8 +37,8 @@ void MyModel::from_prior(DNest4::RNG& rng)
     for(double& nn: n_knots)
         nn = rng.randn();
 
-    narrow_gaussians.from_prior(rng);
-    wide_gaussians.from_prior(rng);
+    narrow_peaks.from_prior(rng);
+    wide_peaks.from_prior(rng);
 
     compute_bg();
     compute_narrow();
@@ -61,16 +61,16 @@ double MyModel::perturb(DNest4::RNG& rng)
     if(choice == 0)
     {
         // Perturb spikes
-        logH += narrow_gaussians.perturb(rng);
+        logH += narrow_peaks.perturb(rng);
 
-        compute_narrow(narrow_gaussians.get_removed().size() == 0);
+        compute_narrow(narrow_peaks.get_removed().size() == 0);
     }
     else if(choice == 1)
     {
         // Perturb spikes
-        logH += wide_gaussians.perturb(rng);
+        logH += wide_peaks.perturb(rng);
 
-        compute_wide(wide_gaussians.get_removed().size() == 0);
+        compute_wide(wide_peaks.get_removed().size() == 0);
     }
     else
     {
@@ -170,8 +170,8 @@ void MyModel::compute_narrow(bool update)
         for(double& y: narrow)
             y = 0.0;
 
-    const auto& components = (update)?(narrow_gaussians.get_added())
-                                :(narrow_gaussians.get_components());
+    const auto& components = (update)?(narrow_peaks.get_added())
+                                :(narrow_peaks.get_components());
 
     double c, m, w, w_inv, coeff, xx;
     for(size_t i=0; i<components.size(); ++i)
@@ -201,8 +201,8 @@ void MyModel::compute_wide(bool update)
         for(double& y: wide)
             y = 0.0;
 
-    const auto& components = (update)?(wide_gaussians.get_added())
-                                :(wide_gaussians.get_components());
+    const auto& components = (update)?(wide_peaks.get_added())
+                                :(wide_peaks.get_components());
 
     double c, m, w, w_inv, coeff, xx;
     double ps = log(100.0);
@@ -274,8 +274,8 @@ void MyModel::print(std::ostream& out) const
     for(double nn: n_knots)
         out<<nn<<' ';
 
-    narrow_gaussians.print(out);
-    wide_gaussians.print(out);
+    narrow_peaks.print(out);
+    wide_peaks.print(out);
     out<<peak_shape<<' ';
     out<<sigma0<<' '<<sigma1<<' '<<nu<<' ';
 
@@ -303,9 +303,9 @@ std::string MyModel::description() const
     for(size_t i=0; i<n_knots.size(); ++i)
         s<<"n_knots["<<i<<"], ";
 
-    s<<"dim_gaussians1, max_num_gaussians1, ";
+    s<<"dim_peaks1, max_num_peaks1, ";
     s<<"location_log_amplitude1, scale_log_amplitude1, ";
-    s<<"location_log_width1, scale_log_width1, num_gaussians1, ";
+    s<<"location_log_width1, scale_log_width1, num_peaks1, ";
     for(size_t i=0; i<max_num_spikes; ++i)
         s<<"center1["<<i<<"], ";
     for(size_t i=0; i<max_num_spikes; ++i)
@@ -313,9 +313,9 @@ std::string MyModel::description() const
     for(size_t i=0; i<max_num_spikes; ++i)
         s<<"width1["<<i<<"], ";
 
-    s<<"dim_gaussians2, max_num_gaussians2, ";
+    s<<"dim_peaks2, max_num_peaks2, ";
     s<<"location_log_amplitude2, scale_log_amplitude2, ";
-    s<<"location_log_width2, scale_log_width2, num_gaussians2, ";
+    s<<"location_log_width2, scale_log_width2, num_peaks2, ";
     for(size_t i=0; i<max_num_spikes; ++i)
         s<<"center2["<<i<<"], ";
     for(size_t i=0; i<max_num_spikes; ++i)
