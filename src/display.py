@@ -34,7 +34,7 @@ def display():
     wide_nongaussianity = np.zeros(posterior_sample.shape[0])
 
     spikes_integral = np.zeros(posterior_sample.shape[0])
-    max_num_spikes = int(posterior_sample[0, indices["max_num_gaussians1"]])
+    max_num_spikes = int(posterior_sample[0, indices["max_num_peaks1"]])
 
 
     # For calculating posterior means of functions
