@@ -44,7 +44,7 @@ void MyModel::from_prior(DNest4::RNG& rng)
     compute_narrow();
     compute_wide();
 
-    peak_shape = exp(log(0.5) + log(200.0)*rng.rand());
+    peak_shape = exp(log(0.1) + log(1000.0)*rng.rand());
 
     sigma0 = exp(laplace.generate(rng));
     sigma1 = exp(laplace.generate(rng));
@@ -97,8 +97,8 @@ double MyModel::perturb(DNest4::RNG& rng)
         else if(which == 2)
         {
             peak_shape = log(peak_shape);
-            peak_shape += log(200.0)*rng.randh();
-            DNest4::wrap(peak_shape, log(0.5), log(200.0));
+            peak_shape += log(1000.0)*rng.randh();
+            DNest4::wrap(peak_shape, log(0.1), log(100.0));
             peak_shape = exp(peak_shape);
 
             compute_narrow(false);
