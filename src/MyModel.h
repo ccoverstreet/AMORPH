@@ -6,7 +6,7 @@
 #include "Data.h"
 #include "MyConditionalPrior.h"
 
-namespace Crystals
+namespace AMORPH
 {
 
 class MyModel
@@ -76,7 +76,7 @@ class MyModel
         static void load_control_points(const char* filename);
 };
 
-} // namespace Crystals
+} // namespace AMORPH
 
 #endif
 

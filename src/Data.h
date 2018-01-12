@@ -3,7 +3,7 @@
 
 #include <vector>
 
-namespace Crystals
+namespace AMORPH
 {
 
 /*
@@ -43,7 +43,7 @@ class Data
         void compute_summaries();
 };
 
-} // namespace Crystals
+} // namespace AMORPH
 
 #endif
 

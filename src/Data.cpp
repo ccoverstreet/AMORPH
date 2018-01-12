@@ -4,7 +4,7 @@
 #include <iostream>
 #include <algorithm>
 
-namespace Crystals
+namespace AMORPH
 {
 
 Data::Data()
@@ -64,5 +64,5 @@ void Data::compute_summaries()
     x_range = x_max - x_min;
 }
 
-} // namespace Crystals
+} // namespace AMORPH
 

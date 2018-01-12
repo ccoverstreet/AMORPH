@@ -2,7 +2,7 @@
 #include <cmath>
 #include <iostream>
 
-namespace Crystals
+namespace AMORPH
 {
 
 Lookup Lookup::instance;
@@ -65,5 +65,5 @@ double Lookup::evaluate(double shape, double x)
 	return frac*instance.f[i][j+1] + (1.0 - frac)*instance.f[i][j];
 }
 
-} // namespace Crystals
+} // namespace AMORPH
 

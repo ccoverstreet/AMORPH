@@ -20,7 +20,7 @@ int main(int argc, char** argv)
     }
 
     // Load the control points
-    Crystals::MyModel::load_control_points("control_points.in");
+    AMORPH::MyModel::load_control_points("control_points.in");
 
     // Save the data filename
     std::fstream fout("run_data.txt", std::ios::out);
@@ -28,10 +28,10 @@ int main(int argc, char** argv)
     fout.close();
 
     // Load data
-    Crystals::MyModel::load_data(data_file.c_str());
+    AMORPH::MyModel::load_data(data_file.c_str());
 
     // Run DNest4.
-    DNest4::start<Crystals::MyModel>(clo);
+    DNest4::start<AMORPH::MyModel>(clo);
 
     return 0;
 }

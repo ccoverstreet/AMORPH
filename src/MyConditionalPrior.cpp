@@ -3,7 +3,7 @@
 #include <cmath>
 #include <stdexcept>
 
-namespace Crystals
+namespace AMORPH
 {
 
 const DNest4::Laplace MyConditionalPrior::laplace(0.0, 5.0);
@@ -157,5 +157,5 @@ void MyConditionalPrior::print(std::ostream& out) const
     out<<location_log_width<<' '<<scale_log_width<<' ';
 }
 
-} // namespace Crystals
+} // namespace AMORPH
 

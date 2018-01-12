@@ -5,7 +5,7 @@
 #include <sstream>
 #include <stdexcept>
 
-namespace Crystals
+namespace AMORPH
 {
 
 // Static things
@@ -343,5 +343,5 @@ void MyModel::load_data(const char* filename)
     data.load(filename);
 }
 
-} // namespace Crystals
+} // namespace AMORPH
 

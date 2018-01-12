@@ -3,7 +3,7 @@
 
 #include "DNest4/code/DNest4.h"
 
-namespace Crystals
+namespace AMORPH
 {
 
 class MyConditionalPrior:public DNest4::ConditionalPrior
@@ -40,7 +40,7 @@ class MyConditionalPrior:public DNest4::ConditionalPrior
         static const int weight_parameter = 1;
 };
 
-} // namespace Crystals
+} // namespace AMORPH
 
 #endif
 

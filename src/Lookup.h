@@ -8,7 +8,7 @@
 * Singleton pattern
 */
 
-namespace Crystals
+namespace AMORPH
 {
 
 class Lookup
@@ -31,7 +31,7 @@ class Lookup
 
 };
 
-} // namespace Crystals
+} // namespace AMORPH
 
 #endif
 
