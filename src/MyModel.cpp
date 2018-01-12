@@ -44,7 +44,7 @@ void MyModel::from_prior(DNest4::RNG& rng)
     compute_narrow();
     compute_wide();
 
-    peak_shape = exp(log(0.1) + log(1000.0)*rng.rand());
+    peak_shape = log(0.1) + log(1000.0)*rng.rand();
 
     sigma0 = exp(laplace.generate(rng));
     sigma1 = exp(laplace.generate(rng));
@@ -96,12 +96,10 @@ double MyModel::perturb(DNest4::RNG& rng)
         }
         else if(which == 2)
         {
-            peak_shape = log(peak_shape);
             peak_shape += log(1000.0)*rng.randh();
             DNest4::wrap(peak_shape, log(0.1), log(100.0));
-            peak_shape = exp(peak_shape);
 
-            compute_narrow(false);
+            compute_narrow();
         }
         else if(which == 3)
         {
@@ -175,26 +173,21 @@ void MyModel::compute_narrow(bool update)
     const auto& components = (update)?(narrow_gaussians.get_added())
                                 :(narrow_gaussians.get_components());
 
-    double rsq, c, a, w, tau, w_inv, coeff;
-    double power = -0.5*(peak_shape + 1.0);
-    double inv_peak_shape = 1.0/peak_shape;
-    double coeff0 = std::tgamma(0.5*(peak_shape + 1.0))
-                    /sqrt(peak_shape*M_PI)/std::tgamma(0.5*peak_shape);
+    double c, m, w, w_inv, coeff, xx;
     for(size_t i=0; i<components.size(); ++i)
     {
-        // {center, log_amplitude, width}
+        // {center, log_mass, width}
         c = components[i][0];
-        a = exp(components[i][1]);
+        m = exp(components[i][1]);
         w = components[i][2];
         w_inv = 1.0/w;
-        tau = w_inv*w_inv;
-        coeff = coeff0*a*w_inv;
+        coeff = m*w_inv;
 
         for(size_t j=0; j<narrow.size(); ++j)
         {
-            rsq = pow(data_x[j] - c, 2);
-
-            narrow[j] += coeff*pow(1.0 + rsq*tau*inv_peak_shape, power);
+            xx = (data_x[j] - c)*w_inv;
+            if(std::abs(xx) <= 20.0)
+                narrow[j] += coeff*Lookup::evaluate(peak_shape, xx);
         }
     }
 }
@@ -211,20 +204,22 @@ void MyModel::compute_wide(bool update)
     const auto& components = (update)?(wide_gaussians.get_added())
                                 :(wide_gaussians.get_components());
 
-    double rsq, tau, c, a, w;
+    double c, m, w, w_inv, coeff, xx;
+    double ps = log(100.0);
     for(size_t i=0; i<components.size(); ++i)
     {
-        // {center, log_amplitude, width}
+        // {center, log_mass, width}
         c = components[i][0];
-        a = exp(components[i][1]);
+        m = exp(components[i][1]);
         w = components[i][2];
-        tau = 1.0/(w*w);
+        w_inv = 1.0/w;
+        coeff = m*w_inv;
 
-        for(size_t j=0; j<wide.size(); ++j)
+        for(size_t j=0; j<narrow.size(); ++j)
         {
-            rsq = pow(data_x[j] - c, 2);
-            if(rsq*tau < 100.0)
-                wide[j] += a*Lookup::evaluate(0.5*rsq*tau);
+            xx = (data_x[j] - c)*w_inv;
+            if(std::abs(xx) <= 20.0)
+                wide[j] += coeff*Lookup::evaluate(ps, xx);
         }
     }
 }

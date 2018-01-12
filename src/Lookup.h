@@ -14,9 +14,12 @@ namespace Crystals
 class Lookup
 {
 	private:
-		int num;
-		double xMin, xMax, dx, one_over_dx;
-		std::vector<double> _exp; // exp(-x) for x >= 0
+		int num_shape;
+        double shape_min, shape_max, dshape, one_over_dshape;
+
+        int num_x;
+		double x_min, x_max, dx, one_over_dx;
+		std::vector<std::vector<double>> f;
 
 		Lookup();
 		Lookup(const Lookup& other);
@@ -24,7 +27,7 @@ class Lookup
 		static Lookup instance;
 
 	public:
-		static double evaluate(double x);
+		static double evaluate(double shape, double x);
 
 };
 
