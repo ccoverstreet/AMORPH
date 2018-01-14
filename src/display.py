@@ -118,8 +118,8 @@ def display():
     # Plot the data
     plt.plot(data[:,0], data[:,1], "ko", markersize=3, alpha=0.5)
 
-    plt.xlabel("$2\\theta$ (degrees)", fontsize=16)
-    plt.ylabel("Intensity", fontsize=16)
+    plt.xlabel("$2\\theta$ (degrees)", fontsize=14)
+    plt.ylabel("Intensity", fontsize=14)
     plt.show()
 
     # Plot the standardised residuals of the posterior mean curve.
@@ -127,10 +127,10 @@ def display():
     # This is not ideal - really there is a posterior distribution over
     # residuals.
     curve = model_tot/posterior_sample.shape[0]
-    sd = np.sqrt(posterior_sample[:,1820].mean()**2 \
-                    + posterior_sample[:,1821].mean()*curve)
+    sd = np.sqrt(posterior_sample[:,indices["sigma0"]].mean()**2 \
+                    + posterior_sample[:,indices["sigma1"]].mean()*curve)
     resid = (curve - data[:,1])/sd
-    plt.plot(data[:,0], resid, "o", alpha=0.7)
+    plt.plot(data[:,0], resid, "-")
     plt.xlabel("$2\\theta$ (degrees)")
     plt.ylabel("Standardised residuals (of posterior mean model curve)")
     plt.show()
