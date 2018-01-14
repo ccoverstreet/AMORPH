@@ -137,7 +137,8 @@ def display():
 
     # Number of narrow components
     binwidth=0.8
-    plt.hist(posterior_sample[:,11], bins=np.arange(0, 301)-0.5*binwidth,
+    plt.hist(posterior_sample[:,11],
+             bins=np.arange(0, max_num_spikes)-0.5*binwidth,
              width=binwidth, color=[0.3, 0.3, 0.3])
     plt.xlabel("Number of narrow components")
     plt.ylabel("Number of posterior samples")
