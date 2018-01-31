@@ -69,7 +69,7 @@ class MyModel
         static std::vector<double> x_knots;
 
         // Maximum number of spikes
-        static constexpr size_t max_num_spikes = 300;
+        static constexpr size_t max_num_spikes = 1000;
 
     public:
         static void load_data(const char* filename);
