@@ -63,12 +63,24 @@ double MyModel::perturb(DNest4::RNG& rng)
         // Perturb spikes
         logH += narrow_peaks.perturb(rng);
 
+        // Save computational time by handling prior-based rejection here
+        if(rng.rand() >= exp(logH))
+            return -1E300;
+        else
+            logH = 0.0;
+            
         compute_narrow(narrow_peaks.get_removed().size() == 0);
     }
     else if(choice == 1)
     {
         // Perturb spikes
         logH += wide_peaks.perturb(rng);
+
+        // Save computational time by handling prior-based rejection here
+        if(rng.rand() >= exp(logH))
+            return -1E300;
+        else
+            logH = 0.0;
 
         compute_wide(wide_peaks.get_removed().size() == 0);
     }
