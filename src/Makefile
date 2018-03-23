@@ -11,6 +11,6 @@ default:
 	rm *.o
 
 windows:
-	x86_64-w64-mingw32-g++-posix -I$(DNEST4_PATH) $(CXXFLAGS) -c *.cpp
+	x86_64-w64-mingw32-g++-posix -I$(DNEST4_PATH) -std=c++11 -O3 -Wall -Wextra -pedantic -DNDEBUG -c *.cpp
 	x86_64-w64-mingw32-g++-posix -static  -pthread -L$(DNEST4_PATH)/DNest4/code -o AMORPH.exe *.o dnest4.lib
 	rm -f *.o
