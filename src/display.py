@@ -150,8 +150,8 @@ def display():
 
     plt.hist(wide_fraction, 100, color=[0.3, 0.3, 0.3])
     plt.xlim([0, 1])
-    plt.xlabel("(amporph)/(amorph + crystal)")
-    print("(amporph)/(amorph + crystal) = {a} +- {b}".format(a=wide_fraction.mean(),\
+    plt.xlabel("(amorph)/(amorph + crystal)")
+    print("(amorph)/(amorph + crystal) = {a} +- {b}".format(a=wide_fraction.mean(),\
            b=wide_fraction.std()))
     plt.show()
 
