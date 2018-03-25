@@ -842,7 +842,15 @@ Licence, version 3.
 For most users, we suggest simply using the pre-compiled Windows executable
 {\tt AMORPH.exe} from the repository. To execute the program,
 run {\tt AMORPH.exe}. You will be prompted to enter the filename of the text
-file containing the data. All files to be processed by AMORPH need to be in .txt file format, space delimited, with no headers. For simplicity, text files for processing should be located in the same folder as the {\tt AMORPH.exe} program. The program is set to run until 10,000 saved parameter sets have been generated. Data outputs may be viewed at any point, however, closing the program before reaching  10,000 will reduce the accuracy of the final calculations. After running for a while, the output can be viewed
+file containing the data. All files to be processed by AMORPH need to be in .txt file format, space delimited, with no headers. For simplicity, text files for processing should be located in the same folder as the {\tt AMORPH.exe} program.
+
+For speed, you can pass the command line options {\tt -o OPTIONS_AGGRESSIVE} and
+{\tt -t 4} to {\tt AMORPH.exe}. The first of these options sets aggressive
+DNest4 parameters, and the second allows the program to use four threads
+simultaneously.
+
+The program is set to run until 10,000 saved parameter sets
+(`particles') have been generated. Data outputs may be viewed at any point, however, closing the program before reaching  10,000 will reduce the accuracy of the final calculations. After running for a while, the output can be viewed
 by running the Python script {\tt showresults.py}:
 
 \vspace{1em}
