@@ -1,19 +1,19 @@
-\documentclass[preprint, a4paper]{elsarticle}
+\documentclass[review]{elsarticle}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{color}
 \usepackage{dsfont}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
-\usepackage[left=2.2cm, right=2.2cm, bottom=3cm, top=2.5cm]{geometry}
+% \usepackage[left=2cm, right=2cm, bottom=3cm, top=2cm]{geometry}
 \usepackage{microtype}
 \usepackage{natbib}
 \usepackage{pdflscape}
 \usepackage{gensymb} % For degree symbol
-%\usepackage{lineno,hyperref}
-%\modulolinenumbers[5]
+\usepackage{lineno,hyperref}
+\modulolinenumbers[5]
 
-\journal{}
+\journal{Computers and Geosciences}
 
 \setcitestyle{authoryear,open={(},close={)}}
 
@@ -46,7 +46,7 @@
 \address[brewer]{Department of Statistics, The University of Auckland, Private Bag 92019, Auckland 1142, New Zealand}
 
 \begin{abstract}
-AMORPH utilizes a new Bayesian statistical approach to interpreting X-ray diffraction results of partially amorphous materials. AMORPH fits X-ray diffraction patterns with a mixture of gaussians,
+AMORPH utilizes a new Bayesian statistical approach to interpreting X-ray diffraction results of samples with both crystalline and amorphous components. AMORPH fits X-ray diffraction patterns with a mixture of gaussians,
 which allows us to simultaneously infer all of the model parameters and quantify their
 uncertainties.
 The program simulates background patterns previously manually applied, providing reproducible results, and significantly reducing inter- and intra-user biases. This approach allows for the quantification of amorphous and crystalline materials and for the characterization of the amorphous component, including parameters of centre of mass, width, skewness, and nongaussianity of the amorphous component. Results demonstrate the applicability of this program for calculating amorphous contents of volcanic materials and independently modeling their properties in compositionally variable materials.
@@ -58,18 +58,18 @@ The program simulates background patterns previously manually applied, providing
 
 \end{frontmatter}
 
-%\linenumbers
+\linenumbers
 
 \section{Introduction}
 Quantification and characterization of amorphous materials is an important area of research in
-terrestrial and planetary sciences \citep[e.g.,][]{schmidt2009, dehouck2014, wall2014, morris2016, zorn2017}.
+terrestrial and planetary sciences \citep[e.g.,][]{schmidt2009, dehouck2014, wall2014, morris2016, zorn2018}.
 Powder X-ray diffraction (XRD), although primarily a tool for characterization of crystalline materials,
-also provides a means to investigate amorphous materials \citep[e.g.,][]{rowe2012, achilles2013}. X-ray diffraction of rocks/soils containing amorphous materials (e.g. volcanic
+also provides a means to investigate amorphous materials \citep[e.g.,][]{rowe2012, achilles2013}. X-ray amorphous materials lack long-range crystallographic order and produce broad humps with low intensities in XRD patterns. X-ray diffraction of rocks/soils containing amorphous materials (e.g. volcanic
 glass, amorphous silica, and organics) produces a diffraction pattern which is a combination of the
 crystalline and amorphous phases. Recent studies have debated the nature of amorphous materials in
 planetary sciences \citep[e.g.][]{schmidt2009, dehouck2014}, and a growing number of
 applications to terrestrial volcanics have presented an avenue of expansion for XRD methodologies
-for amorphous material analysis \citep{ellis2015, kanakiya2017, zorn2017}.
+for amorphous material analysis \citep{ellis2015, kanakiya2017, zorn2018}.
 Here we present a new statistical approach and computer program, AMORPH, which utilizes Bayesian inference to determine
 the crystallinity, and other characteristics, of partially amorphous materials from X-ray diffraction patterns, as well as the uncertainty in these quantities.
 
@@ -81,9 +81,9 @@ spiked with a reference material (e.g. corundum). Sample spiking presents additi
 as it reduces the observed intensity of the amorphous material thus reducing the accuracy of
 pattern matching to determine abundances. An Excel based adaptation of this pattern matching
 technique \citep[FULLPAT;][]{chipera2002} is routinely utilized for characterizing remotely acquired X-ray
-diffraction patterns, such as those recovered from the Mars Science Laboratory (MSL) Curiosity rover \citep{bish2013}. The problem faced by RIR approaches is they are based on modeling of an observed 
+diffraction patterns, such as those measured by the CheMin instrument on the Mars Science Laboratory (MSL) Curiosity rover \citep{blake2012, bish2013}. The problem faced by RIR approaches is they are based on modeling of an observed 
 diffraction pattern compared to library measurements, and therefore do not allow an independent
-assessment of the characteristics of the amorphous material. In comparison, the calibration method
+assessment of the characteristics of the amorphous material. Furthermore, natural X-ray amorphous phases have a wide variety of compositions such that the library measurements may not include the amorphous phase(s) present in the sample. In comparison, the calibration method
 focuses solely on the quantification of the amorphous material, utilizing the integrated counts
 associated with the amorphous and crystalline componentry. 
 
@@ -125,6 +125,10 @@ those regions of the model's parameter space that are consistent with the
 data. The model assumptions are described in detail in
 Section~\ref{sec:model}, and the computation is performed with
 Diffusive Nested Sampling, an advanced MCMC method \citep{dns, dnest4}.
+There have been many applications of Bayesian inference to
+problems of separating background from compact signals
+when noise is present \citep[e.g.][]{}. AMORPH can be viewed as another
+case of this, with assumptions customized to the specific application.
 
 Typically, one starts with the `prior distribution'
 for unknown quantities (`parameters') $\params$, written $p(\params | \info)$
@@ -142,7 +146,7 @@ called a `sampling distribution',
 which describes the uncertainty about the data which we {\em would} have,
 if we knew the parameters (and the prior information), as a function of
 the parameters. This describes uncertainty about what data will be observed,
-but encodes some knowledge about the fact that the data has something to do with the
+but encodes some knowledge about the fact that the data have something to do with the
 parameters $\params$. For example, $p(\data | \params, \info)$ often encodes
 the assumption that the data has noise in it, and the specific noise values
 are unknown a priori.
@@ -176,7 +180,21 @@ is approximately the proportion of the posterior samples that have
 $\phi > 3.4$. While many data analysis procedures work by finding the
 best fitting values of the parameters (i.e., a maximum likelihood estimate),
 Bayesian inference via MCMC involves finding a sampling of plausible values
-for the parameters.
+for the parameters. Since AMORPH uses \citet{dnest4}, it also calculates
+the `marginal likelihood' or `evidence' quantity $p(\data | \info)$, which
+quantifies how well the model fits the data overall, averaged over all
+possible values of its parameters. This allows straightforward model comparison
+with any alternatives that may be proposed in the future
+\citep{skilling2006nested}.
+
+% BJB: Hopefully this addresses reviewer 1, point a.
+The computational cost of running AMORPH on a data set of around 1000
+points varies, as the posterior distribution depends on the data.
+Another important factor is the number of MCMC samples desired.
+On a modern PC, some useful posterior samples can be obtained in about
+half an hour. With 300 posterior samples, typical analyses take approximately 7 hours to complete, depending on computing capabilities and the number of data points. However, the complete runs presented in this paper took
+about a day each to run, as we wanted to ensure the results contained
+about 1000 posterior samples.
 
 \section{The model curve}\label{sec:model}
 
@@ -226,7 +244,7 @@ $f_{\rm bg}$, $f_{\rm amorph}$, and $f_{\rm xtal}$.
 The background component is assumed to be piecewise linear, with constant
 slope
 {between $\x=\x_{\rm min}$ and $\x=10$\degree, between $\x=10$\degree~and $\x=40$\degree,
-and between $\x=40$\degree~and $\x=\x_{\rm max}$}. These values are selected to maintain a linear background over the interval from 10--40\degree, the predominant range of amorphous materials analyzed using a Cu K$\alpha$ x-ray source, while still allowing for some flexibility in the structure of the background outside this range.
+and between $\x=40$\degree~and $\x=\x_{\rm max}$}. These values are selected to maintain a linear background over the interval from 10--40\degree, the predominant range of amorphous materials (8.8 -- 2.25 \AA) analyzed using a Cu K$\alpha$ x-ray source (Table~\ref{tab:anode}), while still allowing for some flexibility in the structure of the background outside this range.
 
 We parameterized the background component using
 five parameters. Firstly, there is a mean level $b$, which sets the
@@ -239,11 +257,30 @@ from the mean level. The positions of the four control points are then:
 \left(40, be^{n_3}\right) \nonumber\\
 \left(\x_{\rm max}, be^{n_4}\right). \nonumber
 \end{align}
-The value of the background component at any other point is found by
+Control points may be modified, depending on the X-ray source in use and changes in the required range for the linear background as a function of the nature of the amorphous material (Table~\ref{tab:anode}). The value of the background component at any other point is found by
 linear interpolation of these control points.
 Figure~\ref{fig:background} shows three example
 background curves generated from this parameterization, with typical
 values of the parameters.
+
+\begin{table}
+\footnotesize
+\centering
+\begin{tabular}{|llll|}
+\hline
+{\bf X-ray Anode}      &   {\bf X-ray wavelength}   &  {\bf Control point 2} & {\bf Control point 3}\\
+ &   {\bf (\AA)}   &  {\bf(\degree 2 theta)} & {\bf(\degree 2 theta)}\\
+\hline
+Cr & 2.29 & 15.0 & 61.2\\
+Fe & 1.94 & 12.7 & 51.1\\
+Co & 1.79 & 11.7 & 46.9\\
+{\bf Cu} & {\bf 1.54} & {\bf 10.0} & {\bf 40.0}\\
+Mo & 0.71 & 4.6 & 18.2\\
+Ag & 0.56 & 3.6 & 14.3\\
+\hline
+\end{tabular}
+\caption{\it Typical XRD anodes with recommended background control points based on a predominant 8.8-2.25 {\AA}  amorphous peak.\label{tab:anode}}
+\end{table}
 
 \begin{figure}[!ht]
 \centering
@@ -253,46 +290,87 @@ background component.\label{fig:background}}
 \end{figure}
 
 \subsection{The crystalline component}
-We assume that there is some number $N_{\rm xtal}$ of narrow peaks,
-each of which has a gaussian shape. The $i$th peak is parameterized
+
+% BJB: Reponse to Reviewer 2, comment about Lorentzian shape vs Gaussian
+% We experimented with the Lorentzian shape instead of the Gaussian and found
+% that for same datasets, it was preferred, whereas for other datasets, the
+% Gaussian is preferred (as adjudicated by the marginal likelihood values
+% for the two different assumptions). Rather than having to run each model
+% twice, we decided it would be more elegant to replace the gaussian assumption
+% with some family of shapes that can smoothly interpolate between gaussian
+% and lorentzian as necessary. Specifically, we chose the Student's
+% t-distribution which can do this straightforwardly. This introduces one
+% more parameter to the model, which controls the shape of the peaks.
+
+% I (BJB) also changed the parameterisation of the heights of the peaks, so
+% they are described by the total integrated mass rather than the peak
+% amplitude. This makes the Metropolis exploration a bit more efficient.
+
+We assume that there is some number $N_{\rm xtal}$ of narrow peaks
+due to crystalline material,
+each of which has the same shape. The shapes of the narrow
+peaks are controlled by a single shape parameter $\nu_{\rm xtal}$,
+assumed common to all of the narrow peaks. The chosen shape is based
+on the Student's $t$-distribution, which allows to peaks to be heavy-tailed
+if $\nu_{\rm xtal}$ is low, and to be Lorentzian or Cauchy in shape if
+$\nu_{\rm xtal}$ is exactly 1. As $\nu_{\rm xtal}$ is high, the shape
+approximates a gaussian.
+
+The $i$th peak is parameterized
 by its central position $X_{i, \rm xtal}$,
-amplitude $A_{i, \rm xtal}$, and width $W_{i, \rm xtal}$.
+total integrated `mass' $M_{i, \rm xtal}$, and width $W_{i, \rm xtal}$.
 The parameter vector for crystalline component is
 \begin{align}
 \params_{\rm xtal} &=
-  \{N_{\rm xtal}, X_1, X_2, ..., X_{N, \rm xtal},
-    A_1, A_2, ..., A_{N, \rm xtal},
-    W_1, W_2, ..., W_{N, \rm xtal}\}
+  \{N_{\rm xtal}, \nu_{\rm xtal}, X_{1, \rm xtal}, ..., X_{N, \rm xtal},
+    M_{1, \rm xtal}, ..., M_{N, \rm xtal},
+    W_{1, \rm xtal}, ..., W_{N, \rm xtal}\}
 \end{align}
 and the total shape contributed by the
-crystalline component is a sum of the $N_{\rm xtal}$ gaussians:
+crystalline component is a sum of the $N_{\rm xtal}$ peaks:
 \begin{align}
 f_{\rm xtal}(\x; \params_{\rm xtal}) &=
-    \sum_{i=1}^{N_{\rm xtal}} A_{i, \rm xtal}
- \exp\left[-\frac{1}{2W_{i, \rm xtal}^2}\left(x - X_{i, \rm xtal}\right)^2\right].
+	\frac{\Gamma(\frac{\nu_{\rm xtal} + 1}{2})}{\sqrt{\nu_{\rm xtal}\pi}
+                 		\Gamma(\frac{\nu_{\rm xtal}}{2})}
+    \sum_{i=1}^{N_{\rm xtal}}
+    		\frac{M_{i, \rm xtal}}
+            	 {W_{i, \rm xtal}}
+	\left(1 + \frac{1}{\nu}\left(\frac{x - X_{i, \rm xtal}}{W_{i, \rm xtal}}\right)^2\right)
+    			^{-\frac{\nu_{\rm xtal} + 1}{2}}. \label{eqn:t_shape}
 \end{align}
+The terms inside the sum have the form of the probability density function
+of the $t$-distribution, adjusted by shifting according to the central
+position and widening by the width, and the total integral is scaled by
+the mass parameters. $\Gamma()$ is the gamma function.
+
+For computational efficiency, evaluation of Equation~\ref{eqn:t_shape}
+is performed using a lookup table.
 
 \subsection{The amorphous component}
-The amorphous component is also composed of gaussians, like the crystalline component.
-In fact, the only real difference is the prior distributions for the positions,
-amplitudes, and widths, given in Section~\ref{sec:priors}.
+The amorphous component is also composed of a sum of peaks, which we chose to be
+gaussians. The parameterization is the same as for the crystalline peaks but with a fixed,
+high value for the shape parameter.
+Apart from the gaussian shape, the only other difference is the prior distributions for the positions, masses, and widths, given in Section~\ref{sec:priors}. In short, the wide gaussians representing the
+amorphous component are more likely to be located near the middle of the
+dataset, and to be wider.
 
 There is some number $N_{\rm amorph}$ of gaussians in the amorphous component.
 The $i$th gaussian is parameterized
 by its central position $X_{i, \rm amorph}$,
-amplitude $A_{i, \rm amorph}$, and width $W_{i, \rm amorph}$.
+mass (total integral) $M_{i, \rm amorph}$, and width $W_{i, \rm amorph}$.
 The parameter vector for wide gaussians is
 \begin{align}
 \params_{\rm amorph} &=
-  \{N_{\rm amorph}, X_1, X_2, ..., X_{N, \rm amorph},
-    A_1, A_2, ..., A_{N, \rm amorph},
-    W_1, W_2, ..., W_{N, \rm amorph}\}
+  \{N_{\rm amorph}, X_{1, \rm amorph}, ..., X_{N, \rm amorph},
+    M_{1, \rm amorph}, ..., M_{N, \rm amorph},
+    W_{1, \rm amorph}, ..., W_{N, \rm amorph}\}
 \end{align}
 and the total shape contributed by the
 amorphous component is a sum of the $N_{\rm amorph}$ gaussians:
 \begin{align}
 f_{\rm amorph}(\x; \params_{\rm amorph}) &=
-    \sum_{i=1}^{N_{\rm amorph}} A_{i, \rm amorph}
+	\frac{1}{\sqrt{2\pi}}
+    \sum_{i=1}^{N_{\rm amorph}} \frac{M_{i, \rm amorph}}{W_{i, \rm amorph}}
  \exp\left[-\frac{1}{2W_{i, \rm amorph}^2}\left(x - X_{i, \rm amorph}\right)^2\right].
 \end{align}
 
@@ -438,13 +516,13 @@ $n$ & Number of measurements & given\\
 $\{\x_1, \x_2, ..., \x_n\}$  & $\x$-values of measurements & given \\
 \hline
 {\em Hyperparameters} & &\\
-$N_{\rm xtal}$   &   Number of narrow peaks    &  $\propto 1/(N_{\rm xtal}+1)$, $N_{\rm xtal} \in \{0, 1, ..., 300\}$ \\
+$N_{\rm xtal}$   &   Number of narrow peaks    &  $\propto 1/(N_{\rm xtal}+1)$, $N_{\rm xtal} \in \{0, 1, ..., 1000\}$ \\
 $N_{\rm amorph}$   &   Number of wide peaks    &  $\propto 1/(N_{\rm amorph}+1)$,
-$N_{\rm amorph} \in \{0, 1, ..., 300\}$ \\
-$a_{\ln A, \rm xtal}$ & Typical log-amplitude of narrow peaks & Laplace(0, 5)\\
-$a_{\ln A, \rm amorph}$ & Typical log-amplitude of wide peaks & Laplace(0, 5)\\
-$b_{\ln A, \rm xtal}$ & Diversity of log-amplitude of narrow peaks & Uniform(0, 5)\\
-$b_{\ln A, \rm amorph}$ & Diversity of log-amplitude of wide peaks & Uniform(0, 5)\\
+$N_{\rm amorph} \in \{0, 1, ..., 1000\}$ \\
+$a_{\ln M, \rm xtal}$ & Typical log-mass of narrow peaks & Laplace(0, 5)\\
+$a_{\ln M, \rm amorph}$ & Typical log-mass of wide peaks & Laplace(0, 5)\\
+$b_{\ln M, \rm xtal}$ & Diversity of log-mass of narrow peaks & Uniform(0, 5)\\
+$b_{\ln M, \rm amorph}$ & Diversity of log-mass of wide peaks & Uniform(0, 5)\\
 $a_{\ln W, \rm xtal}$ & Typical log-width of narrow peaks & LogUniform$(10^{-3}x_{\rm range}, 0.05x_{\rm range})$\\
 $a_{\ln W, \rm amorph}$ & Typical log-width of wide peaks & LogUniform$(0.05x_{\rm range}, x_{\rm range})$\\
 $b_{\ln W, \rm xtal}$ & Diversity of log-width of narrow peaks & Uniform(0, 0.1)\\
@@ -457,16 +535,17 @@ $\{n_1, ..., n_4\}$  & Background deviations & independent Normal$(0,1)$\\
 {\em Crystalline parameters}&&\\
 $X_{i, \rm xtal}$ & Positions of narrow peaks &
                             Uniform$(x_{\rm min}, x_{\rm max})$ \\
-$A_{i, \rm xtal}$ & Amplitudes of narrow peaks &
- $\ln A_{i, \rm xtal} \sim \textnormal{Laplace}\left(a_{\ln A, \rm xtal}, b_{\ln A, \rm xtal}\right)$ \\
+$A_{i, \rm xtal}$ & Masses of narrow peaks &
+ $\ln M_{i, \rm xtal} \sim \textnormal{Laplace}\left(a_{\ln M, \rm xtal}, b_{\ln M, \rm xtal}\right)$ \\
 $W_{i, \rm xtal}$ & Widths of narrow peaks &
  $\ln W_{i, \rm xtal} \sim \textnormal{Laplace}\left(a_{\ln W, \rm xtal}, b_{\ln W, \rm xtal}\right)$ \\
+$\nu_{\rm xtal}$ & Shape of narrow peaks (common) & LogUniform$(0.1, 100)$\\
 \hline
 {\em Amorphous parameters}&&\\
 $X_{i, \rm amorph}$ & Positions of wide peaks &
           Uniform$(x_{\rm min}+0.3x_{\rm range}, x_{\rm max}-0.3x_{\rm range})$ \\
-$A_{i, \rm amorph}$ & Amplitudes of wide peaks &
- $\ln A_{i, \rm amorph} \sim \textnormal{Laplace}\left(a_{\ln A, \rm amorph}, b_{\ln A, \rm amorph}\right)$ \\
+$A_{i, \rm amorph}$ & Masses of wide peaks &
+ $\ln M_{i, \rm amorph} \sim \textnormal{Laplace}\left(a_{\ln M, \rm amorph}, b_{\ln M, \rm amorph}\right)$ \\
 $W_{i, \rm amorph}$ & Widths of wide peaks &
  $\ln W_{i, \rm amorph} \sim \textnormal{Laplace}\left(a_{\ln W, \rm amorph}, b_{\ln W, \rm amorph}\right)$ \\
 \hline
@@ -521,36 +600,42 @@ in each component is set to 300.
 
 \section{Applications}\label{sec:applications}
 \subsection{Crystallinity}
+To date, applications of crystallinity determinations via XRD methodologies on terrestrial samples have primarily focused on volcanic materials \citep[e.g.,][]{wall2014, ellis2015, andrade2017, zorn2018}, linking crystallinity of volcanic glass to timescales of geologic processes. The primary advantage of this technique being its ability to determine crystallinities for finer grain sizes than typically possible through standard petrologic techniques \citep{rowe2012}. In contrast, planetary science usages for determining crystallinity have largely focused on quantification of the amorphous and crystalline components for mass balance determination of physical and chemical components in diverse geologic materials \citep[e.g.,][]{blake2013, dehouck2014}. 
+
 The AMORPH program calculates a fraction of amorphous material ($A_{\rm m}$) for each posterior sample of the parameters,
-using Equation~\ref{eqn:crystallinity}. Thus, measured crystallinity ($C_{\rm m}$) is easily determined from the relationship $C_{\rm m} = 1-A_{\rm m}$, as defined in Equation 5. The measured crystallinity is not equivalent to an ``actual'' or ``true'' crystallinity, although the values are often very close to one another.
-It should therefore be noted that this procedure does not negate the need for calibration standards
-to translate measured crystallinity to an actual crystallinity. Transmission and absorption of X-rays in the material will vary as the ratio of mineral to glass changes in the sample, causing a deviation from a 1:1 line. In addition to theoretical considerations, practical challenges also exist for background fitting. At low crystallinity ($\lesssim 10\%$) diffraction patterns are dominated by the low amplitude amorphous peak such that removing the effects of background noise becomes problematic, resulting in overestimated crystallinities. At high crystallinity ($\gtrsim 90\%$) the problem arises that peak overlaps in multi-mineral assemblages cause broadening effects, and may be subsequently modeled as ``amorphous'' and thus crystallinities  underestimated. The calibration curve therefore is utilized to remove these effects. This is also an important step as
-different X-ray diffractometers will provide slightly different calibration curves (Fig.~\ref{fig:intruments}).
+using Equation~\ref{eqn:crystallinity}.Thus measured crystallinity ($C_{\rm m}$) is easily determined from the relationship $C_{\rm m}$ = 1-$A_{\rm m}$, as defined in Equation 5. 
+To test the applicability of AMORPH crystallinity results we have analysed the Mars Scientific Laboratory (MSL)  CheMin instrument X-ray diffraction patterns of loose basaltic sand from the Bagnold Sand Dunes \citep[Gobabeb;][]{achilles2017, lapotre2017}
+and sediments drilled from a silicic mudstone \citep[Buckskin sample;][]{morris2016}, both which have significant amorphous
+materials (CheMin instrument data\footnote{\tt http://pds-geosciences.wustl.edu/msl/msl-m-chemin-4-rdr-v1/mslcmn{\textunderscore}1xxx.data.rdr4/}). CheMin diffraction patterns have been processed using the original Co K$\alpha$ ($1.7890 \dot{A}$) data as well as data transformed from a Co K$\alpha$ to Cu K$\alpha$ ($1.5406 \dot{A}$) X-ray source using Bragg's law. This recalculation simply allows for an easier visual comparison to terrestrial samples analysed with the more standard Cu K$\alpha$ X-ray source (see below). Note that for Co K$\alpha$ results, background critical points have been adjusted to 11.7-46.9 $2\theta$ to maintain the linear background over the amorphous region from ~8.8 to 2.25 $\dot{A}$ (Table ~\ref{tab:anode}). Although the results are uncalibrated, measured crystallinites provide a good first approximation of actual crystallinity, and relative differences are robust. Measured amorphous content of the Gobabeb 2 sample is 36.7 $\pm$ 2.9$\%$ (63.3$\%$ crystallinity) while the Buckskin 2 sediment contains 45.3 $\pm$ 2.9$\%$ amorphous phases (54.7 $\%$ crystallinity; Fig.~\ref{fig:Mars}). Comparatively, published FULLPAT calculations of amorphous contents are ~35 $\pm$ 15$\%$ for Gobabeb and 50 $\pm$ 15$\%$ for Buckskin \citep{achilles2017, morris2016}. 
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=1\textwidth]{figures/Mars.jpg}
+\caption{\it Analysis of Gobabeb 2 (left) and Buckskin 2 (right) results from the CheMin instrument on the MSL Curiosity rover (data sourced as above). Upper panels  illustrate initial Co K$\alpha$ processed results while lower panels show AMORPH results after translating data to a Cu K$\alpha$ source (see text for details). Calculated statistics provided by AMORPH for each analysis are indicated below the model results.\label{fig:Mars}}
+\end{figure}
+
+The measured crystallinity is not equivalent to an "actual" or "true" crystallinity, although the values are often very close to one another as noted above.
+Therefore, this procedure does not negate the need for calibration standards
+to translate measured crystallinity to an actual crystallinity.Calibration standards can be easily created by mixing
+powdered minerals (e.g. olivine, pyroxene, plagioclase) with powdered glass in known
+proportions to simulate volcanic material of varying crystallinities \citep[e.g.,][]{rowe2012, wall2014}. 
+
+Transmission and absorption of X-rays in the material will vary as the ratio of mineral to glass changes in the sample, causing a deviation from a 1:1 line (Fig.~\ref{fig:instruments}). In addition to theoretical considerations, practical challenges also exist for background fitting. At low crystallinity ($\lesssim 10\%$) diffraction patterns are dominated by the low amplitude amorphous peak such that removing the effects of background noise becomes problematic, resulting in overestimated crystallinities. At high crystallinity ($\gtrsim 90\%$) the problem arises that peak overlaps in multi-mineral assemblages cause apparent broadening effects, and may be subsequently modeled as ``amorphous'' and thus crystallinities  underestimated. The calibration curve therefore is utilized to remove these effects. This is also an important step as
+different X-ray diffractometers will provide slightly different calibration curves (Fig.~\ref{fig:instruments}).
 Differences between instruments largely reflect changes in background intensity and shape,
 particularly at low values of $2\theta$. 
 
-	Calibration standards can be easily created by mixing
-powdered minerals (e.g. olivine, pyroxene, plagioclase) with powdered glass in known
-proportions to simulate volcanic material of varying crystallinities \citep[e.g.,][]{rowe2012, wall2014}.
-Results of the AMORPH calculations show good agreement to calibration curves using the manual
-calibration approach (Fig.~\ref{fig:Comparison}). The offset between the AMORPH and manual calibration methods
-in Figure~\ref{fig:Comparison} is consistent with the change in analyzed $2\theta$ range, 10--40\degree~and 5--50\degree,
-respectively (Fig.~\ref{fig:Outputs}). Since the wide peak for the amorphous material does not extend
-appreciably out of the range from 10--40\degree~$2\theta$ (for a Cu K$\alpha$ source), peak integration
-outside of this range will decrease the relative contribution of the amorphous material
-(only peaks for crystalline materials are outside this range). Experimentation demonstrates also that data processing only over the 10--40\degree~$2\theta$ range is also significantly faster, as this reduces the total number of data points for processing. Thus we recommend that the optimal range for data processing in terms of time and accuracy is from 10--40\degree~$2\theta$.
-
+	
+Since the wide peak for many amorphous materials does not extend
+appreciably out of the range from 10--40\degree~$2\theta$ (for a Cu K$\alpha$ source), peak area integration
+outside of this range will decrease proportionally the relative contribution of the amorphous material
+(only peaks for crystalline materials are outside this range in the example depicted in Figure ~\ref{fig:Outputs}). It should be noted of course that this only effects the measured crystallinity and as long as the calibration standards are processed under the same conditions as the unknown, the "actual" crystallinity is not significantly affected by the choice in selected analysis interval. Results of the AMORPH calculations show good agreement to calibration curves using the manual
+calibration approach for the same set of standards analyzed on the same PANalytical Empyrean X-ray diffractometer (Fig.~\ref{fig:Comparison}). 
 
 \begin{figure}[!ht]
 \centering
 \includegraphics[width=0.7\textwidth]{figures/instruments.jpg}
-\caption{\it Two calibration curves of the same standard material (rhyolite) are compared from different instrumentation, including a Siemens D500 (Washington State University; red circles) and a PANalytical Empyrean (University of Auckland; blue diamonds).\label{fig:intruments}}
-\end{figure}
-
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=0.7\textwidth]{figures/Comparison.jpg}
-\caption{\it Comparison of calibration results for rhyolite calculated from AMORPH compared to a calibration calculated using the manual procedure described by \citet{rowe2012}.\label{fig:Comparison}}
+\caption{\it Two calibration curves of the same standard material (rhyolite) are compared from different instrumentation, including a Siemens D500 (Washington State University; red circles) and a PANalytical Empyrean (University of Auckland; blue diamonds).\label{fig:instruments}}
 \end{figure}
 
 \begin{figure}[!ht]
@@ -559,34 +644,47 @@ outside of this range will decrease the relative contribution of the amorphous m
 \caption{\it Model results for a basalt standard containing 80\% amorphous glass. Data was processed from 10--40\degree~$2\theta$ (upper left panel) with a calculated amorphous content of 76.4\% (upper right panel). The same data was processed instead from 5--50\degree~$2\theta$ (lower left panel) with a calculated amorphous content of 71.5\% (lower right panel). Rationale for differences are discussed in the text.\label{fig:Outputs}}
 \end{figure}
 
+For some materials, e.g. allophane, the amorphous region extends beyond the 10--40\degree~$2\theta$ range and thus would require analysis over a larger $2\theta$ interval. 
+The trade-off in extending the $2\theta$ range is increased processing time and further deviation from a 1:1 calibration line. Since the analysis time is, in part, a function of the number of data points, if greater range in $2\theta$ is required, decreasing the total number of points (larger step size during analysis or manual removal of points in $2\theta$ regions not of interest) will offset additional analysis time. Thus we recommend that the optimal range for data processing in terms of time and accuracy is from 8.8 to 2.2 {\AA} or 10--40\degree~$2\theta$ for a Cu K{$\alpha$} X-ray source (see Table~\ref{tab:anode} for other X-ray sources) for crystallinity measurements of most volcanics. Importantly, reducing the data range from 5--50\degree~$2\theta$ to 10--40\degree~$2\theta$, does not increase the error associated with the peak fitting computational process with respect to other sources of error in sample selection and processing. In fact, for some analyses the variance in calculated crystallinity is appreciably reduced by shortening the range in analysed $2\theta$ and thereby reducing potential error associated with modeling background positions (Fig ~\ref{fig:Outputs}).
+
+
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=0.7\textwidth]{figures/Comparison.jpg}
+\caption{\it Comparison of calibration results for rhyolite calculated from AMORPH compared to a calibration calculated using the manual procedure described by \citet{rowe2012}.\label{fig:Comparison}}
+\end{figure}
+
+
+
 \subsection{Amorphous Characteristics}
 As discussed above, one of the primary advantages of the AMORPH program is that it can
 independently model characteristics of the amorphous component.  In particular, centre of mass,
-skewness, and nongaussianity are distinctive amongst different amorphous materials. To test
-this, we present amorphous characteristics of rhyolite and basalt glass picked from a
+skewness, and nongaussianity are distinctive amongst different amorphous materials. In contrast to crystallinity determinations, the focus of applications looking at the characteristics of the amorphous material are for indentification of the amorphous phase(s) \citep[e.g.,][]{dehouck2014}. To test
+the ability of AMORPH to characterise amorphous phases, we present amorphous characteristics of rhyolite and basalt glass picked from a
 Taupo pumice \citep[73.5 wt\% SiO\textsubscript{2}; P2166C;][]{barker2015} and a Kilauea basalt
 \citep[51 wt\% SiO\textsubscript{2}; KS08-108E;][]{wooten2009, rowe2015}, respectively.
-In addition, Mars Scientific Laboratory (MSL) Curiosity rover CheMin instrument reduced X-ray diffraction patterns
-for sediments from the Bagnold Sand Dunes \citep[Gobabeb;][]{achilles2017, lapotre2017}
-and Buckskin \citep{morris2016} localities, both which have significant amorphous
-materials, have been processed for comparison (CheMin instrument data\footnote{\tt http://pds-geosciences.wustle.edu/missions/msl/chmin.htm}). MSL diffraction patterns have been
-recalculated from a Co K$\alpha$ ($1.7890 \dot{A}$) to Cu K$\alpha$ ($1.5406 \dot{A}$) X-ray source using Bragg's law, to be visually comparable to terrestrial
-examples analysed for this study. Results are summarized in Figure~\ref{fig:volcanic_glasses}. The most notable differences in the amorphous component characteristics calculated for diffraction patterns for basalt and rhyolite glass include a positive skewness and shift to lower centre of mass
-$2\theta$ values for the rhyolite glass compared to the basalt glass. Although, CheMin
+The most notable differences in the amorphous component characteristics calculated for diffraction patterns for basalt and rhyolite glass include a positive skewness and shift to lower centre of mass
+$2\theta$ values for the rhyolite glass compared to the basalt glass (Fig~\ref{fig:terrestrial}). 
+
+\begin{figure}[!ht]
+\centering
+\includegraphics[width=1\textwidth]{figures/terrestrial.jpg}
+\caption{\it Examples of changing characteristics of amorphous material based on composition. Kilauea basalt glass (left) and taupo rhyolite glass (right) were analyzed on a PANalytical Empyrean XRD at University of Auckland. Calculated statistics for each analysis are provided below the model results. Note in particular the change in skewness from basalt to rhyolite.\label{fig:terrestrial}}
+\end{figure}
+
+Although CheMin
 diffraction analyses were run on a different X-ray diffractometer from the terrestrial
 samples shown here, similar relative changes in amorphous characteristics can be observed
-in X-ray diffraction data from Mars. In particular, the Buckskin 1 analysis of the amorphous component indicates a positive skewness $\sim 4\times$ greater than in the Gobabeb 2 sample. These results suggest a distinct change in the
-composition of the amorphous material. This interpretation, is consistent with prior
+in X-ray diffraction data from Mars (Fig ~\ref{fig:Mars}). It is unknown if/how the X-ray source (e.g. Cu versus Co) fundamentally changes the peak shape characteristics of the amorphous content in this study. However, qualitative assessment suggests similar overall peak shapes between terrestrial samples analysed with a Cu X-ray anode (Fig.~\ref{fig:terrestrial}) and those analysed with a Co X-ray anode (Fig.~\ref{fig:Mars}). In particular, the Buckskin 2 analysis of the amorphous component indicates a greater positive skewness than the Gobabeb 2 sample. In addition, the nongaussianity of the Buckskin 2 sample is $\sim 3\times$ greater compared to the Gobabeb 2 amorphous component. These results suggest a change in the
+composition of the amorphous material between the two Martian samples. This interpretation, is consistent with prior
 published results which suggest that at the Gobabeb locality (Namib Dune, Bagnold Dune Field),
 the sample is dominated by a basaltic mineralogy, while at the Buckskin locality,
 the amorphous component has been calculated to contain ~77 wt\% SiO\textsubscript{2}
 \citep[i.e. rhyolitic;][]{morris2016, achilles2017}. 
 
-\begin{figure}[!ht]
-\centering
-\includegraphics[width=1\textwidth]{figures/volcanic_glasses.jpg}
-\caption{\it Four examples of changing characteristics of amorphous material based on composition. Kilauea basalt glass (upper left) and taupo rhyolite glass (upper right) were analyzed on a PANalytical Empyrean XRD at University of Auckland. Gobabeb 2 (lower left) and Buckskin 1 (lower right) results from the CheMin instrument on the MSL Curiosity rover (data sourced as above). Calculated statistics for each analysis are provided below the model results. Note in particular the change in skewness from Basalt to Rhyolite, and from Gobabeb 2 to Buckskin 1, supporting compositional change.\label{fig:volcanic_glasses}}
-\end{figure}
+
+While results may imply a qualitative relationship to composition, further testing and an understanding of the program's limitations is necessary to better quantify compositional correlations. In particular, the AMORPH program can quantify the peak shape and proportion of amorphous material but it cannot deconvolve the diffraction pattern of multiple amorphous phases, nor can it distinguish between non-crystalline materials and X-ray amorphous phases such as nanophase oxides \citep{blake2013}. 
 
 \section{Conclusions}\label{sec:conclusions}
 The AMORPH program’s statistical approach to interpreting amorphous materials in X-ray
@@ -615,7 +713,7 @@ geologic materials from Earth and Mars.
 
 BJB was supported by a Marsden Fast-Start grant from the Royal Society of
 New Zealand from 2013 to 2016, and this work is a spinoff from that
-project. Data used in Figure~\ref{fig:volcanic_glasses} analyzed and processed by J. Li, M. Jugo, A. Serrano. Manual calibration for Figure~\ref{fig:Comparison} was conducted by Y. Heled. This project made use of the resources of the Centre for
+project. Data used in Figure~\ref{fig:Mars} analyzed and processed by J. Li, M. Jugo, A. Serrano. Manual calibration for Figure~\ref{fig:Comparison} was conducted by Y. Heled. This project made use of the resources of the Centre for
 eResearch at the University of Auckland.
 
 \section*{References}
@@ -628,6 +726,9 @@ Achilles, C.N., et al. 2017. Mineralogy of an active eolian sediment from the Na
 \bibitem[Achilles et al.(2013)]{achilles2013}
 Achilles, C.N., Morris, R.V., Chipera, S.J., Ming, D.W., Rampe, E.B. 2013. X-ray diffraction reference intensity ratios of amorphous and poorly crystalline phases: Implications for CheMin on the Mars Science Laboratory mission. 44th Lunar and Planetary Science Conference.
 
+\bibitem[Andrade et al.(2017)]{andrade2017}
+Andrade, F.R.D., Polo, L.A., Janasi, V.A., Caralho, M.S. 2017. Volcanic glass in Cretaceous dacites and rhyolites of the Parana Magmatic Province, southern Brazil: Characterization and quantification by XRD-Reitveld. Journal of Volcanology and Geothermal Research, doi: 10.1016/j.jvolgeores.2017.08.008.
+
 \bibitem[Barker et al.(2015)]{barker2015}
 Barker, S.J., Wilson, C.J.N., Allan, A.S.R., Schipper, C.I. 2015. Fine-scale temporal recovery, reconstruction and evolution of a post-supereruption magmatic system. Contributions to Mineralogy and Petrology, 170:5; doi: 10.1007/s00410-015-1155-2.
 
@@ -636,6 +737,9 @@ Berger, J.A., et al. 2016. A global Mars dust composition refined by the Alpha-P
 
 \bibitem[Bish et al.(2013)]{bish2013}
 Bish, D. L. et al. 2013. X-ray diffraction results from Mars Science Laboratory: mineralogy of Rocknest at Gale Crater. Science, 341, 1238932.
+
+\bibitem[Blake et al.(2012)]{blake2012}
+Blake, D. et al. 2012. Characterization and calibration of the CheMin mineralogical instrument on Mars Science Laboratory. Space Science Reviews, 170, 341-399. doi: 10.1007/s11214-012-9905-1.
 
 \bibitem[Blake et al.(2013)]{blake2013}
 Blake, D. F. et al. 2013. Curiosity at Gale Crater, Mars: characterization and analysis of the Rocknest sand shadow. Science, 341, 1239505.
@@ -707,15 +811,18 @@ Sivia, D., Skilling, J. 2006.
 \newblock \emph{Data analysis: a Bayesian tutorial}.
 \newblock Oxford University Press, 246pp.
 
+\bibitem[Skilling(2006)]{skilling2006nested}
+Skilling, J. 2006. Nested sampling for general Bayesian computation.
+Bayesian analysis, 1, 4, 833--859.
+
 \bibitem[Wall et al.(2014)]{wall2014}
 Wall, K.T., Rowe, M.C., Ellis, B.S., Schmidt, M.E., Eccles, J.D. 2014. Determining volcanic eruption styles on Earth and Mars from crystallinity measurements. Nature Communications, doi: 10.1038/ncomms6090.
 
 \bibitem[Wooten et al.(2009)]{wooten2009}
 Wooten, K.M., Thornber, C.R., Orr, T.R., Ellis, J.F., and Trusdell, F.A. 2009. Catalog of tephra samples from Kilauea's summit eruption, March-December 2008: U.S. Geological Survey Open-File Report 2009-1134, 26p.
 
-\bibitem[Zorn et al.(2017)]{zorn2017}
-Zorn, E.U., Rowe, M.C., Cronin, S.J., Ryan, A.G., Kennedy, L., Russell, J.K. 2017. Influence of porosity and groundmass crystallinity on dome rock strength; a case study from Mt. Taranaki, New Zealand. Bulletin of Volcanology, in review.
-
+\bibitem[Zorn et al.(2018)]{zorn2018}
+Zorn, E.U., Rowe, M.C., Cronin, S.J., Ryan, A.G., Kennedy, L., Russell, J.K. 2018. Influence of porosity and groundmass crystallinity on dome rock strength; a case study from Mt. Taranaki, New Zealand. Bulletin of Volcanology, 80:35, doi: 10.1007/s00445-018-1210-8.
 
 \end{thebibliography}
 
