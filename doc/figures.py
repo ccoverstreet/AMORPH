@@ -4,7 +4,8 @@ import numpy.random as rng
 import matplotlib.pyplot as plt
 
 # Set up fonts
-plt.rc("font", size=14, family="serif", serif="Computer Sans")
+plt.rcParams["font.family"] = "serif"
+plt.rcParams["font.size"] = 18
 plt.rc("text", usetex=True)
 
 # Set rng seed
@@ -86,7 +87,7 @@ plt.plot(x, f2/f2.max(), alpha=0.6, label="Skewness = 0.50")
 plt.xlabel("$x$")
 plt.ylabel("$y$")
 plt.title("Skewness")
-plt.legend(loc="upper left")
+plt.legend(loc="upper left", fontsize=14)
 plt.savefig("figures/skewness.pdf", bbox_inches="tight")
 print("figures/skewness.pdf done")
 plt.close()
@@ -111,7 +112,7 @@ plt.xlabel("$x$")
 plt.ylabel("$y$")
 plt.xlim([-5, 55])
 plt.title("Non-gaussianity")
-plt.legend(loc="upper left")
+plt.legend(loc="upper left", fontsize=14)
 plt.savefig("figures/nongaussianity.pdf", bbox_inches="tight")
 print("figures/nongaussianity.pdf done")
 
