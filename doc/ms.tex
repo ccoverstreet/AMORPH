@@ -502,9 +502,9 @@ where the first step is true in general by the product rule
 {\changed of probability}, and the second
 step assumes that knowing the parameters would make the hyperparameters
 irrelevant when predicting what data would be observed. In the AMORPH model,
-we introduced hyperparameters describing the typical amplitude
-and width of the gaussians for the amorphous component, and
-the degree to which the actual amplitudes and widths are scattered
+we introduced hyperparameters describing the typical {\changed integrated area (`mass')}
+and width of the peaks for the amorphous component, and
+the degree to which the actual {\changed masses} and widths are scattered
 around that typical value. This was also done for the crystalline
 component.
 
@@ -518,7 +518,7 @@ are specified in Table~\ref{tab:priors}.
 \centering
 \includegraphics[scale=0.7]{figures/pgm-edited.pdf}
 \caption{The PGM. The hyperparameters controlling the prior distributions
-for the amorphous and crystalline gaussians are denoted collectively
+for the amorphous and crystalline peaks are denoted collectively
 by $\boldsymbol{\alpha}_{\rm amorph}$ and
 $\boldsymbol{\alpha}_{\rm xtal}$ respectively.
 The noise-related parameters are collected under $\boldsymbol{\sigma}$.
@@ -559,7 +559,7 @@ $\{n_1, ..., n_4\}$  & Background deviations & independent Normal$(0,1)$\\
 {\em Crystalline parameters}&&\\
 $X_{i, \rm xtal}$ & Positions of narrow peaks &
                             Uniform$(x_{\rm min}, x_{\rm max})$ \\
-$A_{i, \rm xtal}$ & {\changed Masses} of narrow peaks &
+$M_{i, \rm xtal}$ & {\changed Masses} of narrow peaks &
 {\changed
  $\ln M_{i, \rm xtal} \sim \textnormal{Laplace}\left(a_{\ln M, \rm xtal}, b_{\ln M, \rm xtal}\right)$} \\
 $W_{i, \rm xtal}$ & Widths of narrow peaks &
@@ -632,7 +632,7 @@ The AMORPH program calculates a fraction of amorphous material ($A_{\rm m}$) for
 using Equation~\ref{eqn:crystallinity}. Thus, measured crystallinity ($C_{\rm m}$) is easily determined from the relationship $C_{\rm m} = 1-A_{\rm m}$.
 {\changed To test the applicability of AMORPH crystallinity results, we have analysed the Mars Scientific Laboratory (MSL)  CheMin instrument X-ray diffraction patterns of loose basaltic sand from the Bagnold Sand Dunes \citep[Gobabeb;][]{achilles2017, lapotre2017}
 and sediments drilled from a silicic mudstone \citep[Buckskin sample;][]{morris2016}, both which have significant amorphous
-materials (CheMin instrument data\footnote{\tt http://pds-geosciences.wustl.edu/msl/msl-m-chemin-4-rdr-v1/mslcmn{\textunderscore}1xxx.data.rdr4/}). CheMin diffraction patterns have been processed using the original Co K$\alpha$ ($1.7890 \dot{A}$) data as well as data transformed from a Co K$\alpha$ to Cu K$\alpha$ ($1.5406 \dot{A}$) X-ray source using Bragg's law. This recalculation simply allows for an easier visual comparison to terrestrial samples analysed with the more standard Cu K$\alpha$ X-ray source (see below). Note that for Co K$\alpha$ results, background critical points have been adjusted to 11.7--46.9\degree~$2\theta$ to maintain the linear background over the amorphous region from $\sim$ 8.8 to 2.25 $\dot{A}$ (Table ~\ref{tab:anode}). Although the results are uncalibrated, measured crystallinites provide a good first approximation of actual crystallinity, and relative differences are robust. Measured amorphous content of the Gobabeb 2 sample is 36.7 $\pm$ 2.9$\%$ (63.3$\%$ crystallinity) while the Buckskin 2 sediment contains 45.3 $\pm$ 2.9$\%$ amorphous phases (54.7 $\%$ crystallinity; Fig.~\ref{fig:Mars}). Comparatively, published FULLPAT calculations of amorphous contents are ~35 $\pm$ 15$\%$ for Gobabeb and 50 $\pm$ 15$\%$ for Buckskin \citep{achilles2017, morris2016}. }
+materials (CheMin instrument data\footnote{\tt http://pds-geosciences.wustl.edu/msl/msl-m-chemin-4-rdr-v1/mslcmn{\textunderscore}1xxx.data.rdr4/}). CheMin diffraction patterns have been processed using the original Co K$\alpha$ ($1.7890$ \AA) data as well as data transformed from a Co K$\alpha$ to Cu K$\alpha$ ($1.5406$ \AA) X-ray source using Bragg's law. This recalculation simply allows for an easier visual comparison to terrestrial samples analysed with the more standard Cu K$\alpha$ X-ray source (see below). Note that for Co K$\alpha$ results, background critical points have been adjusted to 11.7--46.9\degree~$2\theta$ to maintain the linear background over the amorphous region from $\sim$ 8.8 to 2.25 \AA (Table ~\ref{tab:anode}). Although the results are uncalibrated, measured crystallinites provide a good first approximation of actual crystallinity, and relative differences are robust. Measured amorphous content of the Gobabeb 2 sample is 36.7 $\pm$ 2.9$\%$ (63.3$\%$ crystallinity) while the Buckskin 2 sediment contains 45.3 $\pm$ 2.9$\%$ amorphous phases (54.7 $\%$ crystallinity; Fig.~\ref{fig:Mars}). Comparatively, published FULLPAT calculations of amorphous contents are ~35 $\pm$ 15$\%$ for Gobabeb and 50 $\pm$ 15$\%$ for Buckskin \citep{achilles2017, morris2016}. }
 
 \begin{figure}[!ht]
 \centering
