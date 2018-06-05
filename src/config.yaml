@@ -1,0 +1,18 @@
+# Set up everything for an AMORPH run
+---
+
+# Data file for the run
+data_file: "easy_data.txt"
+
+# Which file of DNest4 options to use
+dnest4_options_file: "OPTIONS_AGGRESSIVE"
+
+# Section for things that affect the inference
+inference_assumptions:
+
+    # Control points
+    control_points: [10.0, 40.0]
+
+    # Maximum number of peaks
+    max_num_narrow_peaks: 1000
+    max_num_wide_peaks: 1000
