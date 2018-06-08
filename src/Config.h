@@ -36,7 +36,10 @@ class Config
         // Load from YAML file
         void load(const char* filename);
 
-        // Mock
+        // Getters
+        const std::string& get_data_file() const { return data_file; }
+        int get_argc() const { return argc; }
+        char** get_argv() const { return argv; }
 
         // A global instance
         static Config global;
