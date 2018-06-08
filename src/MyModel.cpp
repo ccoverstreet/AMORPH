@@ -11,7 +11,7 @@ namespace AMORPH
 
 // Static things
 Data MyModel::data;
-const DNest4::Laplace MyModel::laplace(0.0, 5.0);
+const DNest4::Laplace MyModel::laplace(0.0, 20.0);
 std::vector<double> MyModel::x_knots{data.get_x_min(),
                                             10.0, 40.0, data.get_x_max()};
 
