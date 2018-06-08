@@ -7,6 +7,7 @@ except:
 
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 import yaml
 
 def display():
@@ -43,6 +44,9 @@ def display():
     wide_component_tot = np.zeros(data.shape[0])
     the_spikes_tot = np.zeros(data.shape[0])
     model_tot = np.zeros(data.shape[0])
+
+    # A data frame to store some results
+    macroquantities = pd.DataFrame()
 
     plt.clf()
     for i in range(0, posterior_sample.shape[0]):
@@ -118,7 +122,6 @@ def display():
 
     # Plot the data
     plt.plot(data[:,0], data[:,1], "ko", markersize=3, alpha=0.5)
-
     plt.xlabel("$2\\theta$ (degrees)", fontsize=14)
     plt.ylabel("Intensity", fontsize=14)
     plt.show()
@@ -143,10 +146,15 @@ def display():
              width=binwidth, color=[0.3, 0.3, 0.3])
     plt.xlabel("Number of narrow components")
     plt.ylabel("Number of posterior samples")
+
+    # A data frame to store some results
+    macroquantities["num_narrow_peaks"] = posterior_sample[:,11]
     plt.show()
 
-    # Remove any nans before plotting
     wide_fraction = wide_integral/(spikes_integral + wide_integral)
+    macroquantities["amorph/(amorph + crystal)"] = wide_fraction
+
+    # Remove any nans before plotting
     wide_fraction = wide_fraction[~np.isnan(wide_fraction)]
 
     plt.hist(wide_fraction, 100, color=[0.3, 0.3, 0.3])
@@ -156,6 +164,8 @@ def display():
            b=wide_fraction.std()))
     plt.show()
 
+    macroquantities["wide_center_of_mass"] = wide_center_of_mass
+
     wide_center_of_mass = wide_center_of_mass[~np.isnan(wide_center_of_mass)]
     plt.hist(wide_center_of_mass, 100, color=[0.3, 0.3, 0.3])
     plt.xlabel("Center of mass of wide component")
@@ -163,14 +173,15 @@ def display():
            b=wide_center_of_mass.std()))
     plt.show()
 
+    macroquantities["wide_halfwidth"] = wide_width
     wide_width = wide_width[~np.isnan(wide_width)]
     plt.hist(wide_width, 100, color=[0.3, 0.3, 0.3])
-    plt.xlabel("Width of wide component")
-    print("Width = {a} +- {b}".format(a=wide_width.mean(),
+    plt.xlabel("Half-width of wide component")
+    print("Half-width = {a} +- {b}".format(a=wide_width.mean(),
            b=wide_width.std()))
     plt.show()
 
-
+    macroquantities["wide_skewness"] = wide_skewness
     wide_skewness = wide_skewness[~np.isnan(wide_skewness)]
     plt.hist(wide_skewness, 100, color=[0.3, 0.3, 0.3])
     plt.xlabel("Skewness of wide component")
@@ -178,6 +189,7 @@ def display():
            b=wide_skewness.std()))
     plt.show()
 
+    macroquantities["wide_nongaussianity"] = wide_nongaussianity
     wide_nongaussianity = wide_nongaussianity[~np.isnan(wide_nongaussianity)]
     plt.hist(wide_nongaussianity, 100, color=[0.3, 0.3, 0.3])
     plt.xlabel("Nongaussianity of wide component")
@@ -185,6 +197,11 @@ def display():
     print("Nongaussianity = {a} +- {b}".format(a=wide_nongaussianity.mean(),
            b=wide_nongaussianity.std()))
     plt.show()
+
+    print("Saving macroquantities.csv")
+    macroquantities.index = range(1, posterior_sample.shape[0]+1)
+    macroquantities.to_csv("macroquantities.csv",
+                           index_label="Sample number")
 
 if __name__ == "__main__":
     display()

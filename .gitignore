@@ -12,6 +12,7 @@ src/dnest4.lib
 src/main.exe
 src/AMORPH
 src/AMORPH.exe
+src/macroquantities.csv
 runs/
 doc/ms.aux
 doc/ms.bbl
