@@ -53,6 +53,12 @@ void Config::load(const char* filename)
     max_num_wide_peaks = config["inference_assumptions"]
                                ["max_num_wide_peaks"].as<size_t>();
 
+    left_edge = config["inference_assumptions"]
+                      ["left_edge"].as<double>();
+    right_edge = config["inference_assumptions"]
+                      ["right_edge"].as<double>();
+
+
     argc = 7;
     argv = new char*[argc];
     for(int i=0; i<argc; ++i)

@@ -21,6 +21,8 @@ class Config
         size_t max_num_narrow_peaks;
         size_t max_num_wide_peaks;
 
+        double left_edge, right_edge;
+
         // Mock "command line options"
         int argc;
         char** argv;
@@ -46,6 +48,8 @@ class Config
         { return max_num_narrow_peaks; }
         size_t get_max_num_wide_peaks() const
         { return max_num_wide_peaks; }
+        double get_left_edge() const { return left_edge; }
+        double get_right_edge() const { return right_edge; }
 
         // A global instance
         static Config global;

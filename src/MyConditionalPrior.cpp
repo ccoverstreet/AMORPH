@@ -1,4 +1,5 @@
 #include "MyConditionalPrior.h"
+#include "Config.h"
 #include "DNest4/code/DNest4.h"
 #include <cmath>
 #include <stdexcept>
@@ -92,8 +93,9 @@ double MyConditionalPrior::log_pdf(const std::vector<double>& vec) const
     }
     else
     {
-        double xc = 0.5*(x_min + x_max);
-        if(std::abs(vec[0] - xc) > 0.2*x_range)
+        double left  = x_min + Config::global.get_left_edge()*x_range;
+        double right = x_min + Config::global.get_right_edge()*x_range;
+        if(vec[0] < left || vec[0] > right)
             return -1E300;
     }
 
@@ -122,8 +124,9 @@ void MyConditionalPrior::from_uniform(std::vector<double>& vec) const
     }
     else
     {
-        double xc = 0.5*(x_min + x_max);
-        vec[0] = xc - 0.2*x_range + 0.4*x_range*vec[0];
+        double left  = x_min + Config::global.get_left_edge()*x_range;
+        double right = x_min + Config::global.get_right_edge()*x_range;
+        vec[0] = left + (right - left)*vec[0];
     }
 
     vec[1] = l.cdf_inverse(vec[1]);
@@ -142,8 +145,9 @@ void MyConditionalPrior::to_uniform(std::vector<double>& vec) const
     }
     else
     {
-        double xc = 0.5*(x_min + x_max);
-        vec[0] = (vec[0] - (xc - 0.2*x_range)) / (0.4 * x_range);
+        double left  = x_min + Config::global.get_left_edge()*x_range;
+        double right = x_min + Config::global.get_right_edge()*x_range;
+        vec[0] = (vec[0] - left)/(right - left);
     }
     vec[1] = l.cdf(vec[1]);
 
