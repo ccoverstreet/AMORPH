@@ -7,7 +7,7 @@ LIBS = -ldnest4 -lpthread -lyaml-cpp
 
 default:
 	$(CC) -I$(DNEST4_PATH) $(CXXFLAGS) -c *.cpp
-	$(CC) -pthread -L$(DNEST4_PATH)/DNest4/code -o main *.o $(LIBS)
+	$(CC) -pthread -L$(DNEST4_PATH)/DNest4/code -o AMORPH *.o $(LIBS)
 	rm *.o
 
 windows:

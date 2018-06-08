@@ -10,6 +10,8 @@ src/run_data.txt
 src/logfile
 src/dnest4.lib
 src/main.exe
+src/AMORPH
+src/AMORPH.exe
 runs/
 doc/ms.aux
 doc/ms.bbl
