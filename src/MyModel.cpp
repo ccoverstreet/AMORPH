@@ -40,11 +40,11 @@ void MyModel::from_prior(DNest4::RNG& rng)
     narrow_peaks.from_prior(rng);
     wide_peaks.from_prior(rng);
 
+    peak_shape = log(0.1) + log(1000.0)*rng.rand();
+
     compute_bg();
     compute_narrow();
     compute_wide();
-
-    peak_shape = log(0.1) + log(1000.0)*rng.rand();
 
     sigma0 = exp(laplace.generate(rng));
     sigma1 = exp(laplace.generate(rng));
