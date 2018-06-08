@@ -1,6 +1,9 @@
 # Set up everything for an AMORPH run
 ---
 
+# Number of threads to use
+num_threads: 8
+
 # Data file for the run
 data_file: "easy_data.txt"
 

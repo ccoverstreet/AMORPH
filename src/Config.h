@@ -11,6 +11,8 @@ class Config
 {
     private:
 
+        size_t num_threads;
+
         std::string data_file;
         std::string dnest4_options_file;
 
