@@ -7,17 +7,18 @@ except:
 
 import numpy as np
 import matplotlib.pyplot as plt
+import yaml
 
 def display():
     """
     Function to load and plot the output of a run.
     """
-    f = open("run_data.txt")
-    data_file = f.read()
+    f = open("config.yaml")
+    config = yaml.load(f)
     f.close()
 
     # Load the data file
-    data = dn4.my_loadtxt(data_file)
+    data = dn4.my_loadtxt(config["data_file"])
     x = data[:,0]
     y = data[:,1]
 
