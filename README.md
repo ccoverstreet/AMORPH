@@ -1,8 +1,8 @@
 AMORPH
 ========
 
-(c) 2016–2018 (https://www.stat.auckland.ac.nz/~brewer/)[Brendon J. Brewer]
-and (http://www.env.auckland.ac.nz/people/michael-rowe)[Michael Rowe]
+(c) 2016–2018 [Brendon J. Brewer](https://www.stat.auckland.ac.nz/~brewer/)
+and [Michael Rowe](http://www.env.auckland.ac.nz/people/michael-rowe)
 
 AMORPH is free software, released under the GNU General Public License,
 version 3. See the LICENSE file for details.
@@ -12,7 +12,7 @@ Guide to installing and operating:
 
 AMORPH is hosted at the following URL:
 
-(https://bitbucket.org/eggplantbren/amorph)[https://bitbucket.org/eggplantbren/amorph]
+[https://bitbucket.org/eggplantbren/amorph]([https://bitbucket.org/eggplantbren/amorph)
 
 The repository includess the source code, Python scripts for viewing results,
 example datasets, and the Windows executable file (`AMORPH.exe`), which is
@@ -20,7 +20,7 @@ the easiest way of using AMORPH. It is located (along with almost everything
 else) in the `src` subdirectory.
 The Python scripts make use of the packages Numpy, matplotlib, Pandas, and
 yaml, and has only
-been tested under Python 3. (Anaconda)[https://www.anaconda.com/download/] is a
+been tested under Python 3. [https://www.anaconda.com/download/](Anaconda) is a
 convenient distribution of Python which comes with these packages
 pre-installed.
 
