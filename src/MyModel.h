@@ -2,6 +2,7 @@
 #define AMORPH_MyModel_h
 
 #include <ostream>
+#include <tuple>
 #include "DNest4/code/DNest4.h"
 #include "Data.h"
 #include "MyConditionalPrior.h"
@@ -73,7 +74,7 @@ class MyModel
 
     public:
         static void load_data(const char* filename);
-        static void load_control_points(const char* filename);
+        static void set_control_points(const std::tuple<double, double>& cps);
 };
 
 } // namespace AMORPH

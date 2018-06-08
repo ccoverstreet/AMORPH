@@ -19,13 +19,13 @@ int main()
                                    Config::global.get_argv());
 
     // Set the control points
-    AMORPH::MyModel::load_control_points("control_points.in");
+    AMORPH::MyModel::set_control_points(Config::global.get_control_points());
 
     // Load data
     AMORPH::MyModel::load_data(Config::global.get_data_file().c_str());
 
-//    // Run DNest4.
-//    DNest4::start<AMORPH::MyModel>(clo);
+    // Run DNest4.
+    DNest4::start<AMORPH::MyModel>(clo);
 
     return 0;
 }

@@ -40,6 +40,8 @@ class Config
         const std::string& get_data_file() const { return data_file; }
         int get_argc() const { return argc; }
         char** get_argv() const { return argv; }
+        const std::tuple<double, double> get_control_points() const
+        { return control_points; }
 
         // A global instance
         static Config global;

@@ -269,15 +269,9 @@ double MyModel::log_likelihood() const
     return logL;
 }
 
-void MyModel::load_control_points(const char* filename)
+void MyModel::set_control_points(const std::tuple<double, double>& cps)
 {
-    std::fstream fin(filename, std::ios::in);
-    if(!fin)
-        std::cerr<<"# ERROR couldn't open "<<filename<<"."<<std::endl;
-
-    fin>>x_knots[1];
-    fin>>x_knots[2];
-    fin.close();
+    std::tie(x_knots[1], x_knots[2]) = cps;
 }
 
 void MyModel::print(std::ostream& out) const
