@@ -69,9 +69,6 @@ class MyModel
         // x-positions of background knots
         static std::vector<double> x_knots;
 
-        // Maximum number of spikes
-        static constexpr size_t max_num_spikes = 1000;
-
     public:
         static void load_data(const char* filename);
         static void set_control_points(const std::tuple<double, double>& cps);

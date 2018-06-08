@@ -42,6 +42,10 @@ class Config
         char** get_argv() const { return argv; }
         const std::tuple<double, double> get_control_points() const
         { return control_points; }
+        size_t get_max_num_narrow_peaks() const
+        { return max_num_narrow_peaks; }
+        size_t get_max_num_wide_peaks() const
+        { return max_num_wide_peaks; }
 
         // A global instance
         static Config global;

@@ -1,4 +1,5 @@
 #include "MyModel.h"
+#include "Config.h"
 #include "DNest4/code/DNest4.h"
 #include "Lookup.h"
 #include <cmath>
@@ -17,10 +18,10 @@ std::vector<double> MyModel::x_knots{data.get_x_min(),
 // Constructor
 MyModel::MyModel()
 :n_knots(4)
-,narrow_peaks(3, max_num_spikes, false,
+,narrow_peaks(3, Config::global.get_max_num_narrow_peaks(), false,
             MyConditionalPrior(data.get_x_min(), data.get_x_max(), true),
                                 DNest4::PriorType::log_uniform)
-,wide_peaks(3, max_num_spikes, false,
+,wide_peaks(3, Config::global.get_max_num_wide_peaks(), false,
             MyConditionalPrior(data.get_x_min(), data.get_x_max(), false),
                                 DNest4::PriorType::log_uniform)
 ,bg(data.get_y().size())
@@ -312,21 +313,21 @@ std::string MyModel::description() const
     s<<"dim_peaks1, max_num_peaks1, ";
     s<<"location_log_amplitude1, scale_log_amplitude1, ";
     s<<"location_log_width1, scale_log_width1, num_peaks1, ";
-    for(size_t i=0; i<max_num_spikes; ++i)
+    for(size_t i=0; i<Config::global.get_max_num_narrow_peaks(); ++i)
         s<<"center1["<<i<<"], ";
-    for(size_t i=0; i<max_num_spikes; ++i)
+    for(size_t i=0; i<Config::global.get_max_num_narrow_peaks(); ++i)
         s<<"log_amplitude1["<<i<<"], ";
-    for(size_t i=0; i<max_num_spikes; ++i)
+    for(size_t i=0; i<Config::global.get_max_num_narrow_peaks(); ++i)
         s<<"width1["<<i<<"], ";
 
     s<<"dim_peaks2, max_num_peaks2, ";
     s<<"location_log_amplitude2, scale_log_amplitude2, ";
     s<<"location_log_width2, scale_log_width2, num_peaks2, ";
-    for(size_t i=0; i<max_num_spikes; ++i)
+    for(size_t i=0; i<Config::global.get_max_num_wide_peaks(); ++i)
         s<<"center2["<<i<<"], ";
-    for(size_t i=0; i<max_num_spikes; ++i)
+    for(size_t i=0; i<Config::global.get_max_num_wide_peaks(); ++i)
         s<<"log_amplitude2["<<i<<"], ";
-    for(size_t i=0; i<max_num_spikes; ++i)
+    for(size_t i=0; i<Config::global.get_max_num_wide_peaks(); ++i)
         s<<"width2["<<i<<"], ";
 
     s<<"peak_shape, ";
