@@ -21,10 +21,22 @@ class Config
         size_t max_num_narrow_peaks;
         size_t max_num_wide_peaks;
 
+        // Mock "command line options"
+        int argc;
+        char** argv;
+
     public:
+
+        Config();
+        ~Config();
+        Config(const Config& other) = delete;
+        Config(Config&& other) = delete;
+        Config& operator = (const Config& other) = delete;
 
         // Load from YAML file
         void load(const char* filename);
+
+        // Mock
 
         // A global instance
         static Config global;
