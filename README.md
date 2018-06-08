@@ -1,7 +1,7 @@
 AMORPH
 ========
 
-(c) 2016--2017 Brendon J. Brewer and Michael Rowe
+(c) 2016–2018 Brendon J. Brewer and Michael Rowe
 
 AMORPH is free software licenced under the GNU General Public License,
 version 3. See the LICENSE file for details.
@@ -14,7 +14,8 @@ is hosted on Bitbucket at the following URL:
 https://bitbucket.org/eggplantbren/amorph
 
 This download includes the source code, Python scripts for viewing results,
-example datasets, and the Windows executable file (AMORPH.exe).
+example datasets, and the Windows executable file (AMORPH.exe), which is
+the easiest way of using AMORPH.
 The Python scripts make use of the packages Numpy and matplotlib, and has only
 been tested under Python 3. Anaconda (https://www.anaconda.com/download/) is a
 convenient distribution of Python which comes with scientific packages
@@ -24,6 +25,8 @@ The AMORPH program can be installed anywhere on the computer. All data files to
 be analysed by AMORPH need to be in .txt file format, space delimited, with no
 headers (i.e., just two columns of numbers). For simplicity, text files for
 processing should be located in the same folder as the AMORPH program.
+To configure a run, edit the file `config.yaml` to specify all the details of
+the data file and other things you might want to tweak.
 Upon executing AMORPH.exe, input the file name including the .txt extension.
 Four test data sets are provided in the download
 (0%glass_rhyolite_Emperyon.txt; 50% glass.02step3secdwell.txt;
@@ -36,7 +39,8 @@ be viewed by running the Python script showresults.py:
 python showresults.py
 
 Automatically generated figures may be closed or saved. Upon closing outputted
-figures, numerical results will be displayed in Anaconda prompt window.
+figures, numerical results will be displayed in Anaconda prompt window,
+and a CSV file of (some) output will be written to the disk.
 Important: make sure to save the results or copy the output file before
 starting another run as results will otherwise be overwritten.
 
