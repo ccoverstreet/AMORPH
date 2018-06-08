@@ -8,7 +8,7 @@ num_threads: 8
 data_file: "easy_data.txt"
 
 # Which file of DNest4 options to use
-dnest4_options_file: "OPTIONS"
+dnest4_options_file: "OPTIONS_AGGRESSIVE"
 
 # Section for things that affect the inference
 inference_assumptions:
@@ -17,8 +17,8 @@ inference_assumptions:
     control_points: [10.0, 40.0]
 
     # Maximum number of peaks
-    max_num_narrow_peaks: 100
-    max_num_wide_peaks: 100
+    max_num_narrow_peaks: 1000
+    max_num_wide_peaks: 1000
 
     # What subset of the domain should the amorphous peaks be allowed to
     # appear in? In these units, the domain goes from 0 to 1.
