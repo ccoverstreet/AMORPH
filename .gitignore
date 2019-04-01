@@ -8,6 +8,7 @@ src/sampler_state.txt
 src/__pycache__
 src/run_data.txt
 src/logfile
+src/log_prior_weights.txt
 src/dnest4.lib
 src/main.exe
 src/AMORPH
