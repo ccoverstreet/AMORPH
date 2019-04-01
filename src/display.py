@@ -15,7 +15,7 @@ def display():
     Function to load and plot the output of a run.
     """
     f = open("config.yaml")
-    config = yaml.load(f)
+    config = yaml.load(f, Loader=yaml.SafeLoader)
     f.close()
 
     # Load the data file
