@@ -1,5 +1,7 @@
 src/levels.txt
 src/main
+src/*.o
+src/*.swp
 src/posterior_sample.txt
 src/sample.txt
 src/sample_info.txt
