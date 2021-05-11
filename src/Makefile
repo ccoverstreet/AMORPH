@@ -4,7 +4,8 @@
 CC = g++
 CXXFLAGS = -std=c++14 -O3 -march=native -Wall -Wextra -pedantic -DNDEBUG
 LIBS = -ldnest4 -lpthread -lyaml-cpp
-DNEST4_PATH=/home/brewer/Projects
+#DNEST4_PATH=/home/brewer/Projects
+DNEST4_PATH="../vendor"
 
 default:
 	$(CC) -I$(DNEST4_PATH) $(CXXFLAGS) -c *.cpp
