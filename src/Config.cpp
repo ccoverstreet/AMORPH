@@ -3,7 +3,8 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <yaml-cpp/yaml.h>
+// Changed yaml-cpp to use vendored source
+#include "yaml-cpp/include/yaml-cpp/yaml.h"
 
 namespace AMORPH
 {
