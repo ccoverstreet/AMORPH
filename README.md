@@ -12,7 +12,7 @@ Guide to installing and operating:
 
 **IMPORTANT: New Build Process**
 
-- `git clone https://ccoverstreet/AMORPH --recursive`
+- `git clone https://github.com/ccoverstreet/AMORPH --recursive`
 - `cd AMORPH/src`
 - `make`. This may take a minute or two.
 - ./AMORPH (make sure that all necessary config/data files are in the same directory)
