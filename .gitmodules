@@ -1,6 +1,3 @@
 [submodule "vendor/DNest4"]
 	path = vendor/DNest4
 	url = https://github.com/eggplantbren/DNest4.git
-[submodule "vendor/yaml-cpp"]
-	path = vendor/yaml-cpp
-	url = https://github.com/jbeder/yaml-cpp.git
