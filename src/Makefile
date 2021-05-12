@@ -8,6 +8,7 @@ LIBS = -ldnest4 -lpthread -lyaml-cpp
 DNEST4_PATH="../vendor"
 
 default:
+	make -C	../vendor/DNest4/code/
 	$(CC) -I$(DNEST4_PATH) $(CXXFLAGS) -c *.cpp
 	$(CC) -pthread -L$(DNEST4_PATH)/DNest4/code -o AMORPH *.o $(LIBS)
 	rm *.o
