@@ -15,7 +15,7 @@ default:
 	make -C	../vendor/DNest4/code/
 	mkdir -p ../vendor/yaml-cpp/build
 	
-	cd ../vendor/yaml-cpp/build && cmake -DCMAKE_BUILD_TYPE=Release ..
+	cd ../vendor/yaml-cpp/build && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
 	make -C ../vendor/yaml-cpp/build
 
 	$(CC) -I$(DNEST4_PATH) -L$(DNEST4_PATH)/DNest4/code -L$(LIB_YAMLCPP_LIBPATH) $(CXXFLAGS)  -o AMORPH *.cpp $(LIBS)
