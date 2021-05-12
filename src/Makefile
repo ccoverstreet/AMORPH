@@ -18,7 +18,7 @@ default:
 	cd ../vendor/yaml-cpp/build && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
 	make -C ../vendor/yaml-cpp/build
 
-	$(CC) -I$(DNEST4_PATH) -L$(DNEST4_PATH)/DNest4/code -L$(LIB_YAMLCPP_LIBPATH) $(CXXFLAGS)  -o AMORPH *.cpp $(LIBS)
+	$(CC) -I$(DNEST4_PATH) -I$(LIB_YAMLCPP_INCLUDE) -L$(DNEST4_PATH)/DNest4/code -L$(LIB_YAMLCPP_LIBPATH) $(CXXFLAGS)  -o AMORPH *.cpp $(LIBS)
 
 windows:
 	x86_64-w64-mingw32-g++ -I /usr/x86_64-w64-mingw32/include -I $(DNEST4_PATH) -std=c++11 -O3 -Wall -Wextra -pedantic -DNDEBUG -c *.cpp
