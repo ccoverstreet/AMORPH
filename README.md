@@ -10,6 +10,15 @@ version 3. See the LICENSE file for details.
 Guide to installing and operating:
 ==================================
 
+**IMPORTANT: New Build Process**
+
+- `git clone https://ccoverstreet/AMORPH --recursive`
+- `cd AMORPH/src`
+- `make`. This may take a minute or two.
+- ./AMORPH (make sure that all necessary config/data files are in the same directory)
+___
+
+
 AMORPH is hosted at the following URL:
 
 [https://bitbucket.org/eggplantbren/amorph]([https://bitbucket.org/eggplantbren/amorph)
