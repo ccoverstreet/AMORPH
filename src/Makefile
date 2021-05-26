@@ -3,8 +3,8 @@
 
 CC = g++
 CXXFLAGS = -std=c++14 -O3 -march=native -Wall -Wextra -pedantic -DNDEBUG
-LIBS = -ldnest4 -lpthread -l:libyaml-cpp.a
-#LIBS = -ldnest4 -lpthread -lyaml-cpp
+#LIBS = -ldnest4 -lpthread -l:libyaml-cpp.a
+LIBS = -ldnest4 -lpthread -lyaml-cpp
 #DNEST4_PATH=/home/brewer/Projects
 DNEST4_PATH="../vendor"
 LIB_YAMLCPP_INCLUDE="../vendor/yaml-cpp/include"
