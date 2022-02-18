@@ -3,7 +3,7 @@
 try:
     import dnest4.classic as dn4
 except:
-    import dnest_functions as dn4
+    from . import dnest_functions as dn4
 
 import numpy as np
 import matplotlib.pyplot as plt

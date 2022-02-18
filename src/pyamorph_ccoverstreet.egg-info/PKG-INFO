@@ -1,3 +1,20 @@
+Metadata-Version: 2.1
+Name: pyamorph-ccoverstreet
+Version: 0.1.1
+Summary: The Python post processing component of the AMORPH software developed by Brendon J. Brewer and Michael Rowe.
+Home-page: https://github.com/ccoverstreet/AMORPH
+Author: Cale Overstreet
+Author-email: cale.overstreet@gmail.com
+License: UNKNOWN
+Project-URL: Bug Tracker, https://github.com/ccoverstreet/AMORPH/issues
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
 AMORPH
 ========
 
@@ -116,3 +133,5 @@ Using the source code
 =====================
 If you don't want to use `AMORPH.exe` and would rather compile AMORPH
 yourself, you'll need the dependencies yaml-cpp, boost, and DNest4.
+
+
