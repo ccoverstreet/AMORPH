@@ -14,13 +14,14 @@ LIB_YAMLCPP_LIBPATH="../vendor/yaml-cpp/build"
 default:
 	make -C	../vendor/DNest4/code/
 	mkdir -p ../vendor/yaml-cpp/build
+	mkdir -p dist
 	
 	cd ../vendor/yaml-cpp/build && cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
 	make -C ../vendor/yaml-cpp/build
 
-	$(CC) -I$(DNEST4_PATH) -I$(LIB_YAMLCPP_INCLUDE) -L$(DNEST4_PATH)/DNest4/code -L$(LIB_YAMLCPP_LIBPATH) $(CXXFLAGS)  -o AMORPH *.cpp $(LIBS)
+	$(CC) -I$(DNEST4_PATH) -I$(LIB_YAMLCPP_INCLUDE) -L$(DNEST4_PATH)/DNest4/code -L$(LIB_YAMLCPP_LIBPATH) $(CXXFLAGS)  -o dist/AMORPH *.cpp $(LIBS)
 
 windows:
 	x86_64-w64-mingw32-g++ -I /usr/x86_64-w64-mingw32/include -I $(DNEST4_PATH) -std=c++11 -O3 -Wall -Wextra -pedantic -DNDEBUG -c *.cpp
-	x86_64-w64-mingw32-g++ -static -pthread -o AMORPH.exe *.o $(DNEST4_PATH)/DNest4/code/dnest4.lib -lpthread -lyaml-cpp
+	x86_64-w64-mingw32-g++ -static -pthread -o dist/AMORPH.exe *.o $(DNEST4_PATH)/DNest4/code/dnest4.lib -lpthread -lyaml-cpp
 	rm -f *.o

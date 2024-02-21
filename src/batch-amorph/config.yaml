@@ -1,0 +1,27 @@
+# Set up everything for an AMORPH run
+---
+
+# Number of threads to use
+num_threads: 16
+
+# Data file for the run
+data_file: "$FILENAME"
+
+# Which file of DNest4 options to use
+dnest4_options_file: "OPTIONS"
+
+# Section for things that affect the inference
+inference_assumptions:
+
+    # Control points
+    control_points: [9.85, 17.7]
+
+    # Maximum number of peaks
+    max_num_narrow_peaks: 20
+    max_num_wide_peaks: 5
+
+    # What subset of the domain should the amorphous peaks be allowed to
+    # appear in? In these units, the domain goes from 0 to 1.
+    left_edge: 0.0
+    right_edge: 1.0
+
