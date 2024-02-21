@@ -7,6 +7,8 @@ and [Michael Rowe](http://www.env.auckland.ac.nz/people/michael-rowe)
 AMORPH is free software, released under the GNU General Public License,
 version 3. See the LICENSE file for details.
 
+- **The executables are located in `src/dist`**
+
 # Using the PyPI package
 
 The associated python package is for the postprocessing of AMORPH results.
