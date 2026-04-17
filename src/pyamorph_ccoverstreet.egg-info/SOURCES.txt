@@ -4,6 +4,7 @@ pyproject.toml
 setup.cfg
 src/pyamorph/__init__.py
 src/pyamorph/__main__.py
+src/pyamorph/amorphpostprocess.py
 src/pyamorph/display.py
 src/pyamorph/dnest_functions.py
 src/pyamorph/showresults.py
