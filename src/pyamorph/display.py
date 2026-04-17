@@ -96,10 +96,10 @@ def display():
 
             spikes_integral[i] = np.sum(the_spikes)
         else:
-            wide_center_of_mass[i] = np.NaN
-            wide_width[i] = np.NaN
-            wide_skewness[i] = np.NaN
-            wide_nongaussianity[i] = np.NaN
+            wide_center_of_mass[i] = np.nan
+            wide_width[i] = np.nan
+            wide_skewness[i] = np.nan
+            wide_nongaussianity[i] = np.nan
 
         # Plot the model. 50 posterior samples and the
         # posterior mean for each part.
