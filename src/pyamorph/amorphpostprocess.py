@@ -694,18 +694,19 @@ def display():
 
     # Plot the posterior means
     plt.plot(data[:,0], model_tot/posterior_sample.shape[0],
-                        "g-", linewidth=3, alpha=1)
+                        "g-", linewidth=3, alpha=1, label="Model")
     plt.plot(data[:,0], wide_component_tot/posterior_sample.shape[0],
-                        "b--", linewidth=3, alpha=1)
+                        "b--", linewidth=3, alpha=1, label="Amorphous")
     plt.plot(data[:,0], the_spikes_tot/posterior_sample.shape[0],
-                        "r--", linewidth=3, alpha=1)
+                        "r--", linewidth=3, alpha=1, label="Crystalline")
     plt.plot(data[:,0], bg_tot/posterior_sample.shape[0],
-                        "y--", linewidth=3, alpha=1)
+                        "y--", linewidth=3, alpha=1, label="Background")
 
     # Plot the data
     plt.plot(data[:,0], data[:,1], "ko", markersize=3, alpha=0.5)
     plt.xlabel("$2\\theta$ (degrees)", fontsize=14)
     plt.ylabel("Intensity", fontsize=14)
+    plt.legend(fontsize=12)
     plt.show()
 
     # Plot the standardised residuals of the posterior mean curve.
